@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Felipe Saavedra — Branding, UI &amp; UX</title>
+<meta name="description" content="Diseño de identidad, UI y UX para equipos y productos de inteligencia artificial. Marcas con carácter, interfaces claras.">
+<meta name="theme-color" content="#0B0A09">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Felipe Saavedra — Branding, UI &amp; UX">
+<meta property="og:description" content="Identidad visual e interfaz para equipos de IA. Marcas con carácter, interfaces claras.">
+<meta property="og:image" content="og.jpg">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0A09'/%3E%3Crect x='6' y='6' width='20' height='20' fill='%23E62312'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Caveat:wght@600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== Filtros: bordes rasgados, fotocopia, papel ===== -->
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Borde rasgado: desplaza el contorno con ruido -->
+    <filter id="torn" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.055" numOctaves="4" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="17" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="torn2" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.07" numOctaves="3" seed="41" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <!-- Fotocopia: satura a gris, aplasta los medios tonos, sube el contraste -->
+    <filter id="xerox">
+      <feColorMatrix type="saturate" values="0.62"/>
+      <feComponentTransfer>
+        <feFuncR type="discrete" tableValues="0 0.1 0.3 0.55 0.78 1"/>
+        <feFuncG type="discrete" tableValues="0 0.09 0.28 0.53 0.76 0.98"/>
+        <feFuncB type="discrete" tableValues="0 0.08 0.26 0.5 0.73 0.95"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- Papel: fibra irregular -->
+    <filter id="fiber">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="f"/>
+      <feColorMatrix in="f" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <a class="nav__logo" href="#top">
+    <span class="nav__mark"></span>
+    <!-- EDITA: tu nombre -->
+    <span class="nav__name">Felipe&nbsp;Saavedra</span>
+  </a>
+  <nav class="nav__links" id="navLinks" aria-label="Principal">
+    <a href="#servicios">Servicios</a>
+    <a href="#trabajo">Trabajo</a>
+    <a href="#proceso">Proceso</a>
+    <a href="#ficha">Ficha</a>
+    <a class="nav__cta" href="#contacto">Hablemos</a>
+  </nav>
+  <button class="nav__burger" id="navBurger" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú">
+    <span></span><span></span>
+  </button>
+</header>
+
+<main>
+
+<!-- ============ PORTADA ============ -->
+<section class="cover">
+  <!-- Plancha de papel escaneado, rasgada y girada -->
+  <div class="slab slab--paper" aria-hidden="true"></div>
+  <div class="slab slab--photo" aria-hidden="true"></div>
+
+  <!-- Cinta roja pegada en vertical -->
+  <div class="tape-v" aria-hidden="true">
+    <span>FELIPE SAAVEDRA &mdash; 2026</span>
+  </div>
+
+  <div class="cover__type">
+    <h1 class="cover__title">
+      <span class="word">PORTA<em>FOLIO</em></span>
+    </h1>
+    <p class="cover__sub">branding &middot; interfaz &middot; dirección de arte</p>
+  </div>
+
+  <span class="tape tape--a" aria-hidden="true"></span>
+</section>
+
+<!-- ============ DECLARACIÓN ============ -->
+<section class="pitch">
+  <p class="pitch__text reveal">
+    Diseño marcas e interfaces para equipos de <em>inteligencia artificial</em>.
+    Ruido arriba, orden debajo.
+  </p>
+  <div class="pitch__actions reveal">
+    <a class="btn btn--red" href="#contacto">Empecemos un proyecto</a>
+    <a class="btn btn--ghost" href="#trabajo">Ver trabajo <span aria-hidden="true">&#8595;</span></a>
+  </div>
+  <p class="pitch__note reveal"><span class="pitch__dot" aria-hidden="true"></span> Disponible para proyectos 2026 &middot; Remoto</p>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>Identidad visual</span><span class="marquee__sep">/</span>
+    <span>Diseño UI</span><span class="marquee__sep">/</span>
+    <span>Investigación UX</span><span class="marquee__sep">/</span>
+    <span>Design systems</span><span class="marquee__sep">/</span>
+    <span>Dirección de arte</span><span class="marquee__sep">/</span>
+    <span>Naming</span><span class="marquee__sep">/</span>
+    <span>Identidad visual</span><span class="marquee__sep">/</span>
+    <span>Diseño UI</span><span class="marquee__sep">/</span>
+    <span>Investigación UX</span><span class="marquee__sep">/</span>
+    <span>Design systems</span><span class="marquee__sep">/</span>
+    <span>Dirección de arte</span><span class="marquee__sep">/</span>
+    <span>Naming</span><span class="marquee__sep">/</span>
+  </div>
+</div>
+
+<!-- ============ TRABAJO ============ -->
+<section id="trabajo">
+  <div class="band">
+    <h2 class="band__title"><span class="strike">TRABAJO</span></h2>
+  </div>
+
+  <div class="plates">
+    <!-- EDITA: sustituye <div class="plate__img ..."> por <img class="plate__img" src="img/proyecto-1.jpg" alt="..."> -->
+    <a class="plate plate--wide reveal" href="#contacto">
+      <div class="plate__img plate__img--a" aria-hidden="true"></div>
+      <span class="tape tape--b" aria-hidden="true"></span>
+      <h3 class="plate__title">AGENTES <em>IA</em></h3>
+      <p class="plate__meta">Identidad + sitio &mdash; 2026</p>
+      <p class="plate__desc">Del logotipo al design system para una plataforma de agentes.</p>
+    </a>
+
+    <a class="plate plate--tall reveal" href="#contacto">
+      <div class="plate__img plate__img--b" aria-hidden="true"></div>
+      <h3 class="plate__title">RUTA &amp; <em>MTB</em></h3>
+      <p class="plate__meta">Dirección de arte &mdash; 2025</p>
+      <p class="plate__desc">Sistema gráfico para una marca de ciclismo: jerseys, redes, campaña.</p>
+    </a>
+
+    <a class="plate reveal" href="#contacto">
+      <div class="plate__img plate__img--c" aria-hidden="true"></div>
+      <span class="tape tape--c" aria-hidden="true"></span>
+      <h3 class="plate__title">ON<em>BOARD</em></h3>
+      <p class="plate__meta">UX &mdash; 2025</p>
+      <p class="plate__desc">Rediseño del onboarding de una herramienta SaaS.</p>
+    </a>
+
+    <a class="plate reveal" href="#contacto">
+      <div class="plate__img plate__img--d" aria-hidden="true"></div>
+      <h3 class="plate__title">XE<em>ROX</em></h3>
+      <p class="plate__meta">Editorial &mdash; 2024</p>
+      <p class="plate__desc">Pieza impresa: retícula rígida, capas sucias, dos tintas.</p>
+    </a>
+  </div>
+</section>
+
+<!-- ============ SERVICIOS ============ -->
+<section id="servicios">
+  <div class="band">
+    <h2 class="band__title">SERVICIOS</h2>
+  </div>
+
+  <div class="listing">
+    <div class="listing__intro reveal">
+      <p>
+        Trabajo por proyecto o embebido en tu equipo. Cada entrega llega con archivos
+        editables, guía de uso y todo listo para producción.
+      </p>
+    </div>
+
+    <div class="listing__cols">
+      <div class="col reveal">
+        <h3>Identidad de marca</h3>
+        <p>Logotipo, sistema tipográfico, paleta, texturas y aplicaciones. La marca completa, no solo un símbolo.</p>
+        <ul>
+          <li>Concepto y territorio visual</li>
+          <li>Manual de marca</li>
+          <li>Kit de aplicaciones</li>
+        </ul>
+      </div>
+      <div class="col reveal">
+        <h3>Diseño de interfaz</h3>
+        <p>Interfaces para web y producto: jerarquía clara, componentes consistentes, capa visual con personalidad.</p>
+        <ul>
+          <li>Landing pages y sitios</li>
+          <li>Dashboards y apps</li>
+          <li>Design system en Figma</li>
+        </ul>
+      </div>
+      <div class="col reveal">
+        <h3>Experiencia de uso</h3>
+        <p>Antes de dibujar, entender. Flujos, arquitectura de información y prototipos que se prueban con gente real.</p>
+        <ul>
+          <li>Flujos y wireframes</li>
+          <li>Prototipos navegables</li>
+          <li>Test de usabilidad</li>
+        </ul>
+      </div>
+      <div class="col reveal">
+        <h3>Dirección de arte</h3>
+        <p>Campañas, redes, merch y editorial. Aquí es donde el grunge, el vintage y el xerox hacen su trabajo.</p>
+        <ul>
+          <li>Sistemas gráficos</li>
+          <li>Piezas para social</li>
+          <li>Impresos y merch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESO ============ -->
+<section id="proceso">
+  <div class="band">
+    <h2 class="band__title">PRO<span class="red">CESO</span></h2>
+  </div>
+
+  <ol class="steps">
+    <li class="step reveal">
+      <span class="step__num">01</span>
+      <h3>Entender</h3>
+      <p>Llamada, contexto, competencia y objetivos. Salgo con un brief que ambos aprobamos.</p>
+    </li>
+    <li class="step reveal">
+      <span class="step__num">02</span>
+      <h3>Explorar</h3>
+      <p>Territorios visuales y rutas conceptuales. Elegimos dirección antes de gastar semanas.</p>
+    </li>
+    <li class="step reveal">
+      <span class="step__num">03</span>
+      <h3>Diseñar</h3>
+      <p>Iteración con revisiones acotadas. Nada de rondas infinitas: dos ciclos y decisiones claras.</p>
+    </li>
+    <li class="step reveal">
+      <span class="step__num">04</span>
+      <h3>Entregar</h3>
+      <p>Archivos, guía de uso y acompañamiento para que el equipo lo aplique bien.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ FICHA (hoja pegada) ============ -->
+<section class="sheet-wrap" id="ficha">
+  <article class="sheet reveal">
+    <div class="sheet__paper" aria-hidden="true"></div>
+    <span class="tape tape--tl" aria-hidden="true"></span>
+    <span class="tape tape--br" aria-hidden="true"></span>
+
+    <div class="sheet__inner">
+      <header class="sheet__head">
+        <h2>FICHA</h2>
+        <p class="sheet__ref">2026 &middot; Ref. 001</p>
+      </header>
+
+      <div class="sheet__body">
+        <div class="sheet__bio">
+          <p>
+            Me gusta el diseño que se nota hecho: grano, fotocopia, texturas vintage, capas fuera
+            de registro. Pero el ruido es acabado, no excusa: debajo siempre hay retícula,
+            jerarquía y una decisión que se puede defender.
+          </p>
+          <p>
+            No creo en estilos enemigos. Si el proyecto pide limpio y suizo, va limpio y suizo.
+            Lo que no cambia es el criterio.
+          </p>
+          <p>
+            Fuera del estudio estoy sobre la bici, ruta y MTB. De ahí sale buena parte de lo que
+            diseño por gusto: carteles de carrera, jerseys, cosas que se imprimen y se ensucian.
+          </p>
+          <!-- EDITA: tu firma -->
+          <p class="signature" aria-hidden="true">Felipe Saavedra</p>
+        </div>
+
+        <div class="cv">
+          <!-- EDITA: tus datos reales -->
+          <div class="cv__col">
+            <h3>Experiencia</h3>
+            <dl>
+              <dt>2026 —</dt>
+              <dd>Diseñador freelance<br><span>Branding, UI &amp; UX</span></dd>
+              <dt>2023 — 2025</dt>
+              <dd>Nombre del estudio<br><span>Diseñador gráfico</span></dd>
+            </dl>
+            <h3>Formación</h3>
+            <dl>
+              <dt>2019 — 2023</dt>
+              <dd>Nombre de la universidad<br><span>Diseño gráfico</span></dd>
+            </dl>
+          </div>
+
+          <div class="cv__col">
+            <h3>Enfoque</h3>
+            <ul>
+              <li>Identidad de marca</li>
+              <li>Diseño de interfaz</li>
+              <li>Investigación UX</li>
+              <li>Dirección de arte</li>
+            </ul>
+            <h3>Herramientas</h3>
+            <ul>
+              <li>Figma</li>
+              <li>Illustrator</li>
+              <li>Photoshop</li>
+              <li>After Effects</li>
+            </ul>
+          </div>
+
+          <div class="cv__col">
+            <h3>Idiomas</h3>
+            <ul>
+              <li>Español &mdash; nativo</li>
+              <li>Inglés &mdash; profesional</li>
+            </ul>
+            <h3>Base</h3>
+            <ul>
+              <li>Remoto &middot; LATAM</li>
+            </ul>
+            <h3>Fuera del estudio</h3>
+            <ul>
+              <li>Ciclismo de ruta</li>
+              <li>MTB</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ CONTACTO ============ -->
+<section id="contacto">
+  <div class="band">
+    <h2 class="band__title"><span class="strike">CONTACTO</span></h2>
+  </div>
+
+  <div class="contact">
+    <div class="contact__type reveal">
+      <h2 class="contact__title">¿LO <em>HACEMOS</em>?</h2>
+      <p class="contact__lead">
+        Cuéntame qué estás construyendo y en qué etapa va. Respondo en menos de 24 horas
+        con una idea de alcance, tiempos y precio.
+      </p>
+    </div>
+
+    <!-- Tarjeta de contacto pegada con cinta -->
+    <article class="card-contact reveal">
+      <div class="card-contact__paper" aria-hidden="true"></div>
+      <span class="tape tape--d" aria-hidden="true"></span>
+      <div class="card-contact__inner">
+        <!-- EDITA: tu correo y tus enlaces -->
+        <ul>
+          <li><span>Correo</span><a href="mailto:fsarmijo21@gmail.com?subject=Proyecto%20de%20dise%C3%B1o">fsarmijo21@gmail.com</a></li>
+          <li><span>Behance</span><a href="#">/tuusuario</a></li>
+          <li><span>Instagram</span><a href="#">@tuusuario</a></li>
+          <li><span>LinkedIn</span><a href="#">/tuusuario</a></li>
+        </ul>
+        <p class="card-contact__sign" aria-hidden="true">Felipe Saavedra</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>&copy; <span id="year">2026</span> — Felipe Saavedra</p>
+  <a href="#top">Volver arriba &#8593;</a>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
