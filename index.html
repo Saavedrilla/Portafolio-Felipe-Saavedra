@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Felipe Saavedra — Branding, UI &amp; UX</title>
 <meta name="description" content="Diseño de identidad, UI y UX para equipos y productos de inteligencia artificial. Marcas con carácter, interfaces claras.">
-<meta name="theme-color" content="#0B0A09">
+<meta name="theme-color" content="#E9E8E5">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Felipe Saavedra — Branding, UI &amp; UX">
 <meta property="og:description" content="Identidad visual e interfaz para equipos de IA. Marcas con carácter, interfaces claras.">
 <meta property="og:image" content="og.jpg">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0A09'/%3E%3Crect x='6' y='6' width='20' height='20' fill='%23E62312'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23E9E8E5'/%3E%3Crect x='4' y='4' width='24' height='24' fill='%2312110F'/%3E%3Crect x='9' y='9' width='14' height='14' fill='%231E3CDC'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Caveat:wght@600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Permanent+Marker&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ===== Filtros: bordes rasgados, fotocopia, papel ===== -->
+<!-- ===== Filtros: bordes rasgados y fotocopia en blanco y negro ===== -->
 <svg class="defs" aria-hidden="true" focusable="false">
   <defs>
     <!-- Borde rasgado: desplaza el contorno con ruido -->
@@ -34,22 +34,15 @@
       <feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
 
-    <!-- Fotocopia: satura a gris, aplasta los medios tonos, sube el contraste -->
-    <filter id="xerox">
-      <feColorMatrix type="saturate" values="0.62"/>
+    <!-- Fotocopia: pasa todo a gris y aplasta los medios tonos en
+         escalones. Es lo que da el blanco y negro duro de la referencia. -->
+    <filter id="photocopy">
+      <feColorMatrix type="saturate" values="0"/>
       <feComponentTransfer>
-        <feFuncR type="discrete" tableValues="0 0.1 0.3 0.55 0.78 1"/>
-        <feFuncG type="discrete" tableValues="0 0.09 0.28 0.53 0.76 0.98"/>
-        <feFuncB type="discrete" tableValues="0 0.08 0.26 0.5 0.73 0.95"/>
+        <feFuncR type="discrete" tableValues="0 0.16 0.42 0.68 0.88 1"/>
+        <feFuncG type="discrete" tableValues="0 0.16 0.42 0.68 0.88 1"/>
+        <feFuncB type="discrete" tableValues="0 0.15 0.41 0.67 0.87 1"/>
       </feComponentTransfer>
-    </filter>
-
-    <!-- Papel: fibra irregular -->
-    <filter id="fiber">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="f"/>
-      <feColorMatrix in="f" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer>
-      <feComposite operator="in" in2="SourceGraphic"/>
     </filter>
   </defs>
 </svg>
@@ -79,19 +72,17 @@
 
 <!-- ============ PORTADA ============ -->
 <section class="cover">
-  <!-- Plancha de papel escaneado, rasgada y girada -->
-  <div class="slab slab--paper" aria-hidden="true"></div>
-  <div class="slab slab--photo" aria-hidden="true"></div>
+  <!-- Panel fotográfico en blanco y negro, tramado como fotocopia -->
+  <div class="cover__photo" aria-hidden="true"></div>
 
-  <!-- Cinta roja pegada en vertical -->
-  <div class="tape-v" aria-hidden="true">
-    <span>FELIPE SAAVEDRA &mdash; 2026</span>
-  </div>
+  <span class="cover__edge" aria-hidden="true">Portafolio 2026 &mdash; Remoto</span>
 
   <div class="cover__type">
-    <h1 class="cover__title">
-      <span class="word">PORTA<em>FOLIO</em></span>
-    </h1>
+    <!-- En la portada el título va escrito a mano, como en la referencia.
+         Lo impreso encima de lo escrito se reserva para las bandas. -->
+    <h1 class="cover__title"><span class="cover__word">PORTAFOLIO</span></h1>
+    <!-- EDITA: tu nombre -->
+    <p class="cover__name">Felipe<br>Saavedra</p>
     <p class="cover__sub">branding &middot; interfaz &middot; dirección de arte</p>
   </div>
 
@@ -105,7 +96,7 @@
     Ruido arriba, orden debajo.
   </p>
   <div class="pitch__actions reveal">
-    <a class="btn btn--red" href="#contacto">Empecemos un proyecto</a>
+    <a class="btn btn--blue" href="#contacto">Empecemos un proyecto</a>
     <a class="btn btn--ghost" href="#trabajo">Ver trabajo <span aria-hidden="true">&#8595;</span></a>
   </div>
   <p class="pitch__note reveal"><span class="pitch__dot" aria-hidden="true"></span> Disponible para proyectos 2026 &middot; Remoto</p>
@@ -132,7 +123,13 @@
 <!-- ============ TRABAJO ============ -->
 <section id="trabajo">
   <div class="band">
-    <h2 class="band__title"><span class="strike">TRABAJO</span></h2>
+    <h2 class="band__title">
+      <span class="stack">
+        <span class="stack__print">TRABAJO</span>
+        <span class="stack__hand" aria-hidden="true">TRABAJO</span>
+      </span>
+    </h2>
+    <p class="band__tags"><span>Identidad</span><span>Interfaz</span><span>Editorial</span><span>Campaña</span></p>
   </div>
 
   <div class="plates">
@@ -172,7 +169,13 @@
 <!-- ============ SERVICIOS ============ -->
 <section id="servicios">
   <div class="band">
-    <h2 class="band__title">SERVICIOS</h2>
+    <h2 class="band__title">
+      <span class="stack">
+        <span class="stack__print">SERVICIOS</span>
+        <span class="stack__hand" aria-hidden="true">SERVICIOS</span>
+      </span>
+    </h2>
+    <p class="band__tags"><span>Por proyecto</span><span>Por retainer</span><span>Embebido en tu equipo</span></p>
   </div>
 
   <div class="listing">
@@ -227,7 +230,13 @@
 <!-- ============ PROCESO ============ -->
 <section id="proceso">
   <div class="band">
-    <h2 class="band__title">PRO<span class="red">CESO</span></h2>
+    <h2 class="band__title">
+      <span class="stack">
+        <span class="stack__print">PROCESO</span>
+        <span class="stack__hand" aria-hidden="true">PROCESO</span>
+      </span>
+    </h2>
+    <p class="band__tags"><span>Cuatro pasos</span><span>Dos rondas de revisión</span><span>Sin sorpresas</span></p>
   </div>
 
   <ol class="steps">
@@ -258,6 +267,7 @@
 <section class="sheet-wrap" id="ficha">
   <article class="sheet reveal">
     <div class="sheet__paper" aria-hidden="true"></div>
+    <span class="clip" aria-hidden="true"></span>
     <span class="tape tape--tl" aria-hidden="true"></span>
     <span class="tape tape--br" aria-hidden="true"></span>
 
@@ -345,7 +355,13 @@
 <!-- ============ CONTACTO ============ -->
 <section id="contacto">
   <div class="band">
-    <h2 class="band__title"><span class="strike">CONTACTO</span></h2>
+    <h2 class="band__title">
+      <span class="stack">
+        <span class="stack__print">CONTACTO</span>
+        <span class="stack__hand" aria-hidden="true">CONTACTO</span>
+      </span>
+    </h2>
+    <p class="band__tags"><span>Respuesta en 24 h</span><span>Remoto</span><span>Español / Inglés</span></p>
   </div>
 
   <div class="contact">
@@ -378,8 +394,10 @@
 </main>
 
 <footer class="footer">
-  <p>&copy; <span id="year">2026</span> — Felipe Saavedra</p>
-  <a href="#top">Volver arriba &#8593;</a>
+  <div class="footer__inner">
+    <p>&copy; <span id="year">2026</span> — Felipe Saavedra</p>
+    <a href="#top">Volver arriba &#8593;</a>
+  </div>
 </footer>
 
 <script src="script.js"></script>

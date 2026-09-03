@@ -1,30 +1,38 @@
 /* =========================================================
    PORTAFOLIO — hoja de estilos
-   Referencia: portafolio impreso escaneado. Negro de montaje,
-   planchas de papel rasgado, cinta roja, fotocopia y tipografía
-   tapada. Nada de tarjetas con borde ni rejillas parejas.
+   Referencia: cartel fotocopiado y pegado en un muro. Fondo de
+   concreto claro, tipografía negra condensada, y encima una capa
+   escrita a mano en marcador azul que cae fuera de registro sobre
+   lo impreso. Amarillo mostaza como resaltador. Barras negras que
+   encuadran, como una diapositiva.
    1) tokens 2) base 3) materiales 4) nav 5) secciones 6) responsive
    ========================================================= */
 
 /* ---------- 1. TOKENS ---------- */
 :root{
-  --void:      #0B0A09;   /* negro de montaje, cálido */
-  --void-2:    #131110;
-  --line:      #2B2724;
+  /* Muro de concreto */
+  --concrete:   #E9E8E5;
+  --concrete-2: #DFDDD8;
+  --concrete-3: #CDCAC3;
+  --sheet:      #F7F6F3;   /* hoja limpia, más clara que el muro */
 
-  --red:       #E62312;
-  --red-deep:  #A6180B;
+  /* Tinta */
+  --ink:      #12110F;
+  --ink-2:    #2E2B27;
+  --text:     #1A1815;
+  --text-mute:#6B665E;
+  --line:     rgba(18,17,15,.16);
 
-  --paper:     #EFE9DC;
-  --paper-2:   #DFD7C6;
-  --paper-3:   #C9BFAB;
-  --text:      #E6E0D4;
-  --text-mute: #8E8579;
+  /* Marcador y resaltador */
+  --blue:        #1E3CDC;
+  --blue-deep:   #1329A8;
+  --yellow:      #D9B310;
+  --yellow-lit:  #F0CB1E;
 
   --font-display: "Anton", "Impact", sans-serif;
   --font-mono:    "Space Mono", "Courier New", monospace;
   --font-body:    "Archivo", -apple-system, "Segoe UI", sans-serif;
-  --font-hand:    "Caveat", "Segoe Script", cursive;
+  --font-hand:    "Permanent Marker", "Segoe Script", cursive;
 
   --max:    1240px;
   --gutter: clamp(18px, 4.5vw, 56px);
@@ -36,13 +44,21 @@ html{ scroll-behavior:smooth; }
 
 body{
   margin:0;
-  background:var(--void);
   color:var(--text);
   font-family:var(--font-body);
   font-size:17px;
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+
+  /* Muro: raspaduras diagonales y sombras de humedad */
+  background-color:var(--concrete);
+  background-image:
+    repeating-linear-gradient(103deg, rgba(18,17,15,.032) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(7deg, rgba(18,17,15,.022) 0 1px, transparent 1px 9px),
+    radial-gradient(120% 70% at 12% 0%, rgba(18,17,15,.075), transparent 62%),
+    radial-gradient(100% 60% at 92% 100%, rgba(18,17,15,.09), transparent 65%);
+  background-attachment:fixed;
 }
 
 img{ max-width:100%; display:block; }
@@ -57,98 +73,121 @@ h1,h2,h3{
 }
 p{ margin:0 0 1em; }
 
-::selection{ background:var(--red); color:var(--paper); }
-:focus-visible{ outline:3px solid var(--red); outline-offset:3px; }
+::selection{ background:var(--blue); color:#fff; }
+:focus-visible{ outline:3px solid var(--blue); outline-offset:3px; }
 
 /* El SVG de filtros no ocupa espacio */
 .defs{ position:absolute; width:0; height:0; overflow:hidden; }
 
 /* ---------- 3. MATERIALES ---------- */
 
-/* Grano de fotocopia sobre toda la página */
+/* Grano de fotocopia sobre toda la página.
+   Sobre fondo claro va en multiply: ensucia, no aclara. */
 .grain{
   position:fixed;
   inset:0;
   z-index:9999;
   pointer-events:none;
-  opacity:.34;
-  mix-blend-mode:overlay;
+  opacity:.19;
+  mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* --- Papel: superficie crema con fibra y manchas de humedad --- */
-.paper-fill{
-  background-color:var(--paper);
-  background-image:
-    radial-gradient(60% 45% at 18% 12%, rgba(166,24,11,.07), transparent 70%),
-    radial-gradient(50% 40% at 88% 78%, rgba(11,10,9,.10), transparent 72%),
-    radial-gradient(rgba(11,10,9,.13) 1px, transparent 1.2px);
-  background-size:auto, auto, 4px 4px;
-}
-
-/* --- Cinta adhesiva roja --- */
-.tape{
+/* --- Lo impreso y lo escrito a mano, fuera de registro ---
+   Es el gesto central de la referencia: la misma palabra dos veces,
+   una compuesta en plomo y otra encima con marcador, mal alineada. */
+.stack{ position:relative; display:inline-block; }
+.stack__print{ position:relative; display:block; }
+.stack__hand{
   position:absolute;
-  z-index:4;
-  width:132px;
-  height:34px;
-  background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 3px, transparent 3px 9px),
-    linear-gradient(178deg, var(--red) 0%, var(--red-deep) 100%);
-  clip-path:polygon(0 9%, 100% 0, 97% 91%, 3% 100%);
-  box-shadow:0 10px 24px rgba(0,0,0,.55);
-  opacity:.95;
+  left:0;
+  right:0;
+  top:50%;
+  /* Cae un poco corrida respecto a lo impreso: fuera de registro */
+  translate:-.03em calc(-50% + .015em);
+  font-family:var(--font-hand);
+  font-weight:400;
+  text-align:center;
+  white-space:nowrap;
+  letter-spacing:-.01em;
   pointer-events:none;
 }
-.tape--a{ top:14%;  right:-32px; width:170px; transform:rotate(-24deg); }
-.tape--b{ top:-15px; left:9%;    transform:rotate(-5deg); }
-.tape--c{ bottom:34%; right:-30px; width:110px; transform:rotate(12deg); }
-.tape--d{ top:-18px; right:12%;  width:150px; transform:rotate(4deg); }
-.tape--tl{ top:-17px; left:-28px; transform:rotate(-9deg); }
-.tape--br{ bottom:-17px; right:-28px; transform:rotate(-6deg); }
 
-/* Cinta vertical con el nombre escrito a lo largo */
-.tape-v{
-  position:absolute;
-  z-index:5;
-  top:-30px;
-  left:clamp(10px,4vw,52px);
-  width:42px;
-  padding:34px 0;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 3px, transparent 3px 9px),
-    linear-gradient(92deg, var(--red-deep), var(--red));
-  clip-path:polygon(9% 0, 100% 2%, 91% 100%, 0 98%);
-  transform:rotate(1.4deg);
-  box-shadow:0 12px 30px rgba(0,0,0,.6);
-  display:grid;
-  place-items:center;
-}
-.tape-v span{
-  writing-mode:vertical-rl;
-  font-family:var(--font-mono);
-  font-size:.64rem;
-  font-weight:700;
-  letter-spacing:.3em;
-  text-transform:uppercase;
-  color:var(--paper);
-}
-
-/* --- Barra que tapa parte de una palabra --- */
-.strike{ position:relative; display:inline-block; }
-.strike::after{
+/* --- Resaltador: bloque amarillo torcido detrás del texto --- */
+.hl{ position:relative; display:inline-block; isolation:isolate; }
+.hl::before{
   content:"";
   position:absolute;
-  left:-2%;
-  width:104%;
-  top:45%;
-  height:13%;
-  background:var(--paper);
-  transform:rotate(-.8deg);
+  left:-.14em;
+  right:-.14em;
+  top:.1em;
+  bottom:.04em;
+  z-index:-1;
+  background:var(--yellow-lit);
+  clip-path:polygon(0 8%, 100% 0, 99.4% 94%, .6% 100%);
+  transform:rotate(-1.2deg);
+}
+
+/* --- Trama de semitono: la fotocopia se ve en los puntos --- */
+.halftone{ position:relative; }
+.halftone::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(18,17,15,.85) 1px, transparent 1.3px);
+  background-size:5px 5px;
+  opacity:.38;
   pointer-events:none;
 }
 
-/* ---------- 4. NAV ---------- */
+/* --- Cinta de embalar: translúcida, mate, sobre el muro --- */
+.tape{
+  position:absolute;
+  z-index:6;
+  width:132px;
+  height:32px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 3px, transparent 3px 9px),
+    linear-gradient(178deg, rgba(232,226,208,.86), rgba(206,198,176,.82));
+  clip-path:polygon(0 9%, 100% 0, 97% 91%, 3% 100%);
+  box-shadow:0 4px 12px rgba(18,17,15,.16);
+  pointer-events:none;
+}
+.tape--a{ top:16%;  right:-30px; width:170px; transform:rotate(-24deg); }
+.tape--b{ top:-14px; left:9%;    transform:rotate(-5deg); }
+.tape--c{ bottom:32%; right:-28px; width:110px; transform:rotate(12deg); }
+.tape--d{ top:-16px; right:12%;  width:150px; transform:rotate(4deg); }
+.tape--tl{ top:-15px; left:-26px; transform:rotate(-9deg); }
+.tape--br{ bottom:-15px; right:-26px; transform:rotate(-6deg); }
+
+/* --- Clip metálico, como el de la referencia --- */
+.clip{
+  position:absolute;
+  z-index:7;
+  width:52px;
+  height:30px;
+  top:-16px;
+  left:50%;
+  translate:-50% 0;
+  background:linear-gradient(178deg, #3A3733 0 42%, var(--ink) 42% 100%);
+  clip-path:polygon(6% 0, 94% 0, 100% 100%, 0 100%);
+  pointer-events:none;
+}
+.clip::before,
+.clip::after{
+  content:"";
+  position:absolute;
+  top:2px;
+  width:8px;
+  height:20px;
+  border:2px solid #56524C;
+  border-top:none;
+  border-radius:0 0 4px 4px;
+}
+.clip::before{ left:6px; }
+.clip::after{ right:6px; }
+
+/* ---------- 4. NAV: barra negra superior, encuadra la página ---------- */
 .nav{
   position:sticky;
   top:0;
@@ -157,10 +196,9 @@ p{ margin:0 0 1em; }
   align-items:center;
   justify-content:space-between;
   gap:1rem;
-  padding:.75rem var(--gutter);
-  background:rgba(11,10,9,.92);
-  backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line);
+  padding:.7rem var(--gutter);
+  background:var(--ink);
+  color:var(--concrete);
 }
 .nav__logo{
   display:flex;
@@ -170,9 +208,9 @@ p{ margin:0 0 1em; }
   font-family:var(--font-display);
   font-size:1rem;
   letter-spacing:.05em;
-  color:var(--paper);
+  color:var(--concrete);
 }
-.nav__mark{ width:10px; height:10px; background:var(--red); }
+.nav__mark{ width:10px; height:10px; background:var(--blue); }
 
 .nav__links{ display:flex; align-items:center; gap:1.6rem; }
 .nav__links a{
@@ -181,16 +219,16 @@ p{ margin:0 0 1em; }
   letter-spacing:.16em;
   text-transform:uppercase;
   text-decoration:none;
-  color:var(--text-mute);
+  color:rgba(233,232,229,.6);
   transition:color .15s ease;
 }
-.nav__links a:hover{ color:var(--paper); }
+.nav__links a:hover{ color:var(--concrete); }
 .nav__cta{
-  color:var(--paper) !important;
-  background:var(--red);
+  color:#fff !important;
+  background:var(--blue);
   padding:.5em 1em;
 }
-.nav__cta:hover{ background:var(--paper); color:var(--void) !important; }
+.nav__cta:hover{ background:var(--yellow-lit); color:var(--ink) !important; }
 
 .nav__burger{
   display:none;
@@ -200,10 +238,10 @@ p{ margin:0 0 1em; }
   gap:6px;
   padding:0 9px;
   background:transparent;
-  border:1.5px solid var(--line);
+  border:1.5px solid rgba(233,232,229,.35);
   cursor:pointer;
 }
-.nav__burger span{ display:block; height:2px; background:var(--paper); }
+.nav__burger span{ display:block; height:2px; background:var(--concrete); }
 
 /* Aparición al hacer scroll */
 .reveal{
@@ -225,13 +263,13 @@ p{ margin:0 0 1em; }
   letter-spacing:.14em;
   text-transform:uppercase;
   text-decoration:none;
-  border:1.5px solid var(--red);
+  border:2px solid var(--blue);
   transition:transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
 }
-.btn--red{ background:var(--red); color:var(--paper); }
-.btn--red:hover{ background:var(--paper); color:var(--void); border-color:var(--paper); transform:translate(2px,-2px); }
-.btn--ghost{ background:transparent; color:var(--text); border-color:var(--line); }
-.btn--ghost:hover{ border-color:var(--paper); color:var(--paper); transform:translate(2px,-2px); }
+.btn--blue{ background:var(--blue); color:#fff; }
+.btn--blue:hover{ background:var(--ink); border-color:var(--ink); transform:translate(2px,-2px); }
+.btn--ghost{ background:transparent; color:var(--ink); border-color:var(--ink); }
+.btn--ghost:hover{ background:var(--yellow-lit); transform:translate(2px,-2px); }
 
 /* =========================================================
    5. SECCIONES
@@ -240,79 +278,122 @@ p{ margin:0 0 1em; }
 /* ---------- PORTADA ---------- */
 .cover{
   position:relative;
-  min-height:clamp(560px, 86vh, 900px);
+  min-height:clamp(540px, 84vh, 880px);
   overflow:hidden;
   isolation:isolate;
+  display:flex;
+  align-items:center;
+}
+/* Barra negra inferior: cierra la portada como una diapositiva */
+.cover::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:clamp(20px,3.4vw,42px);
+  background:var(--ink);
+  z-index:8;
 }
 
-/* Planchas: rectángulos rasgados y girados que se encabalgan */
-.slab{
+/* Panel fotográfico en blanco y negro, tramado */
+.cover__photo{
   position:absolute;
-  filter:url(#torn);
-}
-.slab--paper{
-  top:6%;
-  left:-3%;
-  width:clamp(320px, 62%, 780px);
-  height:74%;
-  transform:rotate(-1.6deg);
-  background-color:var(--paper);
+  top:0;
+  right:0;
+  width:clamp(240px, 52%, 720px);
+  height:100%;
+  z-index:1;
+  filter:url(#photocopy) contrast(1.12);
+  background-color:var(--concrete-2);
   background-image:
-    radial-gradient(70% 50% at 20% 15%, rgba(166,24,11,.10), transparent 70%),
-    radial-gradient(55% 45% at 85% 80%, rgba(11,10,9,.14), transparent 72%),
-    repeating-linear-gradient(97deg, rgba(11,10,9,.05) 0 2px, transparent 2px 7px),
-    radial-gradient(rgba(11,10,9,.16) 1px, transparent 1.25px);
-  background-size:auto, auto, auto, 4px 4px;
-  box-shadow:0 30px 70px rgba(0,0,0,.6);
+    radial-gradient(closest-side at 58% 30%, rgba(18,17,15,.7) 0 14%, rgba(18,17,15,.28) 46%, transparent 78%),
+    radial-gradient(closest-side at 34% 74%, rgba(18,17,15,.42) 0 18%, transparent 66%),
+    repeating-linear-gradient(72deg, rgba(18,17,15,.3) 0 7px, transparent 7px 19px),
+    repeating-linear-gradient(-18deg, rgba(18,17,15,.14) 0 3px, transparent 3px 26px),
+    linear-gradient(158deg, var(--concrete) 0%, var(--concrete-3) 100%);
+  /* La máscara actúa después del filtro, así el borde se funde sin
+     escalonarse contra el muro. */
+  -webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.6) 14%, #000 38%);
+  mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.6) 14%, #000 38%);
 }
-/* Bloque oscuro fotocopiado que muerde la plancha de papel */
-.slab--photo{
-  top:16%;
-  right:-4%;
-  width:clamp(220px, 44%, 520px);
-  height:70%;
-  transform:rotate(1.2deg);
-  background:
-    radial-gradient(closest-side at 46% 40%, rgba(239,233,220,.34) 0%, rgba(239,233,220,.06) 55%, transparent 76%),
-    repeating-linear-gradient(74deg, rgba(11,10,9,.5) 0 9px, transparent 9px 24px),
-    linear-gradient(155deg, #3A342D 0%, var(--void) 76%);
-  box-shadow:0 30px 70px rgba(0,0,0,.6);
-}
-.slab--photo::after{
+.cover__photo::after{
   content:"";
   position:absolute;
   inset:0;
-  background-image:radial-gradient(rgba(11,10,9,.8) 1px, transparent 1.3px);
-  background-size:6px 6px;
+  background-image:radial-gradient(rgba(18,17,15,.9) 1.1px, transparent 1.4px);
+  background-size:5px 5px;
   opacity:.5;
 }
 
 .cover__type{
   position:relative;
   z-index:6;
-  isolation:isolate;
+  width:100%;
   max-width:var(--max);
   margin:0 auto;
-  padding:clamp(90px,17vh,190px) var(--gutter) 0;
+  padding:clamp(56px,10vh,110px) var(--gutter) clamp(64px,9vw,120px);
 }
-.cover__title{
-  font-size:clamp(3.4rem, 16vw, 12rem);
-  line-height:.82;
-  color:var(--void);
-  letter-spacing:-.01em;
-}
-.cover__title .word{ position:relative; display:inline-block; }
-.cover__title em{ font-style:normal; color:var(--red); }
 
-.cover__sub{
-  margin:1.4rem 0 0;
-  font-family:var(--font-mono);
-  font-size:clamp(.7rem,1.6vw,.86rem);
+.cover__title{
+  display:block;
+  font-family:var(--font-hand);
+  font-weight:400;
+  font-size:clamp(2.4rem, 10.5vw, 8.4rem);
+  line-height:.92;
+  letter-spacing:-.005em;
+}
+.cover__word{
+  position:relative;
+  display:inline-block;
+  isolation:isolate;
+  color:var(--blue);
+  transform:rotate(-2.2deg);
+}
+/* Manchas de resaltador amarillo sobre un par de letras */
+.cover__word::before,
+.cover__word::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  background:var(--yellow-lit);
+  border-radius:46% 54% 52% 48% / 58% 42% 56% 44%;
+  pointer-events:none;
+}
+.cover__word::before{ left:32%; top:2%;  width:.46em; height:.72em; transform:rotate(-8deg); }
+.cover__word::after { left:66%; top:16%; width:.52em; height:.6em;  transform:rotate(6deg); }
+
+.cover__name{
+  margin:clamp(14px,2.4vw,26px) 0 0;
+  font-family:var(--font-body);
   font-weight:700;
-  letter-spacing:.22em;
+  font-size:clamp(.95rem,2.5vw,1.7rem);
+  line-height:1.02;
+  letter-spacing:.02em;
   text-transform:uppercase;
-  color:var(--void);
+  color:var(--ink);
+}
+.cover__sub{
+  margin:1rem 0 0;
+  font-family:var(--font-mono);
+  font-size:clamp(.66rem,1.5vw,.8rem);
+  font-weight:700;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--ink-2);
   max-width:44ch;
+}
+.cover__edge{
+  position:absolute;
+  z-index:6;
+  left:clamp(10px,3vw,34px);
+  top:50%;
+  translate:0 -50%;
+  writing-mode:vertical-rl;
+  font-family:var(--font-mono);
+  font-size:.6rem;
+  font-weight:700;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(18,17,15,.42);
 }
 
 /* ---------- DECLARACIÓN ---------- */
@@ -324,13 +405,18 @@ p{ margin:0 0 1em; }
 .pitch__text{
   font-family:var(--font-display);
   font-size:clamp(1.6rem,4.4vw,3.2rem);
-  line-height:1.02;
+  line-height:1.04;
   text-transform:uppercase;
-  color:var(--paper);
+  color:var(--ink);
   max-width:20ch;
   margin:0 0 2rem;
 }
-.pitch__text em{ font-style:normal; color:var(--red); }
+.pitch__text em{
+  font-style:normal;
+  font-family:var(--font-hand);
+  font-size:.78em;
+  color:var(--blue);
+}
 .pitch__actions{ display:flex; flex-wrap:wrap; gap:.9rem; margin-bottom:1.8rem; }
 .pitch__note{
   margin:0;
@@ -343,15 +429,15 @@ p{ margin:0 0 1em; }
   text-transform:uppercase;
   color:var(--text-mute);
 }
-.pitch__dot{ width:8px; height:8px; background:var(--red); border-radius:50%; animation:blink 2.6s infinite; }
+.pitch__dot{ width:8px; height:8px; background:var(--blue); border-radius:50%; animation:blink 2.6s infinite; }
 @keyframes blink{ 0%,70%,100%{opacity:1} 85%{opacity:.2} }
 
-/* ---------- MARQUEE ---------- */
+/* ---------- MARQUEE: barra negra en movimiento ---------- */
 .marquee{
   overflow:hidden;
-  background:var(--paper);
-  color:var(--void);
-  padding:.55rem 0;
+  background:var(--ink);
+  color:var(--concrete);
+  padding:.6rem 0;
 }
 .marquee__track{
   display:flex;
@@ -365,25 +451,46 @@ p{ margin:0 0 1em; }
   text-transform:uppercase;
   white-space:nowrap;
 }
-.marquee__sep{ color:var(--red); }
+.marquee__sep{ color:var(--yellow-lit); }
 @keyframes slide{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* ---------- BANDA DE TÍTULO ---------- */
+/* ---------- BANDA DE TÍTULO ----------
+   Palabra impresa en negro con la misma palabra encima en
+   marcador amarillo, corrida. Igual que el cartel de referencia. */
 .band{
-  background:var(--void-2);
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
   overflow:hidden;
+  border-top:2px solid var(--ink);
+  border-bottom:2px solid var(--ink);
+  background-image:
+    repeating-linear-gradient(96deg, rgba(18,17,15,.04) 0 1px, transparent 1px 6px);
 }
 .band__title{
   max-width:var(--max);
   margin:0 auto;
-  padding:clamp(16px,2.6vw,26px) var(--gutter);
-  font-size:clamp(2.8rem,13vw,9.5rem);
-  line-height:.88;
-  color:var(--red);
+  padding:clamp(14px,2.4vw,24px) var(--gutter);
+  font-size:clamp(2.5rem,12vw,9rem);
+  line-height:.9;
 }
-.band__title .red{ color:var(--paper); }
+.band__title .stack__print{ color:var(--ink); }
+.band__title .stack__hand{
+  font-size:.62em;
+  color:var(--yellow-lit);
+  transform:rotate(-1.6deg);
+}
+/* Etiquetas mono sueltas, como anotaciones al margen */
+.band__tags{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 var(--gutter) clamp(10px,1.6vw,16px);
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.4rem;
+  font-family:var(--font-mono);
+  font-size:.6rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--text-mute);
+}
 
 /* ---------- TRABAJO: planchas encabalgadas ---------- */
 .plates{
@@ -411,70 +518,80 @@ p{ margin:0 0 1em; }
 .plate__img{
   position:relative;
   aspect-ratio:4/3;
-  filter:url(#xerox) contrast(1.08);
-  box-shadow:0 26px 60px rgba(0,0,0,.62);
+  filter:url(#photocopy) contrast(1.1);
+  box-shadow:0 18px 40px rgba(18,17,15,.22);
 }
 .plate--tall .plate__img{ aspect-ratio:3/4; }
 .plate--wide .plate__img{ aspect-ratio:16/10; }
 
-/* Composiciones fotocopiadas: dos tintas y trama de puntos */
-/* Base de papel con tinta encima: así la fotocopia tiene de dónde morder */
+/* Composiciones en blanco y negro sobre base clara:
+   la fotocopia necesita claros de donde morder. */
 .plate__img--a{
   background:
-    repeating-linear-gradient(58deg, rgba(11,10,9,.88) 0 7px, transparent 7px 30px),
-    radial-gradient(circle at 36% 40%, var(--red) 0 27%, transparent 28%),
-    linear-gradient(160deg, var(--paper) 0%, var(--paper-3) 100%);
+    repeating-linear-gradient(58deg, rgba(18,17,15,.88) 0 7px, transparent 7px 30px),
+    radial-gradient(circle at 36% 40%, rgba(18,17,15,.95) 0 27%, transparent 28%),
+    linear-gradient(160deg, var(--concrete) 0%, var(--concrete-3) 100%);
 }
 .plate__img--b{
   background:
-    linear-gradient(96deg, transparent 0 44%, rgba(11,10,9,.92) 44% 100%),
-    radial-gradient(circle at 26% 62%, var(--red) 0 19%, transparent 20%),
-    linear-gradient(200deg, var(--paper) 0%, var(--paper-2) 100%);
+    linear-gradient(96deg, transparent 0 44%, rgba(18,17,15,.92) 44% 100%),
+    radial-gradient(circle at 26% 62%, rgba(18,17,15,.7) 0 19%, transparent 20%),
+    linear-gradient(200deg, var(--concrete) 0%, var(--concrete-2) 100%);
 }
 .plate__img--c{
   background:
-    repeating-radial-gradient(circle at 64% 36%, rgba(11,10,9,.9) 0 5px, transparent 5px 17px),
-    linear-gradient(255deg, var(--red) 0 26%, transparent 27%),
-    linear-gradient(20deg, var(--paper) 0%, var(--paper-3) 100%);
+    repeating-radial-gradient(circle at 64% 36%, rgba(18,17,15,.9) 0 5px, transparent 5px 17px),
+    linear-gradient(255deg, rgba(18,17,15,.85) 0 26%, transparent 27%),
+    linear-gradient(20deg, var(--concrete) 0%, var(--concrete-3) 100%);
 }
-/* La cuarta va en negativo, como una plancha revelada al revés */
+/* La cuarta: barrido de rayas anchas, más impresa que fotográfica */
 .plate__img--d{
   background:
-    radial-gradient(circle at 52% 56%, var(--paper) 0 25%, transparent 26%),
-    repeating-linear-gradient(102deg, rgba(239,233,220,.26) 0 3px, transparent 3px 15px),
-    linear-gradient(330deg, var(--void) 22%, var(--red-deep) 118%);
+    repeating-linear-gradient(12deg, rgba(18,17,15,.9) 0 11px, transparent 11px 27px),
+    radial-gradient(circle at 64% 42%, rgba(18,17,15,.95) 0 21%, transparent 22%),
+    linear-gradient(330deg, var(--concrete) 0%, var(--concrete-2) 100%);
 }
 .plate__img::after{           /* semitono impreso encima */
   content:"";
   position:absolute;
   inset:0;
-  background-image:radial-gradient(rgba(11,10,9,.72) 1px, transparent 1.25px);
+  background-image:radial-gradient(rgba(18,17,15,.75) 1px, transparent 1.25px);
   background-size:5px 5px;
-  opacity:.3;
+  opacity:.34;
 }
 
 /* El título se sale de la plancha, encabalgado sobre el borde */
 .plate__title{
   position:relative;
   z-index:3;
-  margin:-.5em 0 0 -.18em;
+  margin:-.42em 0 0 -.14em;
   font-size:clamp(1.8rem,5vw,3.4rem);
   line-height:.84;
-  color:var(--paper);
-  text-shadow:5px 5px 0 rgba(11,10,9,.6);
+  color:var(--ink);
+  /* El título monta sobre la plancha, que puede ser clara u oscura.
+     El contorno claro lo hace legible en las dos. */
+  text-shadow:
+     2px 0 0 var(--concrete), -2px 0 0 var(--concrete),
+     0 2px 0 var(--concrete), 0 -2px 0 var(--concrete),
+     5px 5px 0 var(--yellow-lit);
 }
-.plate__title em{ font-style:normal; color:var(--red); }
+.plate__title em{
+  font-style:normal;
+  font-family:var(--font-hand);
+  font-size:.78em;
+  color:var(--blue);
+}
 .plate__meta{
   margin:.9rem 0 .35rem;
   font-family:var(--font-mono);
   font-size:.66rem;
   letter-spacing:.18em;
   text-transform:uppercase;
-  color:var(--red);
+  color:var(--blue);
 }
 .plate__desc{ margin:0; color:var(--text-mute); font-size:.9rem; max-width:38ch; }
-.plate:hover .plate__title{ color:var(--red); }
-.plate:hover .plate__title em{ color:var(--paper); }
+.plate:hover .plate__title{ color:var(--blue); }
+.plate:hover .plate__title em{ color:var(--ink); }
 
 /* ---------- SERVICIOS: listado tipográfico, sin cajas ---------- */
 .listing{
@@ -492,10 +609,10 @@ p{ margin:0 0 1em; }
 }
 .col h3{
   font-size:1.35rem;
-  color:var(--paper);
+  color:var(--ink);
   padding-top:.9rem;
   margin:0 0 .8rem;
-  border-top:3px solid var(--red);
+  border-top:3px solid var(--blue);
 }
 .col p{ color:var(--text-mute); font-size:.92rem; }
 .col ul{
@@ -520,18 +637,19 @@ p{ margin:0 0 1em; }
   gap:clamp(24px,3vw,44px);
   list-style:none;
 }
-.step{ border-top:1px solid var(--line); padding-top:1.1rem; }
+.step{ border-top:2px solid var(--ink); padding-top:1.1rem; }
 .step__num{
-  font-family:var(--font-mono);
-  font-size:.7rem;
-  font-weight:700;
-  letter-spacing:.2em;
-  color:var(--red);
+  font-family:var(--font-hand);
+  font-size:1.7rem;
+  line-height:1;
+  color:var(--blue);
+  display:block;
+  margin-bottom:.2rem;
 }
-.step h3{ font-size:1.3rem; margin:.45rem 0 .55rem; color:var(--paper); }
+.step h3{ font-size:1.3rem; margin:.35rem 0 .55rem; color:var(--ink); }
 .step p{ color:var(--text-mute); font-size:.9rem; margin:0; }
 
-/* ---------- FICHA: hoja rasgada pegada sobre el negro ---------- */
+/* ---------- FICHA: hoja clara pegada sobre el muro ---------- */
 .sheet-wrap{
   max-width:var(--max);
   margin:0 auto;
@@ -540,7 +658,7 @@ p{ margin:0 0 1em; }
 .sheet{
   position:relative;
   transform:rotate(-.7deg);
-  color:var(--void);
+  color:var(--ink);
 }
 /* El papel es una capa aparte: así el filtro rasga el borde sin tocar el texto */
 .sheet__paper{
@@ -548,14 +666,13 @@ p{ margin:0 0 1em; }
   inset:-10px;
   z-index:0;
   filter:url(#torn2);
-  background-color:var(--paper);
+  background-color:var(--sheet);
   background-image:
-    radial-gradient(60% 45% at 15% 10%, rgba(166,24,11,.07), transparent 70%),
-    radial-gradient(50% 40% at 90% 85%, rgba(11,10,9,.12), transparent 72%),
-    repeating-linear-gradient(93deg, rgba(11,10,9,.04) 0 2px, transparent 2px 8px),
-    radial-gradient(rgba(11,10,9,.15) 1px, transparent 1.2px);
-  background-size:auto, auto, auto, 4px 4px;
-  box-shadow:0 30px 70px rgba(0,0,0,.6);
+    radial-gradient(50% 40% at 90% 85%, rgba(18,17,15,.07), transparent 72%),
+    repeating-linear-gradient(93deg, rgba(18,17,15,.028) 0 2px, transparent 2px 8px),
+    radial-gradient(rgba(18,17,15,.09) 1px, transparent 1.2px);
+  background-size:auto, auto, 4px 4px;
+  box-shadow:0 22px 50px rgba(18,17,15,.2);
 }
 .sheet__inner{
   position:relative;
@@ -563,6 +680,7 @@ p{ margin:0 0 1em; }
   padding:clamp(26px,4vw,52px);
 }
 .sheet__head{
+  position:relative;
   display:flex;
   align-items:baseline;
   justify-content:space-between;
@@ -570,30 +688,31 @@ p{ margin:0 0 1em; }
   flex-wrap:wrap;
   padding-bottom:.8rem;
   margin-bottom:clamp(22px,3vw,34px);
-  border-bottom:3px solid var(--void);
+  border-bottom:3px solid var(--ink);
 }
-.sheet__head h2{ font-size:clamp(2rem,5vw,3.4rem); color:var(--void); }
+.sheet__head h2{ font-size:clamp(2rem,5vw,3.4rem); color:var(--ink); }
 .sheet__ref{
   margin:0;
   font-family:var(--font-mono);
   font-size:.66rem;
   letter-spacing:.18em;
   text-transform:uppercase;
-  color:#6A6255;
+  color:var(--text-mute);
 }
 .sheet__body{
+  position:relative;
   display:grid;
   grid-template-columns:1fr 1.2fr;
   gap:clamp(26px,4vw,54px);
 }
-.sheet__bio p{ color:#39332B; font-size:.96rem; max-width:44ch; }
+.sheet__bio p{ color:var(--ink-2); font-size:.96rem; max-width:44ch; }
 .sheet__bio .signature{
   font-family:var(--font-hand);
-  font-size:2.6rem;
-  line-height:1;
-  color:var(--red-deep);
+  font-size:1.9rem;
+  line-height:1.1;
+  color:var(--blue);
   margin:1.5rem 0 0;
-  transform:rotate(-3deg);
+  transform:rotate(-2.5deg);
   transform-origin:left center;
 }
 
@@ -605,7 +724,7 @@ p{ margin:0 0 1em; }
   font-size:.8rem;
   letter-spacing:.14em;
   text-transform:uppercase;
-  color:var(--red);
+  color:var(--blue);
   margin:0 0 .6rem;
 }
 .cv h3:not(:first-child){ margin-top:1.7rem; }
@@ -615,13 +734,13 @@ p{ margin:0 0 1em; }
   font-size:.66rem;
   font-weight:700;
   letter-spacing:.08em;
-  color:#6A6255;
+  color:var(--text-mute);
   margin-top:.65rem;
 }
 .cv dt:first-child{ margin-top:0; }
-.cv dd{ margin:.1rem 0 0; font-size:.85rem; font-weight:600; line-height:1.3; color:var(--void); }
-.cv dd span{ font-weight:400; color:#4A4238; }
-.cv ul{ list-style:none; margin:0; padding:0; font-size:.85rem; line-height:1.45; color:#39332B; }
+.cv dd{ margin:.1rem 0 0; font-size:.85rem; font-weight:600; line-height:1.3; color:var(--ink); }
+.cv dd span{ font-weight:400; color:var(--ink-2); }
+.cv ul{ list-style:none; margin:0; padding:0; font-size:.85rem; line-height:1.45; color:var(--ink-2); }
 
 /* ---------- CONTACTO ---------- */
 .contact{
@@ -636,29 +755,34 @@ p{ margin:0 0 1em; }
 .contact__title{
   font-size:clamp(2.6rem,8vw,5.6rem);
   line-height:.86;
-  color:var(--paper);
+  color:var(--ink);
   margin:0 0 1.2rem;
 }
-.contact__title em{ font-style:normal; color:var(--red); }
+.contact__title em{
+  font-style:normal;
+  font-family:var(--font-hand);
+  font-size:.78em;
+  color:var(--blue);
+}
 .contact__lead{ color:var(--text-mute); max-width:44ch; margin:0; }
 
 /* Tarjeta pegada con cinta */
 .card-contact{
   position:relative;
   transform:rotate(1.3deg);
-  color:var(--void);
+  color:var(--ink);
 }
 .card-contact__paper{
   position:absolute;
   inset:-8px;
   z-index:0;
   filter:url(#torn2);
-  background-color:var(--paper);
+  background-color:var(--sheet);
   background-image:
-    radial-gradient(60% 50% at 80% 20%, rgba(166,24,11,.08), transparent 70%),
-    radial-gradient(rgba(11,10,9,.15) 1px, transparent 1.2px);
+    radial-gradient(60% 50% at 80% 20%, rgba(18,17,15,.06), transparent 70%),
+    radial-gradient(rgba(18,17,15,.09) 1px, transparent 1.2px);
   background-size:auto, 4px 4px;
-  box-shadow:0 26px 56px rgba(0,0,0,.6);
+  box-shadow:0 20px 44px rgba(18,17,15,.2);
 }
 .card-contact__inner{ position:relative; z-index:3; padding:clamp(22px,3vw,34px); }
 .card-contact ul{ list-style:none; margin:0; padding:0; }
@@ -668,36 +792,40 @@ p{ margin:0 0 1em; }
   justify-content:space-between;
   gap:1rem;
   padding:.6rem 0;
-  border-bottom:1px solid rgba(11,10,9,.22);
+  border-bottom:1px solid var(--line);
 }
 .card-contact li span{
   font-family:var(--font-mono);
   font-size:.62rem;
   letter-spacing:.18em;
   text-transform:uppercase;
-  color:#6A6255;
+  color:var(--text-mute);
 }
 .card-contact li a{
   font-family:var(--font-mono);
   font-size:.82rem;
   text-decoration:none;
-  color:var(--void);
-  border-bottom:2px solid var(--red);
+  color:var(--ink);
+  border-bottom:2px solid var(--blue);
   word-break:break-word;
 }
-.card-contact li a:hover{ color:var(--red-deep); }
+.card-contact li a:hover{ color:var(--blue); }
 .card-contact__sign{
   font-family:var(--font-hand);
-  font-size:2.2rem;
-  line-height:1;
-  color:var(--red-deep);
+  font-size:1.6rem;
+  line-height:1.1;
+  color:var(--blue);
   margin:1.2rem 0 0;
-  transform:rotate(-3deg);
+  transform:rotate(-2.5deg);
   transform-origin:left center;
 }
 
-/* ---------- FOOTER ---------- */
+/* ---------- FOOTER: barra negra inferior ---------- */
 .footer{
+  background:var(--ink);
+  color:rgba(233,232,229,.62);
+}
+.footer__inner{
   display:flex;
   flex-wrap:wrap;
   align-items:center;
@@ -705,17 +833,15 @@ p{ margin:0 0 1em; }
   gap:1rem;
   max-width:var(--max);
   margin:0 auto;
-  padding:1.5rem var(--gutter) 2.4rem;
-  border-top:1px solid var(--line);
+  padding:1.5rem var(--gutter) 1.7rem;
   font-family:var(--font-mono);
   font-size:.68rem;
   letter-spacing:.12em;
   text-transform:uppercase;
-  color:var(--text-mute);
 }
 .footer p{ margin:0; }
-.footer a{ text-decoration:none; border-bottom:2px solid var(--red); }
-.footer a:hover{ color:var(--paper); }
+.footer a{ text-decoration:none; border-bottom:2px solid var(--blue); }
+.footer a:hover{ color:var(--concrete); }
 
 /* ---------- 6. RESPONSIVE ---------- */
 @media (max-width:1040px){
@@ -735,34 +861,36 @@ p{ margin:0 0 1em; }
   .plate:nth-child(even){ transform:rotate(.9deg); }
   .plate--tall .plate__img,
   .plate--wide .plate__img{ aspect-ratio:4/3; }
-  .tape-v{ display:none; }
-  .cover{ min-height:auto; padding-bottom:clamp(150px,34vw,240px); }
 
-  /* En pantallas estrechas el papel va pegado al bloque de texto,
-     así el título nunca queda negro sobre negro */
-  .slab--paper{ display:none; }
+  .cover{ min-height:auto; }
+  .cover__edge{ display:none; }
+  /* El panel pasa a ser una franja al pie: el título nunca compite con él */
+  .cover__photo{
+    width:100%;
+    height:clamp(150px,32vw,240px);
+    top:auto;
+    bottom:clamp(20px,3.4vw,42px);
+  }
+  .cover__photo{
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.6) 16%, #000 44%);
+    mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.6) 16%, #000 44%);
+  }
   .cover__type{
-    padding:clamp(54px,11vh,90px) var(--gutter) clamp(30px,6vw,48px);
-    margin-top:clamp(28px,7vw,48px);
+    padding:clamp(44px,9vh,80px) var(--gutter) clamp(180px,38vw,290px);
   }
-  .cover__type::before{
-    content:"";
-    position:absolute;
-    inset:0 -16px;
-    z-index:-1;
-    filter:url(#torn2);
-    background-color:var(--paper);
-    background-image:
-      radial-gradient(70% 50% at 20% 15%, rgba(166,24,11,.10), transparent 70%),
-      radial-gradient(55% 45% at 85% 80%, rgba(11,10,9,.14), transparent 72%),
-      repeating-linear-gradient(97deg, rgba(11,10,9,.05) 0 2px, transparent 2px 7px),
-      radial-gradient(rgba(11,10,9,.16) 1px, transparent 1.25px);
-    background-size:auto, auto, auto, 4px 4px;
-    box-shadow:0 26px 60px rgba(0,0,0,.6);
+  /* La cinta caía sobre la última letra del título */
+  .tape--a{
+    top:auto;
+    bottom:clamp(30px,5vw,56px);
+    right:-40px;
+    width:140px;
+    transform:rotate(-18deg);
   }
-
-  .slab--photo{ width:62%; height:150px; top:auto; bottom:14px; right:-8%; }
-  .tape--a{ top:auto; bottom:44px; right:-46px; width:150px; transform:rotate(-16deg); }
+  /* Sin márgenes que las contengan, las cintas que cuelgan del borde
+     empujaban la página unos píxeles hacia la derecha */
+  .tape--c{ right:-8px; }
+  .tape--tl{ left:-8px; }
+  .tape--br{ right:-8px; }
 }
 
 @media (max-width:760px){
@@ -776,8 +904,7 @@ p{ margin:0 0 1em; }
     align-items:flex-start;
     gap:1.2rem;
     padding:1.4rem var(--gutter) 1.8rem;
-    background:var(--void);
-    border-bottom:1px solid var(--line);
+    background:var(--ink);
     display:none;
   }
   .nav__links.is-open{ display:flex; }
@@ -790,6 +917,8 @@ p{ margin:0 0 1em; }
   .cv h3:not(:first-child){ margin-top:1.3rem; }
   .card-contact li{ flex-direction:column; align-items:flex-start; gap:.2rem; }
   .sheet{ transform:none; }
+  /* En muy estrecho el marcador tapa demasiado lo impreso */
+  .cover__title .stack__hand{ font-size:.6em; opacity:.92; }
 }
 
 /* ---------- ACCESIBILIDAD ---------- */
