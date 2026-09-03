@@ -1,41 +1,48 @@
 /* =========================================================
    PORTAFOLIO — hoja de estilos
-   Referencia: cartel fotocopiado y pegado en un muro. Fondo de
-   concreto claro, tipografía negra condensada, y encima una capa
-   escrita a mano en marcador azul que cae fuera de registro sobre
-   lo impreso. Amarillo mostaza como resaltador. Barras negras que
-   encuadran, como una diapositiva.
+   Referencia: cartel fotocopiado y pegado en un muro NEGRO.
+   Fondo de asfalto, tipografía blanca, y el mismo gesto de la
+   referencia invertido: la palabra impresa va hueca (solo
+   contorno) y encima cae la misma palabra escrita a mano,
+   sólida y fuera de registro. Una sola tira blanca en toda la
+   página, que es la que da el "negro con blanco".
+   Rojo seco reservado para señales mínimas.
    1) tokens 2) base 3) materiales 4) nav 5) secciones 6) responsive
    ========================================================= */
 
 /* ---------- 1. TOKENS ---------- */
 :root{
-  /* Muro de concreto */
-  --concrete:   #E9E8E5;
-  --concrete-2: #DFDDD8;
-  --concrete-3: #CDCAC3;
-  --sheet:      #F7F6F3;   /* hoja limpia, más clara que el muro */
+  /* La pagina ya viene oscura de fabrica. Sin esto, el modo oscuro
+     automatico de algunos navegadores invierte las tiras blancas. */
+  color-scheme: dark;
 
-  /* Tinta */
-  --ink:      #12110F;
-  --ink-2:    #2E2B27;
-  --text:     #1A1815;
-  --text-mute:#6B665E;
-  --line:     rgba(18,17,15,.16);
+  /* Muro negro */
+  --void:    #08080A;
+  --void-2:  #101014;
+  --void-3:  #17171C;
+  --slab:    #0D0D11;   /* hoja oscura, apenas por encima del muro */
 
-  /* Marcador y resaltador */
-  --blue:        #1E3CDC;
-  --blue-deep:   #1329A8;
-  --yellow:      #D9B310;
-  --yellow-lit:  #F0CB1E;
+  /* Tinta blanca: cálida, como fotocopia vieja, no blanco de pantalla */
+  --chalk:    #F4F2ED;
+  --chalk-2:  #CBC7BF;
+  --chalk-3:  #9A958C;
+  --mute:     #7E7970;
+  --line:     rgba(244,242,237,.15);
+  --line-2:   rgba(244,242,237,.32);
+
+  /* Señal. Rojo seco, casi óxido. Se usa poquísimo a propósito. */
+  --blood:      #C81E1E;
+  --blood-lit:  #E63946;
 
   --font-display: "Anton", "Impact", sans-serif;
-  --font-mono:    "Space Mono", "Courier New", monospace;
+  --font-mono:    "Special Elite", "Courier New", monospace;
   --font-body:    "Archivo", -apple-system, "Segoe UI", sans-serif;
   --font-hand:    "Permanent Marker", "Segoe Script", cursive;
+  --font-scratch: "Rock Salt", "Segoe Script", cursive;
 
   --max:    1240px;
   --gutter: clamp(18px, 4.5vw, 56px);
+  --navh:   64px;
 }
 
 /* ---------- 2. BASE ---------- */
@@ -44,20 +51,22 @@ html{ scroll-behavior:smooth; }
 
 body{
   margin:0;
-  color:var(--text);
+  color:var(--chalk-2);
   font-family:var(--font-body);
   font-size:17px;
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 
-  /* Muro: raspaduras diagonales y sombras de humedad */
-  background-color:var(--concrete);
+  /* Muro negro: raspaduras diagonales y dos focos de luz sucia.
+     En oscuro la textura tiene que ser MÁS clara que el fondo,
+     al revés que en la versión en papel. */
+  background-color:var(--void);
   background-image:
-    repeating-linear-gradient(103deg, rgba(18,17,15,.032) 0 1px, transparent 1px 5px),
-    repeating-linear-gradient(7deg, rgba(18,17,15,.022) 0 1px, transparent 1px 9px),
-    radial-gradient(120% 70% at 12% 0%, rgba(18,17,15,.075), transparent 62%),
-    radial-gradient(100% 60% at 92% 100%, rgba(18,17,15,.09), transparent 65%);
+    repeating-linear-gradient(103deg, rgba(244,242,237,.030) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(7deg,   rgba(244,242,237,.018) 0 1px, transparent 1px 9px),
+    radial-gradient(120% 70% at 12% 0%,   rgba(244,242,237,.075), transparent 60%),
+    radial-gradient(100% 60% at 92% 100%, rgba(244,242,237,.045), transparent 64%);
   background-attachment:fixed;
 }
 
@@ -73,8 +82,11 @@ h1,h2,h3{
 }
 p{ margin:0 0 1em; }
 
-::selection{ background:var(--blue); color:#fff; }
-:focus-visible{ outline:3px solid var(--blue); outline-offset:3px; }
+::selection{ background:var(--chalk); color:var(--void); }
+:focus-visible{ outline:3px solid var(--blood-lit); outline-offset:3px; }
+
+/* El nav va fijo y transparente, así que los anclajes necesitan aire */
+section[id], #top{ scroll-margin-top:calc(var(--navh) + 8px); }
 
 /* El SVG de filtros no ocupa espacio */
 .defs{ position:absolute; width:0; height:0; overflow:hidden; }
@@ -82,22 +94,29 @@ p{ margin:0 0 1em; }
 /* ---------- 3. MATERIALES ---------- */
 
 /* Grano de fotocopia sobre toda la página.
-   Sobre fondo claro va en multiply: ensucia, no aclara. */
+   Sobre negro el multiply no se ve: aquí va en overlay, que
+   levanta puntitos de luz y ensucia los medios tonos. */
 .grain{
   position:fixed;
   inset:0;
   z-index:9999;
   pointer-events:none;
-  opacity:.19;
-  mix-blend-mode:multiply;
+  opacity:.30;
+  mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* --- Lo impreso y lo escrito a mano, fuera de registro ---
-   Es el gesto central de la referencia: la misma palabra dos veces,
-   una compuesta en plomo y otra encima con marcador, mal alineada. */
+   Es el gesto central de la referencia. En negativo funciona
+   mejor así: lo impreso queda HUECO (solo contorno) y lo
+   manuscrito, sólido, cae encima mal alineado. */
 .stack{ position:relative; display:inline-block; }
-.stack__print{ position:relative; display:block; }
+.stack__print{
+  position:relative;
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:clamp(1px, .32vw, 2.5px) var(--chalk);
+}
 .stack__hand{
   position:absolute;
   left:0;
@@ -113,7 +132,7 @@ p{ margin:0 0 1em; }
   pointer-events:none;
 }
 
-/* --- Resaltador: bloque amarillo torcido detrás del texto --- */
+/* --- Marca de rotulador: mancha oscura y sucia detrás del texto --- */
 .hl{ position:relative; display:inline-block; isolation:isolate; }
 .hl::before{
   content:"";
@@ -123,34 +142,36 @@ p{ margin:0 0 1em; }
   top:.1em;
   bottom:.04em;
   z-index:-1;
-  background:var(--yellow-lit);
+  background:var(--blood);
+  opacity:.55;
   clip-path:polygon(0 8%, 100% 0, 99.4% 94%, .6% 100%);
   transform:rotate(-1.2deg);
 }
 
-/* --- Trama de semitono: la fotocopia se ve en los puntos --- */
+/* --- Trama de semitono: en negativo los puntos son de luz --- */
 .halftone{ position:relative; }
 .halftone::after{
   content:"";
   position:absolute;
   inset:0;
-  background-image:radial-gradient(rgba(18,17,15,.85) 1px, transparent 1.3px);
+  background-image:radial-gradient(rgba(244,242,237,.8) 1px, transparent 1.3px);
   background-size:5px 5px;
-  opacity:.38;
+  opacity:.3;
   pointer-events:none;
 }
 
-/* --- Cinta de embalar: translúcida, mate, sobre el muro --- */
+/* --- Cinta de embalar: translúcida y mate sobre el muro negro --- */
 .tape{
   position:absolute;
   z-index:6;
   width:132px;
   height:32px;
   background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 3px, transparent 3px 9px),
-    linear-gradient(178deg, rgba(232,226,208,.86), rgba(206,198,176,.82));
+    repeating-linear-gradient(90deg, rgba(255,255,255,.14) 0 3px, transparent 3px 9px),
+    linear-gradient(178deg, rgba(226,222,212,.34), rgba(176,171,160,.26));
   clip-path:polygon(0 9%, 100% 0, 97% 91%, 3% 100%);
-  box-shadow:0 4px 12px rgba(18,17,15,.16);
+  box-shadow:0 4px 14px rgba(0,0,0,.5);
+  backdrop-filter:blur(1px);
   pointer-events:none;
 }
 .tape--a{ top:16%;  right:-30px; width:170px; transform:rotate(-24deg); }
@@ -160,7 +181,7 @@ p{ margin:0 0 1em; }
 .tape--tl{ top:-15px; left:-26px; transform:rotate(-9deg); }
 .tape--br{ bottom:-15px; right:-26px; transform:rotate(-6deg); }
 
-/* --- Clip metálico, como el de la referencia --- */
+/* --- Clip metálico, ahora claro para que se vea sobre el negro --- */
 .clip{
   position:absolute;
   z-index:7;
@@ -169,7 +190,7 @@ p{ margin:0 0 1em; }
   top:-16px;
   left:50%;
   translate:-50% 0;
-  background:linear-gradient(178deg, #3A3733 0 42%, var(--ink) 42% 100%);
+  background:linear-gradient(178deg, #C9C5BC 0 42%, #8B877E 42% 100%);
   clip-path:polygon(6% 0, 94% 0, 100% 100%, 0 100%);
   pointer-events:none;
 }
@@ -180,25 +201,38 @@ p{ margin:0 0 1em; }
   top:2px;
   width:8px;
   height:20px;
-  border:2px solid #56524C;
+  border:2px solid rgba(8,8,10,.55);
   border-top:none;
   border-radius:0 0 4px 4px;
 }
 .clip::before{ left:6px; }
 .clip::after{ right:6px; }
 
-/* ---------- 4. NAV: barra negra superior, encuadra la página ---------- */
+/* ---------- 4. NAV: fijo y transparente ----------
+   No hay barra. Solo un velo que se desvanece hacia abajo y un
+   desenfoque, para que el muro se siga leyendo por detrás y aun
+   así el texto nunca pierda contraste. */
 .nav{
-  position:sticky;
+  position:fixed;
   top:0;
+  left:0;
+  right:0;
   z-index:200;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:1rem;
+  min-height:var(--navh);
   padding:.7rem var(--gutter);
-  background:var(--ink);
-  color:var(--concrete);
+  color:var(--chalk);
+  background:linear-gradient(
+    180deg,
+    rgba(8,8,10,.72) 0%,
+    rgba(8,8,10,.42) 55%,
+    rgba(8,8,10,0)  100%
+  );
+  backdrop-filter:blur(9px) saturate(.5);
+  -webkit-backdrop-filter:blur(9px) saturate(.5);
 }
 .nav__logo{
   display:flex;
@@ -208,27 +242,30 @@ p{ margin:0 0 1em; }
   font-family:var(--font-display);
   font-size:1rem;
   letter-spacing:.05em;
-  color:var(--concrete);
+  color:var(--chalk);
+  text-shadow:0 1px 10px rgba(8,8,10,.9);
 }
-.nav__mark{ width:10px; height:10px; background:var(--blue); }
+.nav__mark{ width:10px; height:10px; background:var(--blood-lit); }
 
 .nav__links{ display:flex; align-items:center; gap:1.6rem; }
 .nav__links a{
   font-family:var(--font-mono);
-  font-size:.72rem;
-  letter-spacing:.16em;
+  font-size:.76rem;
+  letter-spacing:.14em;
   text-transform:uppercase;
   text-decoration:none;
-  color:rgba(233,232,229,.6);
+  color:rgba(244,242,237,.72);
+  text-shadow:0 1px 10px rgba(8,8,10,.9);
   transition:color .15s ease;
 }
-.nav__links a:hover{ color:var(--concrete); }
+.nav__links a:hover{ color:var(--chalk); }
 .nav__cta{
-  color:#fff !important;
-  background:var(--blue);
+  color:var(--chalk) !important;
+  border:1.5px solid var(--line-2);
   padding:.5em 1em;
+  backdrop-filter:blur(4px);
 }
-.nav__cta:hover{ background:var(--yellow-lit); color:var(--ink) !important; }
+.nav__cta:hover{ background:var(--chalk); color:var(--void) !important; border-color:var(--chalk); }
 
 .nav__burger{
   display:none;
@@ -238,10 +275,10 @@ p{ margin:0 0 1em; }
   gap:6px;
   padding:0 9px;
   background:transparent;
-  border:1.5px solid rgba(233,232,229,.35);
+  border:1.5px solid var(--line-2);
   cursor:pointer;
 }
-.nav__burger span{ display:block; height:2px; background:var(--concrete); }
+.nav__burger span{ display:block; height:2px; background:var(--chalk); }
 
 /* Aparición al hacer scroll */
 .reveal{
@@ -258,18 +295,18 @@ p{ margin:0 0 1em; }
   gap:.55em;
   padding:.95em 1.7em;
   font-family:var(--font-mono);
-  font-size:.78rem;
-  font-weight:700;
-  letter-spacing:.14em;
+  font-size:.8rem;
+  letter-spacing:.12em;
   text-transform:uppercase;
   text-decoration:none;
-  border:2px solid var(--blue);
+  border:2px solid var(--chalk);
   transition:transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
 }
-.btn--blue{ background:var(--blue); color:#fff; }
-.btn--blue:hover{ background:var(--ink); border-color:var(--ink); transform:translate(2px,-2px); }
-.btn--ghost{ background:transparent; color:var(--ink); border-color:var(--ink); }
-.btn--ghost:hover{ background:var(--yellow-lit); transform:translate(2px,-2px); }
+/* El botón principal es el bloque blanco: máximo contraste sobre el muro */
+.btn--blue{ background:var(--chalk); color:var(--void); }
+.btn--blue:hover{ background:var(--blood-lit); border-color:var(--blood-lit); color:var(--chalk); transform:translate(2px,-2px); }
+.btn--ghost{ background:transparent; color:var(--chalk); border-color:var(--line-2); }
+.btn--ghost:hover{ border-color:var(--chalk); transform:translate(2px,-2px); }
 
 /* =========================================================
    5. SECCIONES
@@ -278,23 +315,24 @@ p{ margin:0 0 1em; }
 /* ---------- PORTADA ---------- */
 .cover{
   position:relative;
-  min-height:clamp(540px, 84vh, 880px);
+  min-height:clamp(560px, 92vh, 900px);
   overflow:hidden;
   isolation:isolate;
   display:flex;
   align-items:center;
 }
-/* Barra negra inferior: cierra la portada como una diapositiva */
+/* Franja blanca al pie: cierra la portada y es el primer golpe
+   de blanco de la página */
 .cover::after{
   content:"";
   position:absolute;
   left:0; right:0; bottom:0;
-  height:clamp(20px,3.4vw,42px);
-  background:var(--ink);
+  height:clamp(14px,2.2vw,26px);
+  background:var(--chalk);
   z-index:8;
 }
 
-/* Panel fotográfico en blanco y negro, tramado */
+/* Panel fotográfico: en negativo, las formas son de luz */
 .cover__photo{
   position:absolute;
   top:0;
@@ -302,16 +340,16 @@ p{ margin:0 0 1em; }
   width:clamp(240px, 52%, 720px);
   height:100%;
   z-index:1;
-  filter:url(#photocopy) contrast(1.12);
-  background-color:var(--concrete-2);
+  filter:url(#photocopy) contrast(1.16);
+  background-color:var(--void-2);
   background-image:
-    radial-gradient(closest-side at 58% 30%, rgba(18,17,15,.7) 0 14%, rgba(18,17,15,.28) 46%, transparent 78%),
-    radial-gradient(closest-side at 34% 74%, rgba(18,17,15,.42) 0 18%, transparent 66%),
-    repeating-linear-gradient(72deg, rgba(18,17,15,.3) 0 7px, transparent 7px 19px),
-    repeating-linear-gradient(-18deg, rgba(18,17,15,.14) 0 3px, transparent 3px 26px),
-    linear-gradient(158deg, var(--concrete) 0%, var(--concrete-3) 100%);
-  /* La máscara actúa después del filtro, así el borde se funde sin
-     escalonarse contra el muro. */
+    radial-gradient(closest-side at 58% 30%, rgba(244,242,237,.92) 0 13%, rgba(244,242,237,.32) 44%, transparent 76%),
+    radial-gradient(closest-side at 34% 74%, rgba(244,242,237,.48) 0 17%, transparent 64%),
+    repeating-linear-gradient(72deg,  rgba(244,242,237,.26) 0 7px, transparent 7px 19px),
+    repeating-linear-gradient(-18deg, rgba(244,242,237,.12) 0 3px, transparent 3px 26px),
+    linear-gradient(158deg, var(--void-3) 0%, var(--void) 100%);
+  /* La máscara actúa después del filtro, así el borde se funde
+     sin escalonarse contra el muro. */
   -webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.6) 14%, #000 38%);
   mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.6) 14%, #000 38%);
 }
@@ -319,9 +357,9 @@ p{ margin:0 0 1em; }
   content:"";
   position:absolute;
   inset:0;
-  background-image:radial-gradient(rgba(18,17,15,.9) 1.1px, transparent 1.4px);
+  background-image:radial-gradient(rgba(8,8,10,.85) 1.1px, transparent 1.4px);
   background-size:5px 5px;
-  opacity:.5;
+  opacity:.55;
 }
 
 .cover__type{
@@ -330,7 +368,7 @@ p{ margin:0 0 1em; }
   width:100%;
   max-width:var(--max);
   margin:0 auto;
-  padding:clamp(56px,10vh,110px) var(--gutter) clamp(64px,9vw,120px);
+  padding:calc(var(--navh) + clamp(46px,9vh,96px)) var(--gutter) clamp(64px,9vw,120px);
 }
 
 .cover__title{
@@ -345,17 +383,22 @@ p{ margin:0 0 1em; }
   position:relative;
   display:inline-block;
   isolation:isolate;
-  color:var(--blue);
+  color:var(--chalk);
   transform:rotate(-2.2deg);
+  /* Halo negro: la palabra pasa por encima del panel claro sin
+     perderse en él */
+  text-shadow:0 0 26px rgba(8,8,10,.95), 0 0 8px rgba(8,8,10,.9);
 }
-/* Manchas de resaltador amarillo sobre un par de letras */
+/* Dos manchas secas de rojo, como tinta corrida bajo el trazo */
 .cover__word::before,
 .cover__word::after{
   content:"";
   position:absolute;
   z-index:-1;
-  background:var(--yellow-lit);
+  background:var(--blood);
+  opacity:.62;
   border-radius:46% 54% 52% 48% / 58% 42% 56% 44%;
+  filter:blur(1px);
   pointer-events:none;
 }
 .cover__word::before{ left:32%; top:2%;  width:.46em; height:.72em; transform:rotate(-8deg); }
@@ -369,17 +412,18 @@ p{ margin:0 0 1em; }
   line-height:1.02;
   letter-spacing:.02em;
   text-transform:uppercase;
-  color:var(--ink);
+  color:var(--chalk);
+  text-shadow:0 0 18px rgba(8,8,10,.9);
 }
 .cover__sub{
   margin:1rem 0 0;
   font-family:var(--font-mono);
-  font-size:clamp(.66rem,1.5vw,.8rem);
-  font-weight:700;
-  letter-spacing:.24em;
+  font-size:clamp(.7rem,1.5vw,.85rem);
+  letter-spacing:.2em;
   text-transform:uppercase;
-  color:var(--ink-2);
+  color:var(--chalk-3);
   max-width:44ch;
+  text-shadow:0 0 14px rgba(8,8,10,.9);
 }
 .cover__edge{
   position:absolute;
@@ -389,11 +433,10 @@ p{ margin:0 0 1em; }
   translate:0 -50%;
   writing-mode:vertical-rl;
   font-family:var(--font-mono);
-  font-size:.6rem;
-  font-weight:700;
-  letter-spacing:.34em;
+  font-size:.64rem;
+  letter-spacing:.3em;
   text-transform:uppercase;
-  color:rgba(18,17,15,.42);
+  color:rgba(244,242,237,.4);
 }
 
 /* ---------- DECLARACIÓN ---------- */
@@ -405,9 +448,9 @@ p{ margin:0 0 1em; }
 .pitch__text{
   font-family:var(--font-display);
   font-size:clamp(1.6rem,4.4vw,3.2rem);
-  line-height:1.04;
+  line-height:1.18;
   text-transform:uppercase;
-  color:var(--ink);
+  color:var(--chalk);
   max-width:20ch;
   margin:0 0 2rem;
 }
@@ -415,7 +458,9 @@ p{ margin:0 0 1em; }
   font-style:normal;
   font-family:var(--font-hand);
   font-size:.78em;
-  color:var(--blue);
+  color:var(--chalk);
+  /* La parte manuscrita se subraya con un trazo rojo torcido */
+  background:linear-gradient(var(--blood), var(--blood)) 0 88%/100% .09em no-repeat;
 }
 .pitch__actions{ display:flex; flex-wrap:wrap; gap:.9rem; margin-bottom:1.8rem; }
 .pitch__note{
@@ -424,19 +469,21 @@ p{ margin:0 0 1em; }
   align-items:center;
   gap:.6rem;
   font-family:var(--font-mono);
-  font-size:.68rem;
-  letter-spacing:.2em;
+  font-size:.72rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  color:var(--text-mute);
+  color:var(--mute);
 }
-.pitch__dot{ width:8px; height:8px; background:var(--blue); border-radius:50%; animation:blink 2.6s infinite; }
+.pitch__dot{ width:8px; height:8px; background:var(--blood-lit); border-radius:50%; animation:blink 2.6s infinite; }
 @keyframes blink{ 0%,70%,100%{opacity:1} 85%{opacity:.2} }
 
-/* ---------- MARQUEE: barra negra en movimiento ---------- */
+/* ---------- MARQUEE: la tira blanca ----------
+   Único bloque invertido de la página. Es lo que hace que el
+   negro se lea como decisión y no como falta de luz. */
 .marquee{
   overflow:hidden;
-  background:var(--ink);
-  color:var(--concrete);
+  background:var(--chalk);
+  color:var(--void);
   padding:.6rem 0;
 }
 .marquee__track{
@@ -445,24 +492,23 @@ p{ margin:0 0 1em; }
   width:max-content;
   animation:slide 38s linear infinite;
   font-family:var(--font-mono);
-  font-size:.76rem;
-  font-weight:700;
-  letter-spacing:.2em;
+  font-size:.8rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
   white-space:nowrap;
 }
-.marquee__sep{ color:var(--yellow-lit); }
+.marquee__sep{ color:var(--blood); }
 @keyframes slide{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 /* ---------- BANDA DE TÍTULO ----------
-   Palabra impresa en negro con la misma palabra encima en
-   marcador amarillo, corrida. Igual que el cartel de referencia. */
+   Palabra hueca en blanco con la misma palabra encima escrita
+   a mano, sólida y corrida. El gesto del cartel, en negativo. */
 .band{
   overflow:hidden;
-  border-top:2px solid var(--ink);
-  border-bottom:2px solid var(--ink);
+  border-top:2px solid var(--line-2);
+  border-bottom:2px solid var(--line-2);
   background-image:
-    repeating-linear-gradient(96deg, rgba(18,17,15,.04) 0 1px, transparent 1px 6px);
+    repeating-linear-gradient(96deg, rgba(244,242,237,.035) 0 1px, transparent 1px 6px);
 }
 .band__title{
   max-width:var(--max);
@@ -471,11 +517,11 @@ p{ margin:0 0 1em; }
   font-size:clamp(2.5rem,12vw,9rem);
   line-height:.9;
 }
-.band__title .stack__print{ color:var(--ink); }
 .band__title .stack__hand{
   font-size:.62em;
-  color:var(--yellow-lit);
+  color:var(--chalk);
   transform:rotate(-1.6deg);
+  text-shadow:0 0 22px rgba(8,8,10,.85);
 }
 /* Etiquetas mono sueltas, como anotaciones al margen */
 .band__tags{
@@ -486,10 +532,10 @@ p{ margin:0 0 1em; }
   flex-wrap:wrap;
   gap:1.4rem;
   font-family:var(--font-mono);
-  font-size:.6rem;
-  letter-spacing:.28em;
+  font-size:.66rem;
+  letter-spacing:.24em;
   text-transform:uppercase;
-  color:var(--text-mute);
+  color:var(--mute);
 }
 
 /* ---------- TRABAJO: planchas encabalgadas ---------- */
@@ -518,46 +564,48 @@ p{ margin:0 0 1em; }
 .plate__img{
   position:relative;
   aspect-ratio:4/3;
-  filter:url(#photocopy) contrast(1.1);
-  box-shadow:0 18px 40px rgba(18,17,15,.22);
+  filter:url(#photocopy) contrast(1.14);
+  border:1px solid var(--line);
+  box-shadow:0 18px 46px rgba(0,0,0,.6);
 }
 .plate--tall .plate__img{ aspect-ratio:3/4; }
 .plate--wide .plate__img{ aspect-ratio:16/10; }
 
-/* Composiciones en blanco y negro sobre base clara:
-   la fotocopia necesita claros de donde morder. */
+/* Composiciones en negativo: base oscura y tinta blanca.
+   La fotocopia necesita luces de donde morder, así que las
+   formas claras van con alfa alto. */
 .plate__img--a{
   background:
-    repeating-linear-gradient(58deg, rgba(18,17,15,.88) 0 7px, transparent 7px 30px),
-    radial-gradient(circle at 36% 40%, rgba(18,17,15,.95) 0 27%, transparent 28%),
-    linear-gradient(160deg, var(--concrete) 0%, var(--concrete-3) 100%);
+    repeating-linear-gradient(58deg, rgba(244,242,237,.8) 0 7px, transparent 7px 30px),
+    radial-gradient(circle at 36% 40%, rgba(244,242,237,.95) 0 27%, transparent 28%),
+    linear-gradient(160deg, var(--void-3) 0%, var(--void) 100%);
 }
 .plate__img--b{
   background:
-    linear-gradient(96deg, transparent 0 44%, rgba(18,17,15,.92) 44% 100%),
-    radial-gradient(circle at 26% 62%, rgba(18,17,15,.7) 0 19%, transparent 20%),
-    linear-gradient(200deg, var(--concrete) 0%, var(--concrete-2) 100%);
+    linear-gradient(96deg, transparent 0 44%, rgba(244,242,237,.88) 44% 100%),
+    radial-gradient(circle at 26% 62%, rgba(244,242,237,.72) 0 19%, transparent 20%),
+    linear-gradient(200deg, var(--void-2) 0%, var(--void) 100%);
 }
 .plate__img--c{
   background:
-    repeating-radial-gradient(circle at 64% 36%, rgba(18,17,15,.9) 0 5px, transparent 5px 17px),
-    linear-gradient(255deg, rgba(18,17,15,.85) 0 26%, transparent 27%),
-    linear-gradient(20deg, var(--concrete) 0%, var(--concrete-3) 100%);
+    repeating-radial-gradient(circle at 64% 36%, rgba(244,242,237,.9) 0 5px, transparent 5px 17px),
+    linear-gradient(255deg, rgba(244,242,237,.85) 0 26%, transparent 27%),
+    linear-gradient(20deg, var(--void-3) 0%, var(--void) 100%);
 }
 /* La cuarta: barrido de rayas anchas, más impresa que fotográfica */
 .plate__img--d{
   background:
-    repeating-linear-gradient(12deg, rgba(18,17,15,.9) 0 11px, transparent 11px 27px),
-    radial-gradient(circle at 64% 42%, rgba(18,17,15,.95) 0 21%, transparent 22%),
-    linear-gradient(330deg, var(--concrete) 0%, var(--concrete-2) 100%);
+    repeating-linear-gradient(12deg, rgba(244,242,237,.88) 0 11px, transparent 11px 27px),
+    radial-gradient(circle at 64% 42%, rgba(244,242,237,.95) 0 21%, transparent 22%),
+    linear-gradient(330deg, var(--void-2) 0%, var(--void) 100%);
 }
 .plate__img::after{           /* semitono impreso encima */
   content:"";
   position:absolute;
   inset:0;
-  background-image:radial-gradient(rgba(18,17,15,.75) 1px, transparent 1.25px);
+  background-image:radial-gradient(rgba(8,8,10,.8) 1px, transparent 1.25px);
   background-size:5px 5px;
-  opacity:.34;
+  opacity:.38;
 }
 
 /* El título se sale de la plancha, encabalgado sobre el borde */
@@ -567,31 +615,34 @@ p{ margin:0 0 1em; }
   margin:-.42em 0 0 -.14em;
   font-size:clamp(1.8rem,5vw,3.4rem);
   line-height:.84;
-  color:var(--ink);
-  /* El título monta sobre la plancha, que puede ser clara u oscura.
-     El contorno claro lo hace legible en las dos. */
+  color:var(--chalk);
+  /* Monta sobre la plancha, que tiene zonas blancas y zonas
+     negras. El contorno negro lo hace legible en las dos. */
   text-shadow:
-     2px 0 0 var(--concrete), -2px 0 0 var(--concrete),
-     0 2px 0 var(--concrete), 0 -2px 0 var(--concrete),
-     5px 5px 0 var(--yellow-lit);
+     2px 0 0 var(--void), -2px 0 0 var(--void),
+     0 2px 0 var(--void), 0 -2px 0 var(--void),
+     5px 5px 0 var(--blood);
 }
 .plate__title em{
   font-style:normal;
   font-family:var(--font-hand);
   font-size:.78em;
-  color:var(--blue);
 }
 .plate__meta{
   margin:.9rem 0 .35rem;
   font-family:var(--font-mono);
-  font-size:.66rem;
-  letter-spacing:.18em;
+  font-size:.7rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  color:var(--blue);
+  color:var(--blood-lit);
 }
-.plate__desc{ margin:0; color:var(--text-mute); font-size:.9rem; max-width:38ch; }
-.plate:hover .plate__title{ color:var(--blue); }
-.plate:hover .plate__title em{ color:var(--ink); }
+.plate__desc{ margin:0; color:var(--mute); font-size:.9rem; max-width:38ch; }
+.plate:hover .plate__title{
+  text-shadow:
+     2px 0 0 var(--void), -2px 0 0 var(--void),
+     0 2px 0 var(--void), 0 -2px 0 var(--void),
+     7px 7px 0 var(--blood-lit);
+}
 
 /* ---------- SERVICIOS: listado tipográfico, sin cajas ---------- */
 .listing{
@@ -600,7 +651,7 @@ p{ margin:0 0 1em; }
   padding:clamp(44px,6vw,80px) var(--gutter) clamp(56px,8vw,104px);
 }
 .listing__intro{ max-width:52ch; margin-bottom:clamp(36px,5vw,60px); }
-.listing__intro p{ color:var(--text-mute); margin:0; }
+.listing__intro p{ color:var(--chalk-2); margin:0; }
 
 .listing__cols{
   display:grid;
@@ -608,22 +659,25 @@ p{ margin:0 0 1em; }
   gap:clamp(26px,3vw,44px);
 }
 .col h3{
-  font-size:1.35rem;
-  color:var(--ink);
+  font-family:var(--font-hand);
+  font-size:1.3rem;
+  line-height:1.1;
+  text-transform:none;
+  color:var(--chalk);
   padding-top:.9rem;
   margin:0 0 .8rem;
-  border-top:3px solid var(--blue);
+  border-top:3px solid var(--chalk);
 }
-.col p{ color:var(--text-mute); font-size:.92rem; }
+.col p{ color:var(--mute); font-size:.92rem; }
 .col ul{
   list-style:none;
   margin:1.2rem 0 0;
   padding:0;
   font-family:var(--font-mono);
-  font-size:.69rem;
-  letter-spacing:.09em;
+  font-size:.73rem;
+  letter-spacing:.06em;
   text-transform:uppercase;
-  color:var(--text-mute);
+  color:var(--chalk-3);
 }
 .col li{ padding:.42rem 0; border-top:1px solid var(--line); }
 
@@ -637,19 +691,26 @@ p{ margin:0 0 1em; }
   gap:clamp(24px,3vw,44px);
   list-style:none;
 }
-.step{ border-top:2px solid var(--ink); padding-top:1.1rem; }
+.step{ border-top:2px solid var(--line-2); padding-top:1.1rem; }
 .step__num{
-  font-family:var(--font-hand);
-  font-size:1.7rem;
-  line-height:1;
-  color:var(--blue);
+  font-family:var(--font-scratch);
+  font-size:1.35rem;
+  line-height:1.3;
+  color:var(--blood-lit);
   display:block;
-  margin-bottom:.2rem;
+  margin-bottom:.35rem;
 }
-.step h3{ font-size:1.3rem; margin:.35rem 0 .55rem; color:var(--ink); }
-.step p{ color:var(--text-mute); font-size:.9rem; margin:0; }
+.step h3{
+  font-family:var(--font-hand);
+  font-size:1.25rem;
+  line-height:1.15;
+  text-transform:none;
+  margin:.35rem 0 .55rem;
+  color:var(--chalk);
+}
+.step p{ color:var(--mute); font-size:.9rem; margin:0; }
 
-/* ---------- FICHA: hoja clara pegada sobre el muro ---------- */
+/* ---------- FICHA: hoja oscura pegada sobre el muro ---------- */
 .sheet-wrap{
   max-width:var(--max);
   margin:0 auto;
@@ -658,21 +719,24 @@ p{ margin:0 0 1em; }
 .sheet{
   position:relative;
   transform:rotate(-.7deg);
-  color:var(--ink);
+  color:var(--chalk);
 }
-/* El papel es una capa aparte: así el filtro rasga el borde sin tocar el texto */
+/* El papel es una capa aparte: así el filtro rasga el borde sin
+   tocar el texto. En oscuro se distingue del muro por el borde
+   claro y la sombra, no por el tono. */
 .sheet__paper{
   position:absolute;
   inset:-10px;
   z-index:0;
   filter:url(#torn2);
-  background-color:var(--sheet);
+  background-color:var(--slab);
   background-image:
-    radial-gradient(50% 40% at 90% 85%, rgba(18,17,15,.07), transparent 72%),
-    repeating-linear-gradient(93deg, rgba(18,17,15,.028) 0 2px, transparent 2px 8px),
-    radial-gradient(rgba(18,17,15,.09) 1px, transparent 1.2px);
+    radial-gradient(50% 40% at 90% 85%, rgba(244,242,237,.06), transparent 70%),
+    repeating-linear-gradient(93deg, rgba(244,242,237,.03) 0 2px, transparent 2px 8px),
+    radial-gradient(rgba(244,242,237,.07) 1px, transparent 1.2px);
   background-size:auto, auto, 4px 4px;
-  box-shadow:0 22px 50px rgba(18,17,15,.2);
+  border:1px solid var(--line-2);
+  box-shadow:0 22px 60px rgba(0,0,0,.7);
 }
 .sheet__inner{
   position:relative;
@@ -688,16 +752,22 @@ p{ margin:0 0 1em; }
   flex-wrap:wrap;
   padding-bottom:.8rem;
   margin-bottom:clamp(22px,3vw,34px);
-  border-bottom:3px solid var(--ink);
+  border-bottom:3px solid var(--chalk);
 }
-.sheet__head h2{ font-size:clamp(2rem,5vw,3.4rem); color:var(--ink); }
+.sheet__head h2{
+  font-family:var(--font-hand);
+  font-size:clamp(1.8rem,4.6vw,3rem);
+  line-height:1.05;
+  text-transform:none;
+  color:var(--chalk);
+}
 .sheet__ref{
   margin:0;
   font-family:var(--font-mono);
-  font-size:.66rem;
-  letter-spacing:.18em;
+  font-size:.7rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  color:var(--text-mute);
+  color:var(--mute);
 }
 .sheet__body{
   position:relative;
@@ -705,13 +775,13 @@ p{ margin:0 0 1em; }
   grid-template-columns:1fr 1.2fr;
   gap:clamp(26px,4vw,54px);
 }
-.sheet__bio p{ color:var(--ink-2); font-size:.96rem; max-width:44ch; }
+.sheet__bio p{ color:var(--chalk-2); font-size:.96rem; max-width:44ch; }
 .sheet__bio .signature{
-  font-family:var(--font-hand);
-  font-size:1.9rem;
-  line-height:1.1;
-  color:var(--blue);
-  margin:1.5rem 0 0;
+  font-family:var(--font-scratch);
+  font-size:1.15rem;
+  line-height:1.5;
+  color:var(--chalk);
+  margin:1.8rem 0 0;
   transform:rotate(-2.5deg);
   transform-origin:left center;
 }
@@ -724,23 +794,22 @@ p{ margin:0 0 1em; }
   font-size:.8rem;
   letter-spacing:.14em;
   text-transform:uppercase;
-  color:var(--blue);
+  color:var(--blood-lit);
   margin:0 0 .6rem;
 }
 .cv h3:not(:first-child){ margin-top:1.7rem; }
 .cv dl{ margin:0; }
 .cv dt{
   font-family:var(--font-mono);
-  font-size:.66rem;
-  font-weight:700;
-  letter-spacing:.08em;
-  color:var(--text-mute);
+  font-size:.7rem;
+  letter-spacing:.06em;
+  color:var(--mute);
   margin-top:.65rem;
 }
 .cv dt:first-child{ margin-top:0; }
-.cv dd{ margin:.1rem 0 0; font-size:.85rem; font-weight:600; line-height:1.3; color:var(--ink); }
-.cv dd span{ font-weight:400; color:var(--ink-2); }
-.cv ul{ list-style:none; margin:0; padding:0; font-size:.85rem; line-height:1.45; color:var(--ink-2); }
+.cv dd{ margin:.1rem 0 0; font-size:.85rem; font-weight:600; line-height:1.3; color:var(--chalk); }
+.cv dd span{ font-weight:400; color:var(--chalk-3); }
+.cv ul{ list-style:none; margin:0; padding:0; font-size:.85rem; line-height:1.45; color:var(--chalk-2); }
 
 /* ---------- CONTACTO ---------- */
 .contact{
@@ -755,34 +824,36 @@ p{ margin:0 0 1em; }
 .contact__title{
   font-size:clamp(2.6rem,8vw,5.6rem);
   line-height:.86;
-  color:var(--ink);
+  color:var(--chalk);
   margin:0 0 1.2rem;
 }
 .contact__title em{
   font-style:normal;
   font-family:var(--font-hand);
   font-size:.78em;
-  color:var(--blue);
+  color:var(--chalk);
+  background:linear-gradient(var(--blood), var(--blood)) 0 90%/100% .07em no-repeat;
 }
-.contact__lead{ color:var(--text-mute); max-width:44ch; margin:0; }
+.contact__lead{ color:var(--mute); max-width:44ch; margin:0; }
 
 /* Tarjeta pegada con cinta */
 .card-contact{
   position:relative;
   transform:rotate(1.3deg);
-  color:var(--ink);
+  color:var(--chalk);
 }
 .card-contact__paper{
   position:absolute;
   inset:-8px;
   z-index:0;
   filter:url(#torn2);
-  background-color:var(--sheet);
+  background-color:var(--slab);
   background-image:
-    radial-gradient(60% 50% at 80% 20%, rgba(18,17,15,.06), transparent 70%),
-    radial-gradient(rgba(18,17,15,.09) 1px, transparent 1.2px);
+    radial-gradient(60% 50% at 80% 20%, rgba(244,242,237,.06), transparent 70%),
+    radial-gradient(rgba(244,242,237,.07) 1px, transparent 1.2px);
   background-size:auto, 4px 4px;
-  box-shadow:0 20px 44px rgba(18,17,15,.2);
+  border:1px solid var(--line-2);
+  box-shadow:0 20px 54px rgba(0,0,0,.7);
 }
 .card-contact__inner{ position:relative; z-index:3; padding:clamp(22px,3vw,34px); }
 .card-contact ul{ list-style:none; margin:0; padding:0; }
@@ -796,34 +867,34 @@ p{ margin:0 0 1em; }
 }
 .card-contact li span{
   font-family:var(--font-mono);
-  font-size:.62rem;
-  letter-spacing:.18em;
+  font-size:.66rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  color:var(--text-mute);
+  color:var(--mute);
 }
 .card-contact li a{
   font-family:var(--font-mono);
-  font-size:.82rem;
+  font-size:.85rem;
   text-decoration:none;
-  color:var(--ink);
-  border-bottom:2px solid var(--blue);
+  color:var(--chalk);
+  border-bottom:2px solid var(--blood);
   word-break:break-word;
 }
-.card-contact li a:hover{ color:var(--blue); }
+.card-contact li a:hover{ color:var(--blood-lit); }
 .card-contact__sign{
-  font-family:var(--font-hand);
-  font-size:1.6rem;
-  line-height:1.1;
-  color:var(--blue);
-  margin:1.2rem 0 0;
+  font-family:var(--font-scratch);
+  font-size:1.05rem;
+  line-height:1.5;
+  color:var(--chalk);
+  margin:1.4rem 0 0;
   transform:rotate(-2.5deg);
   transform-origin:left center;
 }
 
-/* ---------- FOOTER: barra negra inferior ---------- */
+/* ---------- FOOTER: cierra con la segunda tira blanca ---------- */
 .footer{
-  background:var(--ink);
-  color:rgba(233,232,229,.62);
+  background:var(--chalk);
+  color:rgba(8,8,10,.7);
 }
 .footer__inner{
   display:flex;
@@ -835,13 +906,13 @@ p{ margin:0 0 1em; }
   margin:0 auto;
   padding:1.5rem var(--gutter) 1.7rem;
   font-family:var(--font-mono);
-  font-size:.68rem;
-  letter-spacing:.12em;
+  font-size:.72rem;
+  letter-spacing:.1em;
   text-transform:uppercase;
 }
 .footer p{ margin:0; }
-.footer a{ text-decoration:none; border-bottom:2px solid var(--blue); }
-.footer a:hover{ color:var(--concrete); }
+.footer a{ text-decoration:none; border-bottom:2px solid var(--blood); }
+.footer a:hover{ color:var(--void); }
 
 /* ---------- 6. RESPONSIVE ---------- */
 @media (max-width:1040px){
@@ -869,14 +940,12 @@ p{ margin:0 0 1em; }
     width:100%;
     height:clamp(150px,32vw,240px);
     top:auto;
-    bottom:clamp(20px,3.4vw,42px);
-  }
-  .cover__photo{
+    bottom:clamp(14px,2.2vw,26px);
     -webkit-mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.6) 16%, #000 44%);
     mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.6) 16%, #000 44%);
   }
   .cover__type{
-    padding:clamp(44px,9vh,80px) var(--gutter) clamp(180px,38vw,290px);
+    padding:calc(var(--navh) + clamp(34px,7vh,64px)) var(--gutter) clamp(180px,38vw,290px);
   }
   /* La cinta caía sobre la última letra del título */
   .tape--a{
@@ -887,7 +956,7 @@ p{ margin:0 0 1em; }
     transform:rotate(-18deg);
   }
   /* Sin márgenes que las contengan, las cintas que cuelgan del borde
-     empujaban la página unos píxeles hacia la derecha */
+     empujaban la página 16px hacia la derecha */
   .tape--c{ right:-8px; }
   .tape--tl{ left:-8px; }
   .tape--br{ right:-8px; }
@@ -904,7 +973,11 @@ p{ margin:0 0 1em; }
     align-items:flex-start;
     gap:1.2rem;
     padding:1.4rem var(--gutter) 1.8rem;
-    background:var(--ink);
+    /* Desplegado sí necesita cuerpo, pero se mantiene translúcido */
+    background:rgba(8,8,10,.92);
+    backdrop-filter:blur(14px) saturate(.5);
+    -webkit-backdrop-filter:blur(14px) saturate(.5);
+    border-bottom:1px solid var(--line-2);
     display:none;
   }
   .nav__links.is-open{ display:flex; }
@@ -917,8 +990,11 @@ p{ margin:0 0 1em; }
   .cv h3:not(:first-child){ margin-top:1.3rem; }
   .card-contact li{ flex-direction:column; align-items:flex-start; gap:.2rem; }
   .sheet{ transform:none; }
-  /* En muy estrecho el marcador tapa demasiado lo impreso */
-  .cover__title .stack__hand{ font-size:.6em; opacity:.92; }
+  /* En muy estrecho el manuscrito tapa demasiado lo impreso */
+  .band__title .stack__hand{ font-size:.58em; }
+  /* Rock Salt es muy ancha: en móvil la firma se sale */
+  .sheet__bio .signature,
+  .card-contact__sign{ font-size:.92rem; }
 }
 
 /* ---------- ACCESIBILIDAD ---------- */
@@ -934,4 +1010,5 @@ p{ margin:0 0 1em; }
 @media print{
   .grain,.nav,.marquee{ display:none; }
   body{ background:#fff; color:#000; }
+  .stack__print{ color:#000; -webkit-text-stroke:0; }
 }

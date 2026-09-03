@@ -2,10 +2,12 @@
 
 Sitio de una sola página, sin frameworks ni build. Doble clic en `index.html` y funciona.
 
-Dirección visual: cartel fotocopiado y pegado en un muro. Fondo de concreto claro,
-tipografía negra condensada, y encima una capa escrita a mano en marcador azul que cae
-fuera de registro sobre lo impreso. Amarillo mostaza de resaltador. Barras negras arriba
-y abajo que encuadran la página como una diapositiva.
+Dirección visual: cartel fotocopiado y pegado en un muro negro. Fondo de asfalto con
+raspaduras, tipografía blanca cálida (no blanco de pantalla), y el gesto de la referencia
+en negativo: la palabra impresa queda **hueca**, solo contorno, y encima cae la misma
+palabra escrita a mano, sólida y fuera de registro. Una sola tira blanca en toda la
+página —el footer— que es la que sostiene el contraste. Rojo seco reservado para señales
+mínimas.
 
 ```
 index.html    → contenido, estructura y filtros SVG
@@ -15,8 +17,7 @@ script.js     → menú móvil, año del footer, aparición al scroll
 
 ## El gesto central: lo impreso y lo escrito
 
-La misma palabra aparece dos veces, mal alineada a propósito: una compuesta en negro y
-otra encima con marcador. Es lo que sostiene todo el sistema.
+La misma palabra aparece dos veces, mal alineada a propósito.
 
 ```html
 <span class="stack">
@@ -25,15 +26,16 @@ otra encima con marcador. Es lo que sostiene todo el sistema.
 </span>
 ```
 
-`.stack__hand` es decorativo, por eso va con `aria-hidden`: quien use lector de pantalla
-oye la palabra una sola vez.
+`.stack__print` va en `color:transparent` con `-webkit-text-stroke`, así que sobre negro
+se lee como un contorno. `.stack__hand` es decorativo y va con `aria-hidden`: quien use
+lector de pantalla oye la palabra una sola vez.
 
 Anton es muy condensada y el marcador es ancho, así que las dos palabras no miden igual.
-El ancho se iguala con `font-size` en `.band__title .stack__hand` (ahora `.62em`).
-**Si cambias el texto de una banda, ajusta ese número** hasta que la mano cubra lo impreso.
+El ancho se iguala con `font-size` en `.band__title .stack__hand`. **Si cambias el texto
+de una banda, ajusta ese número** hasta que la mano cubra el contorno.
 
-En la portada el título va solo escrito a mano (`.cover__word`), como en la referencia.
-Las dos manchas de resaltador son `::before` y `::after` de ese mismo elemento.
+En la portada el título va solo escrito a mano (`.cover__word`), sin contorno detrás:
+es lo que lo mantiene legible de un vistazo.
 
 ## Qué editar antes de publicar
 
@@ -69,6 +71,9 @@ por:
 La imagen hereda sola el filtro de fotocopia y la trama de puntos: entra a color y sale
 en blanco y negro duro. Formato: 1200×900 px (o 900×1200 para la vertical), `.webp` o `.jpg`.
 
+Sobre fondo negro conviene que las fotos sean **claras y contrastadas**, si no se pierden
+contra el muro.
+
 **Portada** — el panel de la derecha, en `styles.css`:
 
 ```css
@@ -79,8 +84,7 @@ en blanco y negro duro. Formato: 1200×900 px (o 900×1200 para la vertical), `.
 }
 ```
 
-Funciona mejor con una foto de contraste alto. El filtro y la trama la convierten en
-semitono sola. Para redes, añade `og.jpg` (1200×630 px) en la raíz.
+Para redes, añade `og.jpg` (1200×630 px) en la raíz.
 
 ## Cómo están hechas las texturas
 
@@ -102,21 +106,25 @@ Menos números = más duro, más contrastado.
 
 | Quiero cambiar | Dónde en `styles.css` |
 |---|---|
-| Los colores base | variables `--concrete`, `--ink`, `--blue`, `--yellow-lit` |
+| Los colores base | variables `--void`, `--chalk`, `--blood` |
 | Textura del muro | `background-image` de `body` |
-| Intensidad del grano general | `.grain { opacity: .19 }` |
+| Intensidad del grano general | `.grain { opacity: .30 }` |
+| Grosor del contorno de lo impreso | `.stack__print { -webkit-text-stroke }` |
 | Cuánto se corre la mano sobre lo impreso | `.stack__hand { translate: ... }` |
+| Alto del nav fijo (y el aire de los anclajes) | variable `--navh` |
 | Ángulo de cada plancha de proyecto | `.plate:nth-child(n) { transform: rotate(...) }` |
-| Manchas de resaltador de la portada | `.cover__word::before` y `::after` |
 | Cinta (tamaño, ángulo, posición) | `.tape` y sus variantes `--a` a `--d`, `--tl`, `--br` |
 | Clip metálico de la ficha | `.clip` |
 | Inclinación de la hoja de la ficha | `.sheet { transform: rotate(-.7deg) }` |
 | Velocidad del texto en movimiento | `.marquee__track { animation: slide 38s }` |
 
-Para resaltar una palabra suelta en amarillo: `<span class="hl">PALABRA</span>`.
+Para marcar una palabra suelta con rotulador: `<span class="hl">PALABRA</span>`.
 
-Tipografías (Google Fonts): **Anton** títulos, **Archivo** texto, **Space Mono** etiquetas,
-**Permanent Marker** la capa escrita a mano.
+Tipografías (Google Fonts): **Anton** títulos, **Archivo** texto, **Special Elite**
+etiquetas y datos, **Permanent Marker** la capa escrita a mano, **Rock Salt** las firmas.
+
+El nav va fijo y transparente, con desenfoque. Por eso las secciones llevan
+`scroll-margin-top`: sin eso, al pulsar un enlace del menú el título quedaría tapado.
 
 ## Publicar un cambio
 
