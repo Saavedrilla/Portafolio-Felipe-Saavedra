@@ -1,150 +1,127 @@
-# Landing page — portafolio de diseño
+# Landing page — portafolio de Felipe Saavedra
 
 Sitio de una sola página, sin frameworks ni build. Doble clic en `index.html` y funciona.
 
-Dirección visual: cartel fotocopiado y pegado en un muro negro. Fondo de asfalto con
-raspaduras, tipografía blanca cálida (no blanco de pantalla), y el gesto de la referencia
-en negativo: la palabra impresa queda **hueca**, solo contorno, y encima cae la misma
-palabra escrita a mano, sólida y fuera de registro. Una sola tira blanca en toda la
-página —el footer— que es la que sostiene el contraste. Rojo seco reservado para señales
-mínimas.
+En producción: <https://portafolio-felipe-saavedra.vercel.app>
+Repositorio: <https://github.com/Saavedrilla/Portafolio-Felipe-Saavedra>
 
 ```
-index.html    → contenido, estructura y filtros SVG
+index.html    → contenido y estructura
 styles.css    → toda la parte visual
-script.js     → menú móvil, año del footer, aparición al scroll
+script.js     → entradas al scroll, el clip, la cosa viva
+assets/       → imágenes y clip de dominio público, con sus créditos
+versiones/    → copias de versiones anteriores
 ```
 
-## El gesto central: lo impreso y lo escrito
+## La idea
 
-La misma palabra aparece dos veces, mal alineada a propósito.
+> La vista del ciclista: tú no te mueves, la carretera pasa por debajo.
 
-```html
-<span class="stack">
-  <span class="stack__print">TRABAJO</span>
-  <span class="stack__hand" aria-hidden="true">TRABAJO</span>
-</span>
+De ahí sale el mecanismo de toda la página: **algo se queda clavado mientras lo demás pasa
+por detrás**. El título de portada aguanta mientras los carteles desfilan; la tesis aguanta
+mientras pasan las piezas.
+
+Dirección «El cartel clavado», repartida por la skill `design-taste-frontend`
+(semilla 1408796438). Reimprímela con:
+
+```bash
+node <skill>/scripts/draw.mjs --show
 ```
 
-`.stack__print` va en `color:transparent` con `-webkit-text-stroke`, así que sobre negro
-se lee como un contorno. `.stack__hand` es decorativo y va con `aria-hidden`: quien use
-lector de pantalla oye la palabra una sola vez.
+## La cosa viva
 
-Anton es muy condensada y el marcador es ancho, así que las dos palabras no miden igual.
-El ancho se iguala con `font-size` en `.band__title .stack__hand`. **Si cambias el texto
-de una banda, ajusta ese número** hasta que la mano cubra el contorno.
+En `#taller`, el control deslizante mezcla dos capas de la misma pieza: arriba la superficie
+sucia (grano y trama de fotocopia), debajo el sistema (retícula, escala, jerarquía). Es la
+tesis «ruido arriba, orden debajo» demostrada en vez de afirmada.
 
-En la portada el título va solo escrito a mano (`.cover__word`), sin contorno detrás:
-es lo que lo mantiene legible de un vistazo.
-
-## Qué editar antes de publicar
-
-Busca los comentarios `<!-- EDITA: ... -->` dentro de `index.html`:
-
-| Qué | Dónde |
-|---|---|
-| Tu nombre | nav, `.cover__name` en la portada, footer |
-| Tu firma | `.signature` en `#ficha` y `.card-contact__sign` en `#contacto` |
-| Experiencia y formación | bloque `.cv` en `#ficha` |
-| Correo y redes | `.card-contact` en `#contacto` |
-| Los 4 proyectos | `.plates` en `#trabajo` |
-| Título y descripción para Google y redes | `<title>`, `<meta name="description">`, Open Graph |
-
-## Poner tus imágenes reales
-
-Las planchas de proyecto y el panel de la portada son composiciones hechas con CSS, para
-que el sitio funcione sin depender de imágenes. En cuanto tengas las tuyas, se reemplazan
-directo.
-
-**Proyectos** — crea `img/` y cambia cada bloque:
-
-```html
-<div class="plate__img plate__img--a" aria-hidden="true"></div>
-```
-
-por:
-
-```html
-<img class="plate__img" src="img/proyecto-1.jpg" alt="Identidad para plataforma de IA">
-```
-
-La imagen hereda sola el filtro de fotocopia y la trama de puntos: entra a color y sale
-en blanco y negro duro. Formato: 1200×900 px (o 900×1200 para la vertical), `.webp` o `.jpg`.
-
-Sobre fondo negro conviene que las fotos sean **claras y contrastadas**, si no se pierden
-contra el muro.
-
-**Portada** — el panel de la derecha, en `styles.css`:
+Funciona con una sola variable CSS, `--noise`, que `script.js` pone en `#shopStack`:
 
 ```css
-.cover__photo{
-  background-image: url("img/portada.jpg");
-  background-size: cover;
-  background-position: center;
-}
+.shop__photo{ opacity:var(--noise, .5); }
+.shop__grid { opacity:calc(1 - var(--noise, .5)); }
 ```
 
-Para redes, añade `og.jpg` (1200×630 px) en la raíz.
+Sin JavaScript se queda a la mitad, que es un estado válido.
 
-## Cómo están hechas las texturas
+## Las imágenes
 
-Los filtros viven al inicio de `index.html`, dentro del `<svg class="defs">`:
+**Ninguna imagen del sitio es obra de Felipe.** Son piezas de museo en dominio público
+—carteles litográficos de ciclismo de 1894 a 1903, una fotografía de carrera de 1894, un
+grabado de un taller litográfico— que muestran el oficio del que viene su trabajo. Cada una
+lleva autor, año y museo en la propia página, y todas están acreditadas en el footer.
+Los datos completos están en `assets/credits.json`.
 
-| Filtro | Qué hace | Dónde se usa |
-|---|---|---|
-| `#torn` | Rasga el borde desplazándolo con ruido | disponible, sin uso actual |
-| `#torn2` | Igual pero más fino | hoja de la ficha, tarjeta de contacto |
-| `#photocopy` | Pasa a gris y aplasta los tonos en escalones | planchas de proyecto, panel de portada |
+Esto es deliberado y no se debe tocar: presentarlas como trabajo propio sería mentir.
 
-Si quieres el borde **más rasgado**, sube el `scale` del `feDisplacementMap` (está en 17
-y 12). Si lo quieres casi recto, bájalo a 4–6.
+**Cuando tengas tus piezas reales**, cada panel de `#referencias` se cambia así:
 
-El blanco y negro de `#photocopy` sale de `tableValues`: cada número es un escalón de gris.
-Menos números = más duro, más contrastado.
+```html
+<img class="panel__img" src="assets/proyecto-1.jpg" width="1500" height="1000"
+     alt="Describe lo que se ve">
+<p class="panel__row">
+  <span class="panel__year">2026</span>
+  <span class="panel__title">Nombre del proyecto</span>
+  <span class="panel__fact">Cliente · qué entregaste</span>
+</p>
+```
+
+Y entonces cambia el texto de `.lede` («De aquí vengo») por el que corresponda a tu trabajo,
+y quita del footer los créditos de las imágenes que ya no uses.
+
+Un solo tratamiento para todas: `filter` cálido más una trama de puntos en SVG. Así una
+litografía de 1896 y una foto moderna se leen como la misma familia. Vive en `.shot`,
+`.plate`, `.pass`, `.panel__img` y `.cap__img`.
 
 ## Controles rápidos
 
 | Quiero cambiar | Dónde en `styles.css` |
 |---|---|
-| Los colores base | variables `--void`, `--chalk`, `--blood` |
-| Textura del muro | `background-image` de `body` |
-| Intensidad del grano general | `.grain { opacity: .30 }` |
-| Grosor del contorno de lo impreso | `.stack__print { -webkit-text-stroke }` |
-| Cuánto se corre la mano sobre lo impreso | `.stack__hand { translate: ... }` |
-| Alto del nav fijo (y el aire de los anclajes) | variable `--navh` |
-| Ángulo de cada plancha de proyecto | `.plate:nth-child(n) { transform: rotate(...) }` |
-| Cinta (tamaño, ángulo, posición) | `.tape` y sus variantes `--a` a `--d`, `--tl`, `--br` |
-| Clip metálico de la ficha | `.clip` |
-| Inclinación de la hoja de la ficha | `.sheet { transform: rotate(-.7deg) }` |
-| Velocidad del texto en movimiento | `.marquee__track { animation: slide 38s }` |
+| Los colores | variables `--bg`, `--ink`, `--accent`, `--field-1` |
+| El tamaño del título de portada | `--step-display` |
+| Cuántas pantallas aguanta el título | número y tamaño de `.plate` |
+| La trama de fotocopia | variable `--screen` y las reglas `::after` |
+| El alto de la barra fija | `--navh` → `--barh` |
 
-Para marcar una palabra suelta con rotulador: `<span class="hl">PALABRA</span>`.
+**Ojo con `--step-display`.** Panchang es extendida: cada mayúscula mide casi un cuerpo
+entero. «PORTAFOLIO» son diez letras, así que el cuerpo máximo es más o menos
+`(ancho de pantalla − márgenes) ÷ 10`. Si lo subes, el título se corta por los lados.
 
-Tipografías (Google Fonts): **Anton** títulos, **Archivo** texto, **Special Elite**
-etiquetas y datos, **Permanent Marker** la capa escrita a mano, **Rock Salt** las firmas.
+Tipografías (Fontshare): **Panchang** 700 para display, **Switzer** 400/500 para texto.
+Dos, que es el máximo.
 
-El nav va fijo y transparente, con desenfoque. Por eso las secciones llevan
-`scroll-margin-top`: sin eso, al pulsar un enlace del menú el título quedaría tapado.
+## Las herramientas que lo revisan
+
+```bash
+node <skill>/scripts/lint.mjs index.html styles.css script.js
+node <skill>/scripts/inspect.mjs index.html
+```
+
+`inspect.mjs` abre la página en un navegador real a 1440, 768 y 390 px, la mide y deja
+capturas en `.taste-skill/inspect/`. **Estado actual: 0 FAIL.** Quedan dos avisos
+defendidos a propósito:
+
+- *pinned-over-picture*: el solape es geométrico. El título va sobre una banda sólida y la
+  tesis sobre una placa sólida, así que ninguna imagen se ve a través de las letras.
+- *still-page*: el navegador que mide tiene activado «reducir movimiento», y bajo esa
+  preferencia la página se queda quieta a propósito.
 
 ## Publicar un cambio
-
-Esta carpeta es el repositorio <https://github.com/Saavedrilla/Portafolio-Felipe-Saavedra>.
-El sitio vive en <https://portafolio-felipe-saavedra.vercel.app>.
 
 ```bash
 git add -A && git commit -m "Describe el cambio" && git push
 ```
 
-Vercel detecta el push y vuelve a desplegar solo, en unos 30 segundos. No hay build ni
-configuración: sirve `index.html` desde la raíz, con `vercel.json` para las URLs limpias
-y las cabeceras de caché.
+Vercel redespliega solo en unos 30 segundos. Si algo sale mal, `git revert` lo deshace.
 
-Si algo sale mal, `git revert` deshace el último cambio y el sitio vuelve como estaba.
+Para volver a una versión anterior, están en `versiones/` y como etiquetas de git
+(`git tag -l`, luego `git checkout v2-muro-negro`).
 
-## Ver en local con servidor (opcional)
+## Ver en local
 
 ```bash
-py -m http.server 8123
+py -m http.server 8137
 ```
 
-Luego abre <http://localhost:8123>.
+Luego abre <http://localhost:8137>. Si no ves los cambios, recarga sin caché
+(Ctrl+Shift+R): el servidor de Python no manda cabeceras y el navegador se queda con la
+copia vieja.

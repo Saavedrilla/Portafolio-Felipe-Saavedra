@@ -3,401 +3,380 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Felipe Saavedra — Branding, UI &amp; UX</title>
-<meta name="description" content="Diseño de identidad, UI y UX para equipos y productos de inteligencia artificial. Marcas con carácter, interfaces claras.">
-<meta name="theme-color" content="#08080A">
+<title>Felipe Saavedra — Marca e interfaz para equipos de IA</title>
+<meta name="description" content="Diseño de identidad, UI y UX para equipos y productos de inteligencia artificial. Ruido arriba, orden debajo.">
+<meta name="theme-color" content="#472913">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Felipe Saavedra — Branding, UI &amp; UX">
-<meta property="og:description" content="Identidad visual e interfaz para equipos de IA. Marcas con carácter, interfaces claras.">
-<meta property="og:image" content="og.jpg">
+<meta property="og:title" content="Felipe Saavedra — Marca e interfaz para equipos de IA">
+<meta property="og:description" content="Identidad visual e interfaz para equipos de IA. Ruido arriba, orden debajo.">
+<meta property="og:image" content="assets/ride-a-stearns-and-be-content-bicycle.jpg">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308080A'/%3E%3Crect x='5' y='5' width='22' height='22' fill='none' stroke='%23F4F2ED' stroke-width='2.5'/%3E%3Crect x='12' y='12' width='8' height='8' fill='%23E63946'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23472913'/%3E%3Crect x='5' y='13' width='22' height='6' fill='%23c79a3e'/%3E%3C/svg%3E">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Permanent+Marker&family=Rock+Salt&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=panchang@700&f[]=switzer@400,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ===== Filtros: bordes rasgados y fotocopia en blanco y negro ===== -->
-<svg class="defs" aria-hidden="true" focusable="false">
-  <defs>
-    <!-- Borde rasgado: desplaza el contorno con ruido -->
-    <filter id="torn" x="-8%" y="-8%" width="116%" height="116%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.055" numOctaves="4" seed="9" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="17" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <filter id="torn2" x="-8%" y="-8%" width="116%" height="116%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.07" numOctaves="3" seed="41" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
+<a class="skip" href="#tesis">Saltar al contenido</a>
 
-    <!-- Fotocopia: pasa todo a gris y aplasta los medios tonos en
-         escalones. Es lo que da el blanco y negro duro de la referencia. -->
-    <filter id="photocopy">
-      <feColorMatrix type="saturate" values="0"/>
-      <feComponentTransfer>
-        <feFuncR type="discrete" tableValues="0 0.16 0.42 0.68 0.88 1"/>
-        <feFuncG type="discrete" tableValues="0 0.16 0.42 0.68 0.88 1"/>
-        <feFuncB type="discrete" tableValues="0 0.15 0.41 0.67 0.87 1"/>
-      </feComponentTransfer>
-    </filter>
-  </defs>
-</svg>
-
-<div class="grain" aria-hidden="true"></div>
-
-<!-- ============ NAV ============ -->
-<header class="nav" id="top">
-  <a class="nav__logo" href="#top">
-    <span class="nav__mark"></span>
-    <!-- EDITA: tu nombre -->
-    <span class="nav__name">Felipe&nbsp;Saavedra</span>
-  </a>
-  <nav class="nav__links" id="navLinks" aria-label="Principal">
+<header class="bar">
+  <a class="bar__name" href="#top">Felipe Saavedra</a>
+  <nav class="bar__nav" aria-label="Principal">
+    <a href="#referencias">Referencias</a>
+    <a href="#taller">Taller</a>
     <a href="#servicios">Servicios</a>
-    <a href="#trabajo">Trabajo</a>
-    <a href="#proceso">Proceso</a>
     <a href="#ficha">Ficha</a>
-    <a class="nav__cta" href="#contacto">Hablemos</a>
   </nav>
-  <button class="nav__burger" id="navBurger" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú">
-    <span></span><span></span>
-  </button>
+  <a class="bar__action" href="#contacto">Hablemos</a>
 </header>
 
-<main>
+<main id="top">
 
-<!-- ============ PORTADA ============ -->
-<section class="cover">
-  <!-- Panel fotográfico en blanco y negro, tramado como fotocopia -->
-  <div class="cover__photo" aria-hidden="true"></div>
-
-  <span class="cover__edge" aria-hidden="true">Portafolio 2026 &mdash; Remoto</span>
-
-  <div class="cover__type">
-    <!-- En la portada el título va escrito a mano, como en la referencia.
-         Lo impreso encima de lo escrito se reserva para las bandas. -->
-    <h1 class="cover__title"><span class="cover__word">PORTAFOLIO</span></h1>
-    <!-- EDITA: tu nombre -->
-    <p class="cover__name">Felipe<br>Saavedra</p>
-    <p class="cover__sub">branding &middot; interfaz &middot; dirección de arte</p>
+<!-- ============================================================
+     PORTADA — el título se queda clavado, los carteles pasan
+     ============================================================ -->
+<section class="pin" id="portada">
+  <div class="pin__fixed">
+    <h1 class="pin__title">Portafolio</h1>
   </div>
 
-  <span class="tape tape--a" aria-hidden="true"></span>
-</section>
-
-<!-- ============ DECLARACIÓN ============ -->
-<section class="pitch">
-  <p class="pitch__text reveal">
-    Diseño marcas e interfaces para equipos de <em>inteligencia artificial</em>.
-    Ruido arriba, orden debajo.
-  </p>
-  <div class="pitch__actions reveal">
-    <a class="btn btn--blue" href="#contacto">Empecemos un proyecto</a>
-    <a class="btn btn--ghost" href="#trabajo">Ver trabajo <span aria-hidden="true">&#8595;</span></a>
-  </div>
-  <p class="pitch__note reveal"><span class="pitch__dot" aria-hidden="true"></span> Disponible para proyectos 2026 &middot; Remoto</p>
-</section>
-
-<!-- ============ MARQUEE ============ -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span>Identidad visual</span><span class="marquee__sep">/</span>
-    <span>Diseño UI</span><span class="marquee__sep">/</span>
-    <span>Investigación UX</span><span class="marquee__sep">/</span>
-    <span>Design systems</span><span class="marquee__sep">/</span>
-    <span>Dirección de arte</span><span class="marquee__sep">/</span>
-    <span>Naming</span><span class="marquee__sep">/</span>
-    <span>Identidad visual</span><span class="marquee__sep">/</span>
-    <span>Diseño UI</span><span class="marquee__sep">/</span>
-    <span>Investigación UX</span><span class="marquee__sep">/</span>
-    <span>Design systems</span><span class="marquee__sep">/</span>
-    <span>Dirección de arte</span><span class="marquee__sep">/</span>
-    <span>Naming</span><span class="marquee__sep">/</span>
-  </div>
-</div>
-
-<!-- ============ TRABAJO ============ -->
-<section id="trabajo">
-  <div class="band">
-    <h2 class="band__title">
-      <span class="stack">
-        <span class="stack__print">TRABAJO</span>
-        <span class="stack__hand" aria-hidden="true">TRABAJO</span>
-      </span>
-    </h2>
-    <p class="band__tags"><span>Identidad</span><span>Interfaz</span><span>Editorial</span><span>Campaña</span></p>
+  <div class="pin__flow">
+    <figure class="plate plate--1">
+      <img src="assets/ride-a-stearns-and-be-content-bicycle.jpg" width="1500" height="2016"
+           alt="Cartel litográfico de 1896: una ciclista con sombrero de paja sobre una bicicleta ocre." decoding="async">
+    </figure>
+    <figure class="plate plate--2">
+      <img src="assets/bicycle.jpg" width="1500" height="1997"
+           alt="Cartel «Bécane» en verde oliva, azul y ocre." loading="lazy" decoding="async">
+    </figure>
   </div>
 
-  <div class="plates">
-    <!-- EDITA: sustituye <div class="plate__img ..."> por <img class="plate__img" src="img/proyecto-1.jpg" alt="..."> -->
-    <a class="plate plate--wide reveal" href="#contacto">
-      <div class="plate__img plate__img--a" aria-hidden="true"></div>
-      <span class="tape tape--b" aria-hidden="true"></span>
-      <h3 class="plate__title">AGENTES <em>IA</em></h3>
-      <p class="plate__meta">Identidad + sitio &mdash; 2026</p>
-      <p class="plate__desc">Del logotipo al design system para una plataforma de agentes.</p>
-    </a>
-
-    <a class="plate plate--tall reveal" href="#contacto">
-      <div class="plate__img plate__img--b" aria-hidden="true"></div>
-      <h3 class="plate__title">RUTA &amp; <em>MTB</em></h3>
-      <p class="plate__meta">Dirección de arte &mdash; 2025</p>
-      <p class="plate__desc">Sistema gráfico para una marca de ciclismo: jerseys, redes, campaña.</p>
-    </a>
-
-    <a class="plate reveal" href="#contacto">
-      <div class="plate__img plate__img--c" aria-hidden="true"></div>
-      <span class="tape tape--c" aria-hidden="true"></span>
-      <h3 class="plate__title">ON<em>BOARD</em></h3>
-      <p class="plate__meta">UX &mdash; 2025</p>
-      <p class="plate__desc">Rediseño del onboarding de una herramienta SaaS.</p>
-    </a>
-
-    <a class="plate reveal" href="#contacto">
-      <div class="plate__img plate__img--d" aria-hidden="true"></div>
-      <h3 class="plate__title">XE<em>ROX</em></h3>
-      <p class="plate__meta">Editorial &mdash; 2024</p>
-      <p class="plate__desc">Pieza impresa: retícula rígida, capas sucias, dos tintas.</p>
-    </a>
+  <div class="pin__foot">
+    <p class="pin__says">Marca e interfaz para equipos que construyen con inteligencia artificial.</p>
+    <a class="btn" href="#contacto">Hablemos de tu marca</a>
   </div>
 </section>
 
-<!-- ============ SERVICIOS ============ -->
-<section id="servicios">
-  <div class="band">
-    <h2 class="band__title">
-      <span class="stack">
-        <span class="stack__print">SERVICIOS</span>
-        <span class="stack__hand" aria-hidden="true">SERVICIOS</span>
-      </span>
-    </h2>
-    <p class="band__tags"><span>Por proyecto</span><span>Por retainer</span><span>Embebido en tu equipo</span></p>
-  </div>
-
-  <div class="listing">
-    <div class="listing__intro reveal">
-      <p>
-        Trabajo por proyecto o embebido en tu equipo. Cada entrega llega con archivos
-        editables, guía de uso y todo listo para producción.
-      </p>
-    </div>
-
-    <div class="listing__cols">
-      <div class="col reveal">
-        <h3>Identidad de marca</h3>
-        <p>Logotipo, sistema tipográfico, paleta, texturas y aplicaciones. La marca completa, no solo un símbolo.</p>
-        <ul>
-          <li>Concepto y territorio visual</li>
-          <li>Manual de marca</li>
-          <li>Kit de aplicaciones</li>
-        </ul>
-      </div>
-      <div class="col reveal">
-        <h3>Diseño de interfaz</h3>
-        <p>Interfaces para web y producto: jerarquía clara, componentes consistentes, capa visual con personalidad.</p>
-        <ul>
-          <li>Landing pages y sitios</li>
-          <li>Dashboards y apps</li>
-          <li>Design system en Figma</li>
-        </ul>
-      </div>
-      <div class="col reveal">
-        <h3>Experiencia de uso</h3>
-        <p>Antes de dibujar, entender. Flujos, arquitectura de información y prototipos que se prueban con gente real.</p>
-        <ul>
-          <li>Flujos y wireframes</li>
-          <li>Prototipos navegables</li>
-          <li>Test de usabilidad</li>
-        </ul>
-      </div>
-      <div class="col reveal">
-        <h3>Dirección de arte</h3>
-        <p>Campañas, redes, merch y editorial. Aquí es donde el grunge, el vintage y el xerox hacen su trabajo.</p>
-        <ul>
-          <li>Sistemas gráficos</li>
-          <li>Piezas para social</li>
-          <li>Impresos y merch</li>
-        </ul>
-      </div>
+<!-- ============================================================
+     TESIS — la frase se queda, las piezas pasan
+     ============================================================ -->
+<section class="thesis" id="tesis">
+  <div class="thesis__fixed">
+    <div class="thesis__block">
+      <h2 class="thesis__line"><span>Ruido arriba,</span> <span>orden debajo</span></h2>
+      <p class="thesis__says">La superficie se ensucia. La retícula que hay debajo no se mueve.</p>
     </div>
   </div>
+  <div class="thesis__flow">
+    <figure class="pass pass--a">
+      <img src="assets/cycling-race-1894-ireland.jpg" width="1500" height="1002"
+           alt="Fotografía de 1894: un pelotón de ciclistas en una pista de tierra en Irlanda." loading="lazy" decoding="async">
+    </figure>
+    <figure class="pass pass--b">
+      <img src="assets/carle-vernet-delpech-lithographic-print-shop-1941.jpg" width="1500" height="1107"
+           alt="Grabado de un taller litográfico: operarios junto a las prensas." loading="lazy" decoding="async">
+    </figure>
+    <figure class="pass pass--c">
+      <img src="assets/bicycle-race.jpg" width="1500" height="1495"
+           alt="Medalla de bronce de 1897 con un ciclista en relieve." loading="lazy" decoding="async">
+    </figure>
+    <!-- Todo lo demás está congelado en un impreso. Esto se mueve de verdad:
+         la carretera pasando, que es de lo que va la página. -->
+    <figure class="pass pass--d">
+      <video class="pass__clip" autoplay muted loop playsinline preload="metadata"
+             poster="assets/peloton-lors-de-la-premiere-etape-du-poster.jpg"
+             width="854" height="480" aria-label="Un pelotón de ciclistas pasa por una carretera.">
+        <source src="assets/peloton-lors-de-la-premiere-etape-du.webm" type="video/webm">
+      </video>
+    </figure>
+  </div>
 </section>
 
-<!-- ============ PROCESO ============ -->
-<section id="proceso">
-  <div class="band">
-    <h2 class="band__title">
-      <span class="stack">
-        <span class="stack__print">PROCESO</span>
-        <span class="stack__hand" aria-hidden="true">PROCESO</span>
-      </span>
-    </h2>
-    <p class="band__tags"><span>Cuatro pasos</span><span>Dos rondas de revisión</span><span>Sin sorpresas</span></p>
+<!-- ============================================================
+     REFERENCIAS — paneles a sangre, una fila fija a media altura
+     Piezas de museo, no trabajo de Felipe. Cada fila lo dice.
+     ============================================================ -->
+<section id="referencias">
+  <div class="lede">
+    <h2 class="lede__head">De aquí vengo</h2>
+    <p class="lede__text">
+      Carteles de carrera impresos en piedra, cuando una marca tenía que funcionar pegada
+      en un muro, mojada y a diez metros. Ninguna es mía: son de museo y están acreditadas.
+      Es el oficio que hay detrás de lo que hago hoy en pantalla.
+    </p>
   </div>
 
-  <ol class="steps">
-    <li class="step reveal">
-      <span class="step__num">01</span>
-      <h3>Entender</h3>
-      <p>Llamada, contexto, competencia y objetivos. Salgo con un brief que ambos aprobamos.</p>
-    </li>
-    <li class="step reveal">
-      <span class="step__num">02</span>
-      <h3>Explorar</h3>
-      <p>Territorios visuales y rutas conceptuales. Elegimos dirección antes de gastar semanas.</p>
-    </li>
-    <li class="step reveal">
-      <span class="step__num">03</span>
-      <h3>Diseñar</h3>
-      <p>Iteración con revisiones acotadas. Nada de rondas infinitas: dos ciclos y decisiones claras.</p>
-    </li>
-    <li class="step reveal">
-      <span class="step__num">04</span>
-      <h3>Entregar</h3>
-      <p>Archivos, guía de uso y acompañamiento para que el equipo lo aplique bien.</p>
-    </li>
-  </ol>
-</section>
+  <article class="panel">
+    <img class="panel__img" src="assets/ride-a-stearns-and-be-content-bicycle.jpg" width="1500" height="2016"
+         alt="Detalle del cartel de Stearns: la falda estampada y el cuadro ocre de la bicicleta." loading="lazy" decoding="async">
+    <p class="panel__row">
+      <span class="panel__year">1896</span>
+      <span class="panel__title">Ride a Stearns</span>
+      <span class="panel__fact">Edward Penfield · Wikimedia Commons</span>
+    </p>
+  </article>
 
-<!-- ============ FICHA (hoja pegada) ============ -->
-<section class="sheet-wrap" id="ficha">
-  <article class="sheet reveal">
-    <div class="sheet__paper" aria-hidden="true"></div>
-    <span class="clip" aria-hidden="true"></span>
-    <span class="tape tape--tl" aria-hidden="true"></span>
-    <span class="tape tape--br" aria-hidden="true"></span>
+  <article class="panel">
+    <img class="panel__img" src="assets/bicycle.jpg" width="1500" height="1997"
+         alt="Detalle del cartel Bécane: letras recortadas sobre verde oliva." loading="lazy" decoding="async">
+    <p class="panel__row">
+      <span class="panel__year">1894</span>
+      <span class="panel__title">Bécane</span>
+      <span class="panel__fact">Art Institute of Chicago</span>
+    </p>
+  </article>
 
-    <div class="sheet__inner">
-      <header class="sheet__head">
-        <h2>FICHA</h2>
-        <p class="sheet__ref">2026 &middot; Ref. 001</p>
-      </header>
+  <article class="panel">
+    <img class="panel__img" src="assets/carle-vernet-delpech-lithographic-print-shop-1941.jpg" width="1500" height="1107"
+         alt="Grabado del taller Delpech: las prensas litográficas en funcionamiento." loading="lazy" decoding="async">
+    <p class="panel__row">
+      <span class="panel__year">1818</span>
+      <span class="panel__title">Taller Delpech</span>
+      <span class="panel__fact">Carle Vernet · Cleveland Museum of Art</span>
+    </p>
+  </article>
 
-      <div class="sheet__body">
-        <div class="sheet__bio">
-          <p>
-            Me gusta el diseño que se nota hecho: grano, fotocopia, texturas vintage, capas fuera
-            de registro. Pero el ruido es acabado, no excusa: debajo siempre hay retícula,
-            jerarquía y una decisión que se puede defender.
-          </p>
-          <p>
-            No creo en estilos enemigos. Si el proyecto pide limpio y suizo, va limpio y suizo.
-            Lo que no cambia es el criterio.
-          </p>
-          <p>
-            Fuera del estudio estoy sobre la bici, ruta y MTB. De ahí sale buena parte de lo que
-            diseño por gusto: carteles de carrera, jerseys, cosas que se imprimen y se ensucian.
-          </p>
-          <!-- EDITA: tu firma -->
-          <p class="signature" aria-hidden="true">Felipe Saavedra</p>
-        </div>
-
-        <div class="cv">
-          <!-- EDITA: tus datos reales -->
-          <div class="cv__col">
-            <h3>Experiencia</h3>
-            <dl>
-              <dt>2026 —</dt>
-              <dd>Diseñador freelance<br><span>Branding, UI &amp; UX</span></dd>
-              <dt>2023 — 2025</dt>
-              <dd>Nombre del estudio<br><span>Diseñador gráfico</span></dd>
-            </dl>
-            <h3>Formación</h3>
-            <dl>
-              <dt>2019 — 2023</dt>
-              <dd>Nombre de la universidad<br><span>Diseño gráfico</span></dd>
-            </dl>
-          </div>
-
-          <div class="cv__col">
-            <h3>Enfoque</h3>
-            <ul>
-              <li>Identidad de marca</li>
-              <li>Diseño de interfaz</li>
-              <li>Investigación UX</li>
-              <li>Dirección de arte</li>
-            </ul>
-            <h3>Herramientas</h3>
-            <ul>
-              <li>Figma</li>
-              <li>Illustrator</li>
-              <li>Photoshop</li>
-              <li>After Effects</li>
-            </ul>
-          </div>
-
-          <div class="cv__col">
-            <h3>Idiomas</h3>
-            <ul>
-              <li>Español &mdash; nativo</li>
-              <li>Inglés &mdash; profesional</li>
-            </ul>
-            <h3>Base</h3>
-            <ul>
-              <li>Remoto &middot; LATAM</li>
-            </ul>
-            <h3>Fuera del estudio</h3>
-            <ul>
-              <li>Ciclismo de ruta</li>
-              <li>MTB</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+  <article class="panel">
+    <img class="panel__img" src="assets/the-road-rights-of-wheelmen-callaghan-and.jpg" width="1500" height="2119"
+         alt="Portada de 1895 en amarillo y verde con ciclistas enfrentados a un carruaje." loading="lazy" decoding="async">
+    <p class="panel__row">
+      <span class="panel__year">1895</span>
+      <span class="panel__title">Road Rights of Wheelmen</span>
+      <span class="panel__fact">Callaghan and Company · The Met</span>
+    </p>
   </article>
 </section>
 
-<!-- ============ CONTACTO ============ -->
-<section id="contacto">
-  <div class="band">
-    <h2 class="band__title">
-      <span class="stack">
-        <span class="stack__print">CONTACTO</span>
-        <span class="stack__hand" aria-hidden="true">CONTACTO</span>
-      </span>
-    </h2>
-    <p class="band__tags"><span>Respuesta en 24 h</span><span>Remoto</span><span>Español / Inglés</span></p>
-  </div>
-
-  <div class="contact">
-    <div class="contact__type reveal">
-      <h2 class="contact__title">¿LO <em>HACEMOS</em>?</h2>
-      <p class="contact__lead">
-        Cuéntame qué estás construyendo y en qué etapa va. Respondo en menos de 24 horas
-        con una idea de alcance, tiempos y precio.
+<!-- ============================================================
+     TALLER — la cosa viva: quitarle el ruido a una pieza
+     ============================================================ -->
+<section id="taller">
+  <div class="shop">
+    <div class="shop__says">
+      <h2 class="shop__head">Quítale el ruido</h2>
+      <p class="shop__text">
+        Todo lo que hago tiene dos capas. Arriba la que se ve: grano, fotocopia, tinta mal
+        registrada. Debajo la que aguanta: retícula, escala tipográfica, jerarquía. Mueve el
+        control y mira qué queda cuando le quitas la suciedad.
       </p>
+      <p class="shop__state" id="shopState" role="status">Mitad y mitad</p>
     </div>
 
-    <!-- Tarjeta de contacto pegada con cinta -->
-    <article class="card-contact reveal">
-      <div class="card-contact__paper" aria-hidden="true"></div>
-      <span class="tape tape--d" aria-hidden="true"></span>
-      <div class="card-contact__inner">
-        <!-- EDITA: tu correo y tus enlaces -->
-        <ul>
-          <li><span>Correo</span><a href="mailto:fsarmijo21@gmail.com?subject=Proyecto%20de%20dise%C3%B1o">fsarmijo21@gmail.com</a></li>
-          <li><span>Behance</span><a href="#">/tuusuario</a></li>
-          <li><span>Instagram</span><a href="#">@tuusuario</a></li>
-          <li><span>LinkedIn</span><a href="#">/tuusuario</a></li>
-        </ul>
-        <p class="card-contact__sign" aria-hidden="true">Felipe Saavedra</p>
+    <div class="shop__piece">
+      <div class="shop__stack" id="shopStack">
+        <img class="shop__photo" src="assets/misti-poster-clement-1.jpg" width="1500" height="2189"
+             alt="Cartel Clément de 1903 usado como ejemplo de capa superficial." loading="lazy" decoding="async">
+        <svg class="shop__grid" viewBox="0 0 120 170" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="0.5">
+            <rect x="8" y="8" width="104" height="154"/>
+            <path d="M34 8V162M60 8V162M86 8V162"/>
+            <path d="M8 46H112M8 100H112M8 132H112"/>
+          </g>
+          <g fill="currentColor">
+            <rect x="8" y="52" width="78" height="13"/>
+            <rect x="8" y="70" width="52" height="7"/>
+            <rect x="8" y="106" width="26" height="4"/>
+            <rect x="8" y="114" width="26" height="4"/>
+            <rect x="60" y="106" width="26" height="4"/>
+            <rect x="60" y="114" width="26" height="4"/>
+            <rect x="86" y="138" width="26" height="16"/>
+          </g>
+        </svg>
       </div>
-    </article>
+
+      <label class="shop__label" for="shopRange">Cantidad de ruido</label>
+      <input class="shop__range" id="shopRange" type="range" min="0" max="100" value="50"
+             aria-describedby="shopState">
+      <p class="shop__ends"><span>Sólo el sistema</span><span>Sólo la superficie</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVICIOS — el título aguanta, las capacidades pasan
+     ============================================================ -->
+<section id="servicios">
+  <div class="caps">
+    <h2 class="caps__head">Qué hago</h2>
+
+    <div class="caps__list">
+      <article class="cap">
+        <h3 class="cap__title">Identidad de marca</h3>
+        <div class="cap__body">
+          <img class="cap__img" src="assets/bicycle.jpg" width="1500" height="1997"
+               alt="Detalle de letras recortadas del cartel Bécane." loading="lazy" decoding="async">
+          <ul class="cap__items">
+            <li>Concepto y territorio visual</li>
+            <li>Logotipo y sistema de marca</li>
+            <li>Tipografía, color y textura</li>
+            <li>Manual de uso</li>
+            <li>Kit de aplicaciones</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="cap">
+        <h3 class="cap__title">Diseño de interfaz</h3>
+        <div class="cap__body cap__body--flip">
+          <img class="cap__img" src="assets/the-road-rights-of-wheelmen-callaghan-and.jpg" width="1500" height="2119"
+               alt="Detalle de la composición tipográfica de una portada de 1895." loading="lazy" decoding="async">
+          <ul class="cap__items">
+            <li>Landing pages y sitios</li>
+            <li>Dashboards y producto</li>
+            <li>Design system en Figma</li>
+            <li>Componentes y estados</li>
+            <li>Entrega lista para código</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="cap">
+        <h3 class="cap__title">Experiencia de uso</h3>
+        <div class="cap__body">
+          <img class="cap__img" src="assets/cycling-race-1894-ireland.jpg" width="1500" height="1002"
+               alt="Pelotón de 1894 visto de lejos, como ejemplo de lectura a distancia." loading="lazy" decoding="async">
+          <ul class="cap__items">
+            <li>Flujos y arquitectura</li>
+            <li>Wireframes</li>
+            <li>Prototipos navegables</li>
+            <li>Test con gente real</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="cap">
+        <h3 class="cap__title">Dirección de arte</h3>
+        <div class="cap__body cap__body--flip">
+          <img class="cap__img" src="assets/misti-poster-clement-1.jpg" width="1500" height="2189"
+               alt="Detalle del cartel Clément de 1903." loading="lazy" decoding="async">
+          <ul class="cap__items">
+            <li>Sistemas gráficos</li>
+            <li>Campaña y piezas sociales</li>
+            <li>Impresos y merch</li>
+            <li>Carteles y jerseys de ciclismo</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROCESO — un verbo cada vez
+     ============================================================ -->
+<section id="proceso">
+  <article class="stage">
+    <img class="stage__img" src="assets/carle-vernet-delpech-lithographic-print-shop-1941.jpg" width="1500" height="1107"
+         alt="Operarios conversando junto a las prensas del taller Delpech." loading="lazy" decoding="async">
+    <div class="stage__word"><h2>Entender</h2></div>
+    <p class="stage__says">Llamada, contexto y objetivos. Salgo con un brief que los dos aprobamos.</p>
+  </article>
+
+  <article class="stage">
+    <img class="stage__img" src="assets/bicycle-race.jpg" width="1500" height="1495"
+         alt="Relieve en bronce de un ciclista, de 1897." loading="lazy" decoding="async">
+    <div class="stage__word"><h2>Explorar</h2></div>
+    <p class="stage__says">Territorios visuales y rutas. Elegimos dirección antes de gastar semanas.</p>
+  </article>
+
+  <article class="stage">
+    <img class="stage__img" src="assets/ride-a-stearns-and-be-content-bicycle.jpg" width="1500" height="2016"
+         alt="Detalle de la ciclista del cartel de Stearns." loading="lazy" decoding="async">
+    <div class="stage__word"><h2>Diseñar</h2></div>
+    <p class="stage__says">Dos rondas de revisión acotadas. Nada de bucles infinitos.</p>
+  </article>
+
+  <article class="stage">
+    <img class="stage__img" src="assets/bicycle.jpg" width="1500" height="1997"
+         alt="Detalle del cartel Bécane en verde oliva." loading="lazy" decoding="async">
+    <div class="stage__word"><h2>Entregar</h2></div>
+    <p class="stage__says">Archivos, guía de uso y acompañamiento para que tu equipo lo aplique bien.</p>
+  </article>
+</section>
+
+<!-- ============================================================
+     FICHA
+     ============================================================ -->
+<section id="ficha">
+  <div class="file">
+    <h2 class="file__head">Quién</h2>
+
+    <div class="file__body">
+      <div class="file__bio">
+        <p>
+          Soy Felipe Saavedra. Diseño marcas e interfaces, y me interesa especialmente
+          la gente que está construyendo producto con inteligencia artificial: tienen
+          tecnología rara y casi siempre una marca que no está a la altura.
+        </p>
+        <p>
+          Me gusta el diseño que se nota hecho. Grano, fotocopia, capas fuera de registro.
+          Pero el ruido es acabado, no excusa: debajo siempre hay retícula y una decisión
+          que puedo defender. Si el proyecto pide limpio y suizo, va limpio y suizo.
+        </p>
+        <p>
+          Fuera del escritorio estoy sobre la bici, ruta y MTB. De ahí sale buena parte de
+          lo que diseño por gusto: carteles de carrera, jerseys, cosas que se imprimen y
+          se ensucian de verdad.
+        </p>
+      </div>
+
+      <dl class="file__facts">
+        <dt>Trabajo</dt>
+        <dd>Diseñador independiente, 2026</dd>
+        <dt>Antes</dt>
+        <dd>Diseñador gráfico, 2023&ndash;2025</dd>
+        <dt>Formación</dt>
+        <dd>Diseño gráfico, 2019&ndash;2023</dd>
+        <dt>Herramientas</dt>
+        <dd>Figma, Illustrator, Photoshop, After Effects</dd>
+        <dt>Idiomas</dt>
+        <dd>Español nativo, inglés profesional</dd>
+        <dt>Base</dt>
+        <dd>Remoto, LATAM</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACTO — el correo como tipografía de display
+     ============================================================ -->
+<section id="contacto">
+  <div class="mail">
+    <p class="mail__says">Cuéntame qué construyes y en qué etapa va. Respondo en menos de 24 horas.</p>
+    <a class="mail__address" href="mailto:fsarmijo21@gmail.com?subject=Proyecto%20de%20dise%C3%B1o&amp;body=Hola%20Felipe%2C%20estamos%20construyendo...">fsarmijo21@gmail.com</a>
+    <p class="mail__where">Remoto · LATAM</p>
+    <p class="mail__links">
+      <!-- EDITA: tus enlaces reales -->
+      <a href="#contacto">Behance</a>
+      <a href="#contacto">Instagram</a>
+      <a href="#contacto">LinkedIn</a>
+    </p>
   </div>
 </section>
 
 </main>
 
-<footer class="footer">
-  <div class="footer__inner">
-    <p>&copy; <span id="year">2026</span> — Felipe Saavedra</p>
-    <a href="#top">Volver arriba &#8593;</a>
-  </div>
+<footer class="end">
+  <p class="end__what">Felipe Saavedra, diseño de marca e interfaz</p>
+  <p class="end__links"><a href="#portada">Arriba</a> <a href="#servicios">Servicios</a> <a href="#contacto">Contacto</a></p>
+  <p class="end__year"><span id="year">2026</span></p>
+  <p class="end__credits">
+    Imágenes de dominio público:
+    «Ride a Stearns and be content» (Edward Penfield, 1896) y «Cycling race 1894, Ireland»
+    (National Library of Ireland), vía Wikimedia Commons;
+    «Bicycle» y «Bicycle Race» vía Art Institute of Chicago;
+    «Misti — Poster Clément» vía Wikimedia Commons;
+    «The Road Rights of Wheelmen» vía The Metropolitan Museum of Art;
+    «Delpech Lithographic Print Shop» (Carle Vernet), Cleveland Museum of Art vía Wikimedia Commons.
+    Clip: «Peloton lors de la première étape du Tour de l'Ain 2020» (Benoît Prieur, CC0),
+    vía Wikimedia Commons.
+    Ninguna es obra de Felipe Saavedra.
+  </p>
 </footer>
 
 <script src="script.js"></script>
