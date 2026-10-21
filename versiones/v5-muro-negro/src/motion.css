@@ -1,0 +1,139 @@
+/* =========================================================
+   MOTION — capa de movimiento sobre el muro negro.
+   No toca color ni tipografía: solo cómo entran las cosas.
+   Se carga DESPUÉS de styles.css.
+   ========================================================= */
+
+/* ---------- Lenis: scroll con inercia ---------- */
+html.lenis, html.lenis body{ height:auto; }
+.lenis.lenis-smooth{ scroll-behavior:auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior:contain; }
+.lenis.lenis-stopped{ overflow:hidden; }
+
+/* =========================================================
+   1. PRELOADER
+   El mismo gesto del sitio: lo impreso hueco, lo manuscrito
+   sólido encima. Se levanta como un telón cuando termina.
+   ========================================================= */
+.loader{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-content:center;
+  justify-items:center;
+  gap:1.6rem;
+  background:var(--void);
+  padding:var(--gutter);
+}
+/* Mientras carga, el cuerpo no se mueve */
+html.is-loading, html.is-loading body{ overflow:hidden; }
+
+.loader__type{
+  font-size:clamp(2.2rem, 9vw, 6rem);
+  line-height:.9;
+  text-align:center;
+}
+.loader__bar{
+  width:min(320px, 62vw);
+  height:2px;
+  background:var(--line);
+  overflow:hidden;
+}
+.loader__bar span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:var(--chalk);
+}
+.loader__pct{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--mute);
+}
+.loader__pct b{ color:var(--chalk-2); font-weight:400; }
+
+/* =========================================================
+   2. ESTADOS INICIALES
+   Solo se aplican si JS arrancó (html.js). Sin JS el sitio
+   se ve completo, como siempre.
+   ========================================================= */
+.js .line-mask{ overflow:hidden; display:block; }
+.js .line-mask > *{ display:block; }
+
+/* El título de banda se descubre de abajo hacia arriba */
+.js .band__title .stack{ display:inline-block; }
+
+/* =========================================================
+   3. PROCESO EN HORIZONTAL
+   Los cuatro pasos dejan de ser una fila estática: la sección
+   se clava y los pasos desfilan de lado mientras bajas.
+   Solo en pantallas anchas; en móvil se apila como siempre.
+   ========================================================= */
+@media (min-width:900px){
+  .js .steps-track{
+    overflow:hidden;
+    /* Mientras está clavada ocupa la pantalla entera, así que los
+       pasos van centrados: si no, queda medio lienzo negro vacío. */
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+  }
+  .js .steps{
+    display:flex;
+    grid-template-columns:none;
+    width:max-content;
+    align-items:flex-start;
+    gap:clamp(40px,5vw,90px);
+    padding-right:12vw;
+  }
+  .js .steps .step{
+    flex:0 0 auto;
+    width:min(540px, 40vw);
+  }
+  .js .steps .step__num{ font-size:2.4rem; }
+}
+
+/* =========================================================
+   4. MARQUEE
+   La animación ahora la lleva GSAP, para que reaccione a la
+   velocidad del scroll. Se apaga la de CSS.
+   ========================================================= */
+.js .marquee__track{ animation:none; }
+
+/* =========================================================
+   5. NAV QUE SE ESCONDE AL BAJAR
+   ========================================================= */
+.nav{ transition:transform .45s cubic-bezier(.2,.7,.3,1), background-color .35s ease; }
+.nav.is-hidden{ transform:translateY(-110%); }
+.nav.is-stuck{
+  background:rgba(8,8,10,.86);
+  backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--line);
+}
+
+/* =========================================================
+   6. RESPETO AL USUARIO
+   Si pide menos movimiento, no hay movimiento.
+   ========================================================= */
+/* En modo suave la sección de proceso no se clava: vuelve a ser
+   una fila normal. La pantalla de carga SE QUEDA —un contador y
+   un telón no marean a nadie— y la marquesina vuelve a su ritmo
+   fijo de CSS en vez de obedecer a la velocidad del scroll. */
+.motion-suave.js .steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  width:auto;
+  padding-right:0;
+}
+.motion-suave.js .steps-track{
+  min-height:0;
+  display:block;
+}
+.motion-suave.js .steps .step{ width:auto; }
+.motion-suave.js .marquee__track{ animation:slide 38s linear infinite; }
+.motion-suave .nav{ transition:opacity .3s ease; }
+.motion-suave .nav.is-hidden{ transform:none; }

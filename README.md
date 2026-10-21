@@ -1,4 +1,49 @@
-# Landing page — portafolio de diseño
+# Portafolio en vinilo — v6 "El tocadiscos"
+
+La versión vigente del sitio. Fondo papel `#F4F2ED`, un tocadiscos a la izquierda y una
+caja de siete vinilos abajo: cada disco es una canción (Korn, System Of A Down, Limp
+Bizkit, Slipknot, QOTSA) y, del otro lado, una parte del portafolio. Al elegir un vinilo
+el disco vuela de la funda a la bandeja, baja la aguja y cambia la ficha de contenido.
+
+```
+index.html           -> estructura: carga, tocadiscos, fichas y caja de discos
+src/tocadiscos.css   -> toda la parte visual de esta versión
+src/tocadiscos.js    -> pantalla de carga, poner/levantar disco, teclado y sonido
+```
+
+| Disco | Canción | Sección del portafolio |
+|---|---|---|
+| 01 | Korn — Blind | Quién soy |
+| 02 | System Of A Down — Toxicity | Mis fuertes (estilos que trabajo) |
+| 03 | Limp Bizkit — Break Stuff | Identidad / branding |
+| 04 | Slipknot — Duality | Motion y video |
+| 05 | QOTSA — No One Knows | UI y UX |
+| 06 | Korn — Freak on a Leash | El proceso |
+| 07 | System Of A Down — Aerials | Contacto |
+
+**Para editar el contenido:** busca `EDITA` en `index.html`. Cada ficha es un
+`<article class="ficha" data-ficha="NN">`. Para cambiar la canción de un vinilo basta
+con editar los `data-` del botón correspondiente en la sección `.caja`.
+
+**Tipografías (nu metal, no gamer):** Anton (titulares), Big Shoulders Stencil Display
+(estencil de los rótulos), Special Elite (máquina de escribir de los datos técnicos),
+Permanent Marker (lo escrito a mano encima) y Archivo para el texto corrido.
+
+**Sonido:** el botón de la cabecera enciende un crujido de aguja sintetizado (no hay
+archivos de audio). Si algún día pones `audio/01.mp3` ... `audio/07.mp3`, cada disco toca
+el suyo; si el archivo no existe, no pasa nada y se queda el crujido.
+
+**Movimiento:** la pantalla de carga y el plato girando funcionan siempre, también con el
+movimiento reducido de Windows; en ese modo el disco gira más lento y se apagan los
+nervios (vúmetros, onda, rebotes). `?motion=full` fuerza todo.
+
+Versiones anteriores: `versiones/` y etiquetas de git (`v2-muro-negro`,
+`v3-cartel-clavado`, `v5-muro-negro-movimiento`).
+
+---
+
+# Versión anterior: el muro negro (guardada en `versiones/v5-muro-negro`)
+
 
 Sitio de una sola página, sin frameworks ni build. Doble clic en `index.html` y funciona.
 
