@@ -148,3 +148,105 @@ py -m http.server 8123
 ```
 
 Luego abre <http://localhost:8123>.
+
+---
+
+## v4 — El motor de movimiento (Vite + GSAP + Lenis)
+
+El sitio dejó de ser HTML plano: ahora se compila con Vite. **La identidad no
+cambió** (muro negro, Anton + Permanent Marker, lo impreso hueco con lo
+manuscrito encima). Lo único nuevo es cómo se mueve.
+
+### Comandos
+
+```bash
+npm install     # una sola vez
+npm run dev     # servidor local en http://localhost:5173
+npm run build   # genera dist/ (es lo que publica Vercel)
+```
+
+Vercel detecta Vite solo: no hay que configurar nada.
+
+### Archivos
+
+| Archivo | Qué hace |
+|---|---|
+| `index.html` | El contenido. Igual que siempre, más el preloader. |
+| `styles.css` | La identidad. **Intacto.** |
+| `src/motion.css` | Solo movimiento: preloader, proceso horizontal, nav. |
+| `src/main.js` | El motor: Lenis + GSAP ScrollTrigger. |
+| `script.js` | Ya no se usa. Queda como respaldo de la v3. |
+
+### Lo que hace el motor
+
+1. **Preloader** que cuenta a 100 y levanta el telón.
+2. **Lenis**: scroll con inercia.
+3. **Portada**: cada línea sube desde su máscara.
+4. **El gesto de la casa, vivo**: lo manuscrito se desplaza respecto a lo
+   impreso según el scroll. El fuera de registro respira.
+5. **Marquee** que acelera y cambia de sentido con la velocidad del scroll.
+6. **Parallax** en las placas de trabajo.
+7. **Proceso en horizontal**: la sección se clava y los cuatro pasos desfilan.
+8. **Nav** que se esconde al bajar y vuelve al subir.
+
+### Importante: `prefers-reduced-motion`
+
+Windows tiene un ajuste de **"mostrar animaciones"**. Si está apagado, el
+navegador contesta `prefers-reduced-motion: reduce` y este sitio —como
+cualquier sitio bien hecho— se apaga solo y se muestra estático.
+
+**En esta máquina ese ajuste está APAGADO** (`MinAnimate = 0`). Por eso el
+sitio puede verse muerto aunque esté perfecto.
+
+- Para verlo con todo el movimiento: **`?motion=full`** al final de la URL.
+  Queda guardado en el navegador, basta con entrar así una vez.
+- Para volver a respetar el sistema: `?motion=auto`.
+- Para arreglarlo de raíz: Windows → Configuración → Accesibilidad →
+  Efectos visuales → **Efectos de animación: Activado**.
+
+---
+
+## v5 - Fotografia, escala y el golpe de blanco
+
+El sitio no estaba plano por el codigo: estaba plano porque no tenia ni una
+sola fotografia y porque todo pesaba lo mismo. Tres movimientos lo arreglan.
+
+### 1. Tus fotos, por fin en el sitio
+
+Las cuatro de `fotos/_seleccion/` pasaron por `xerox.py` a 1600 px y quedaron
+en **`img/`** (esa carpeta SI sube a git y a Vercel; `fotos/` sigue ignorada
+porque son los originales pesados).
+
+| Archivo | Donde |
+|---|---|
+| `retrato-casco.png` | Portada. Es la pieza que sostiene la pagina. |
+| `mtb-318.png` | El bloque blanco a pantalla completa. |
+| `casco-ruta.png` | La placa de trabajo de ciclismo. |
+| `jefe.png` | La ficha, junto al CV. |
+
+Son PNG de 1 bit (blanco puro y negro puro), entre 179 y 244 KB.
+
+Para cambiarlas: deja el original en `fotos/_seleccion/`, corre
+`py herramientas/xerox.py fotos/_seleccion --salida img --trama dither --ancho 1600`
+y renombra. Vite les pone hash solo.
+
+### 2. La escala salta
+
+- El nombre de la portada pasa de pie de foto a titular (Anton, hasta 6.2rem).
+- La seccion nueva tiene el titular mas grande de toda la pagina.
+- Servicios baja el volumen a proposito. Si todo grita, nada grita.
+
+### 3. El golpe de blanco
+
+`<section class="slam">`: una seccion entera invertida, blanco con tinta
+negra, a pantalla completa, entre dos negros. **Esto es lo que da
+profundidad** - no el parallax. Cuando vuelve el negro, pesa.
+
+### Una trampa de GSAP que costo caro
+
+`gsap.from` guarda el estado final cuando se crea el tween. Como la seccion de
+proceso esta clavada y mueve toda la pagina, ScrollTrigger recalcula posiciones
+y el tween puede quedarse colgado en el estado inicial: **elementos invisibles
+para siempre**. Por eso en `main.js` hay una funcion `entra()` que usa
+`set` + `to`: el estado final esta escrito, no deducido. Si algo falla, falla
+visible. No volver a usar `gsap.from` para entradas en este sitio.

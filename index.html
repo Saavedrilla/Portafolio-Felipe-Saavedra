@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="is-loading">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,8 +18,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Permanent+Marker&family=Rock+Salt&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="./src/motion.css">
+<link rel="stylesheet" href="./src/escala.css">
 </head>
 <body>
+
+<!-- ===== Preloader: el mismo gesto, impreso y a mano ===== -->
+<div class="loader" id="loader">
+  <p class="loader__type">
+    <span class="stack">
+      <span class="stack__print">PORTAFOLIO</span>
+      <span class="stack__hand" aria-hidden="true">Portafolio</span>
+    </span>
+  </p>
+  <div class="loader__bar"><span id="loaderFill"></span></div>
+  <p class="loader__pct">Cargando &mdash; <b id="loaderPct">0</b>%</p>
+</div>
 
 <!-- ===== Filtros: bordes rasgados y fotocopia en blanco y negro ===== -->
 <svg class="defs" aria-hidden="true" focusable="false">
@@ -120,6 +134,22 @@
   </div>
 </div>
 
+<!-- ============ EL GOLPE DE BLANCO ============
+     Una seccion entera invertida, a pantalla completa. Es lo
+     que hace que el negro vuelva a pesar cuando regresa. -->
+<section class="slam" id="manifiesto">
+  <div class="slam__photo" aria-hidden="true"><span class="slam__img"></span></div>
+  <div class="slam__type">
+    <p class="slam__kicker">Cómo trabajo</p>
+    <h2 class="slam__title">RUIDO <em>ARRIBA</em><i>orden debajo</i></h2>
+    <p class="slam__text">
+      Grano, fotocopia, capas fuera de registro. Pero el ruido es acabado, no excusa:
+      debajo siempre hay retícula, jerarquía y una decisión que se puede defender.
+    </p>
+    <p class="slam__meta">Identidad &middot; Interfaz &middot; Dirección de arte</p>
+  </div>
+</section>
+
 <!-- ============ TRABAJO ============ -->
 <section id="trabajo">
   <div class="band">
@@ -143,7 +173,7 @@
     </a>
 
     <a class="plate plate--tall reveal" href="#contacto">
-      <div class="plate__img plate__img--b" aria-hidden="true"></div>
+      <div class="plate__img plate__img--foto" aria-hidden="true"></div>
       <h3 class="plate__title">RUTA &amp; <em>MTB</em></h3>
       <p class="plate__meta">Dirección de arte &mdash; 2025</p>
       <p class="plate__desc">Sistema gráfico para una marca de ciclismo: jerseys, redes, campaña.</p>
@@ -239,6 +269,7 @@
     <p class="band__tags"><span>Cuatro pasos</span><span>Dos rondas de revisión</span><span>Sin sorpresas</span></p>
   </div>
 
+  <div class="steps-track">
   <ol class="steps">
     <li class="step reveal">
       <span class="step__num">01</span>
@@ -261,6 +292,7 @@
       <p>Archivos, guía de uso y acompañamiento para que el equipo lo aplique bien.</p>
     </li>
   </ol>
+  </div>
 </section>
 
 <!-- ============ FICHA (hoja pegada) ============ -->
@@ -279,6 +311,7 @@
 
       <div class="sheet__body">
         <div class="sheet__bio">
+          <div class="sheet__retrato" aria-hidden="true"></div>
           <p>
             Me gusta el diseño que se nota hecho: grano, fotocopia, texturas vintage, capas fuera
             de registro. Pero el ruido es acabado, no excusa: debajo siempre hay retícula,
@@ -400,6 +433,6 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script type="module" src="./src/main.js"></script>
 </body>
 </html>
