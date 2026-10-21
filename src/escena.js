@@ -153,6 +153,8 @@ export async function crearEscena(canvas, discos, avisos = {}){
 
   /* ---------------- la vitrina: los 7 discos de frente ---------------- */
   const fundas = {};
+  /* las 14 texturas (portada + cara del disco) se preparan a la vez */
+  const impresos = await Promise.all(discos.map(d => Promise.all([T.portada(d), T.caraDisco(d)])));
   const canto = mat('#D8D2C4', 0.8);
   const fondoGeo = new THREE.BoxGeometry(0.31, 0.31, 0.004);
   const fondoN = VITRINA.length * 5;
@@ -174,7 +176,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
       fi++;
     }
 
-    const tapa = await T.portada(d);
+    const [tapa, caraTex] = impresos[i];
     const frente = mat('#ffffff', 0.55, 0, { map: tapa });
     const atras = mat(d.papel, 0.7);
     const funda = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.31, 0.006), [canto, canto, canto, canto, frente, atras]);
@@ -185,7 +187,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
     escena.add(funda);
 
     /* el disco que vive dentro de la funda */
-    const cara = mat('#ffffff', 0.32, 0.05, { map: await T.caraDisco(d) });
+    const cara = mat('#ffffff', 0.32, 0.05, { map: caraTex });
     const borde = mat('#0B0B0A', 0.4);
     const disco = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.0025, 96), [borde, cara, borde]);
     disco.visible = false;
@@ -658,6 +660,9 @@ export async function crearEscena(canvas, discos, avisos = {}){
 
     renderer.render(escena, camara);
   }
+  /* compila los shaders mientras sigue la pantalla de carga,
+     para que el primer cuadro no dé un tirón */
+  try { await renderer.compileAsync(escena, camara); } catch {}
   renderer.setAnimationLoop(cuadro);
 
   return {

@@ -37,7 +37,7 @@ const carga = (() => {
   function pinta(){
     if (cerrado) return;
     const t = performance.now() - t0;
-    const n = Math.min(listo ? 100 : 94, (t / 1800) * 100 * (listo ? 2 : 1));
+    const n = Math.min(listo ? 100 : 94, (t / 1000) * 100 * (listo ? 2 : 1));
     pct.textContent = Math.round(n);
     relleno.style.width = n + '%';
     texto.textContent = frases[Math.min(frases.length - 1, Math.floor(n / 26))];
@@ -46,8 +46,8 @@ const carga = (() => {
     clearInterval(reloj);
     setTimeout(() => {
       raiz.classList.remove('cargando');
-      setTimeout(() => $('carga')?.remove(), 800);
-    }, 250);
+      setTimeout(() => $('carga')?.remove(), 600);
+    }, 100);
   }
   return { listo(){ listo = true; } };
 })();

@@ -21,7 +21,7 @@ export async function fuentesListas(){
     '40px "Anton"', '900 40px "Big Shoulders Stencil Display"',
     '700 40px "Big Shoulders Stencil Display"', '40px "Special Elite"', '40px "Permanent Marker"',
   ].map(f => document.fonts.load(f).catch(() => {}));
-  await Promise.race([Promise.all(pedidas), new Promise(r => setTimeout(r, 2500))]);
+  await Promise.race([Promise.all(pedidas), new Promise(r => setTimeout(r, 1500))]);
 }
 
 function lienzo(w, h = w){
@@ -38,15 +38,27 @@ function textura(c, { repetir = false, srgb = true } = {}){
   return t;
 }
 
-/* grano de fotocopia encima de cualquier lienzo */
+/* grano de fotocopia encima de cualquier lienzo: un mosaico de ruido
+   hecho una sola vez y pegado encima (recorrer cada píxel era lo más lento) */
+let mosaico = null;
 function grano(ctx, w, h, fuerza = 0.07){
-  const img = ctx.getImageData(0, 0, w, h);
-  const d = img.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const n = (Math.random() - 0.5) * 255 * fuerza;
-    d[i] += n; d[i + 1] += n; d[i + 2] += n;
+  if (!mosaico) {
+    const [c, x] = lienzo(256);
+    const img = x.createImageData(256, 256);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = Math.random() * 255;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+      img.data[i + 3] = 255;
+    }
+    x.putImageData(img, 0, 0);
+    mosaico = c;
   }
-  ctx.putImageData(img, 0, 0);
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, fuerza * 2.4);
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.fillStyle = ctx.createPattern(mosaico, 'repeat');
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
 }
 
 function cargaSvg(d){

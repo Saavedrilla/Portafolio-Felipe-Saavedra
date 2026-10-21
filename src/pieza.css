@@ -87,7 +87,7 @@ a:hover{ color:var(--rojo); }
   position:fixed; inset:0; z-index:400;
   display:grid; place-content:center; justify-items:center; gap:18px;
   background:var(--papel);
-  transition:opacity .7s ease, visibility .7s;
+  transition:opacity .45s ease, visibility .45s;
 }
 html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
 .carga__plato{ position:relative; width:clamp(120px,16vw,180px); aspect-ratio:1; }
