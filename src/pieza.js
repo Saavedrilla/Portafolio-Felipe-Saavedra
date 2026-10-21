@@ -12,6 +12,8 @@
 import { DISCOS, svgArte } from './datos.js';
 import { crearEscena } from './escena.js';
 
+window.__piezaViva = true;   /* apaga el rescate de index.html */
+
 const $ = id => document.getElementById(id);
 const raiz = document.documentElement;
 const params = new URLSearchParams(location.search);
@@ -365,7 +367,9 @@ function pasa(d, x, y){
    ------------------------------------------------------------ */
 (async () => {
   try {
-    escena = await crearEscena($('escena'), DISCOS, {
+    /* si el 3D no responde en 10 s, la página sigue sin él */
+    const limite = new Promise((_, no) => setTimeout(() => no(new Error('el 3D tardó demasiado')), 10000));
+    escena = await Promise.race([limite, crearEscena($('escena'), DISCOS, {
       suave,
       alElegir: elegir,
       alPasar: pasa,
@@ -378,7 +382,7 @@ function pasa(d, x, y){
         $('btnAguja').textContent = 'Levantar aguja';
       },
       alCallar: () => { sonido.crujido(0); },
-    });
+    })]);
   } catch (err) {
     console.warn('Sin 3D:', err);
     escena = null;

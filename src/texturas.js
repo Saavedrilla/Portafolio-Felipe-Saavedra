@@ -124,16 +124,18 @@ export async function caraDisco(d){
     x.strokeStyle = 'rgba(0,0,0,.9)'; x.lineWidth = 5;
     x.beginPath(); x.arc(m, m, m * k, 0, Math.PI * 2); x.stroke();
   });
-  /* brillo en abanico */
-  const brillo = x.createConicGradient(0.6, m, m);
-  brillo.addColorStop(0, 'rgba(255,255,255,0)');
-  brillo.addColorStop(0.08, 'rgba(255,255,255,.10)');
-  brillo.addColorStop(0.16, 'rgba(255,255,255,0)');
-  brillo.addColorStop(0.5, 'rgba(255,255,255,0)');
-  brillo.addColorStop(0.58, 'rgba(255,255,255,.08)');
-  brillo.addColorStop(0.66, 'rgba(255,255,255,0)');
-  x.fillStyle = brillo;
-  x.beginPath(); x.arc(m, m, m, 0, Math.PI * 2); x.fill();
+  /* brillo en abanico (solo si el navegador sabe hacer degradados cónicos) */
+  if (x.createConicGradient) {
+    const brillo = x.createConicGradient(0.6, m, m);
+    brillo.addColorStop(0, 'rgba(255,255,255,0)');
+    brillo.addColorStop(0.08, 'rgba(255,255,255,.10)');
+    brillo.addColorStop(0.16, 'rgba(255,255,255,0)');
+    brillo.addColorStop(0.5, 'rgba(255,255,255,0)');
+    brillo.addColorStop(0.58, 'rgba(255,255,255,.08)');
+    brillo.addColorStop(0.66, 'rgba(255,255,255,0)');
+    x.fillStyle = brillo;
+    x.beginPath(); x.arc(m, m, m, 0, Math.PI * 2); x.fill();
+  }
 
   /* etiqueta */
   const re = m * 0.34;

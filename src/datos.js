@@ -53,6 +53,6 @@ export const DISCOS = [
 
 /* El arte como SVG completo, con la tinta ya puesta */
 export function svgArte(d, tam = 100){
-  const cuerpo = d.arte.replaceAll('currentColor', d.tinta);
+  const cuerpo = d.arte.split('currentColor').join(d.tinta);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${tam}" height="${tam}">${cuerpo}</svg>`;
 }

@@ -21,6 +21,32 @@
 </head>
 <body>
 
+<noscript><style>.carga{display:none}</style><p class="rescate">Esta página necesita JavaScript activado.</p></noscript>
+<script>
+/* Rescate: no depende del módulo. Si la página no arranca, quita la
+   pantalla de carga y explica qué pasó en vez de quedarse pegada. */
+(function(){
+  var web = 'https://portafolio-felipe-saavedra.vercel.app';
+  function rescata(html){
+    if (window.__piezaViva) return;
+    document.documentElement.classList.remove('cargando');
+    var c = document.getElementById('carga'); if (c) c.parentNode.removeChild(c);
+    var p = document.createElement('div');
+    p.className = 'rescate'; p.innerHTML = html;
+    document.body.appendChild(p);
+  }
+  if (location.protocol === 'file:') {
+    document.addEventListener('DOMContentLoaded', function(){
+      rescata('<b>Abriste el archivo directo desde la carpeta.</b> Los navegadores no dejan correr la pieza 3D así. <a href="' + web + '">Abrir la versión publicada</a>');
+    });
+  } else {
+    setTimeout(function(){
+      rescata('<b>La página no terminó de arrancar en este navegador.</b> Recarga con Ctrl+F5 o actualiza el navegador. Si sigue igual, <a href="' + web + '">abre la versión publicada</a>.');
+    }, 12000);
+  }
+})();
+</script>
+
 <!-- ============ PANTALLA DE CARGA ============ -->
 <div class="carga" id="carga" role="status" aria-live="polite">
   <div class="carga__plato" aria-hidden="true">

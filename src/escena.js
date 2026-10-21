@@ -662,7 +662,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
   }
   /* compila los shaders mientras sigue la pantalla de carga,
      para que el primer cuadro no dé un tirón */
-  try { await renderer.compileAsync(escena, camara); } catch {}
+  try { await Promise.race([renderer.compileAsync(escena, camara), new Promise(r => setTimeout(r, 2500))]); } catch {}
   renderer.setAnimationLoop(cuadro);
 
   return {

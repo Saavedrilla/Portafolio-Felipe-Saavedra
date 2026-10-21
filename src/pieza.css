@@ -371,3 +371,13 @@ html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
   .pista{ animation:none; }
   .panel{ transition-duration:.45s; }
 }
+
+/* ============ RESCATE: cuando la página no puede arrancar ============ */
+.rescate{
+  position:fixed; z-index:500; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(460px, calc(100vw - 32px)); margin:0; padding:18px 20px;
+  background:var(--papel); border:var(--borde); box-shadow:var(--sombra-dura);
+  font-family:var(--t-maquina); font-size:15px; line-height:1.5;
+}
+.rescate b{ display:block; margin-bottom:6px; font-family:var(--t-stencil); font-size:20px; letter-spacing:.04em; }
+.rescate a{ color:var(--rojo); font-weight:700; }
