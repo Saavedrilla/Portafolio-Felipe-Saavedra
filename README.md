@@ -1,44 +1,46 @@
-# Portafolio en vinilo — v6 "El tocadiscos"
+# Portafolio en vinilo — v7 "La pieza"
 
-La versión vigente del sitio. Fondo papel `#F4F2ED`, un tocadiscos a la izquierda y una
-caja de siete vinilos abajo: cada disco es una canción (Korn, System Of A Down, Limp
-Bizkit, Slipknot, QOTSA) y, del otro lado, una parte del portafolio. Al elegir un vinilo
-el disco vuela de la funda a la bandeja, baja la aguja y cambia la ficha de contenido.
+La versión vigente. Una pieza en 3D (Three.js): contra la pared un mueble de vinilos con
+siete discos de frente, delante una mesa con el tocadiscos y dos parlantes, alfombra a
+cuadros y afiches en la pared. Clic en un disco del mueble (o en la caja de abajo a la
+izquierda): sale de la funda, vuela al plato, baja la aguja, empieza la canción y se abre
+el panel con esa parte del portafolio.
 
 ```
-index.html           -> estructura: carga, tocadiscos, fichas y caja de discos
-src/tocadiscos.css   -> toda la parte visual de esta versión
-src/tocadiscos.js    -> pantalla de carga, poner/levantar disco, teclado y sonido
+index.html          -> pantalla de carga, cabecera, tarjeta "lo que suena", caja y panel con las fichas
+src/datos.js        -> LOS SIETE DISCOS: canción, banda, colores, arte y video de YouTube
+src/escena.js       -> la pieza en 3D: mueble, mesa, tocadiscos, parlantes, luces y animaciones
+src/texturas.js     -> portadas, etiquetas, piso, alfombra y afiche dibujados en canvas
+src/pieza.js        -> carga, música, panel, teclado
+src/pieza.css       -> todo lo que flota encima del 3D
 ```
 
-| Disco | Canción | Sección del portafolio |
+| Disco | Canción | Sección |
 |---|---|---|
 | 01 | Korn — Blind | Quién soy |
-| 02 | System Of A Down — Toxicity | Mis fuertes (estilos que trabajo) |
-| 03 | Limp Bizkit — Break Stuff | Identidad / branding |
+| 02 | System Of A Down — Toxicity | Mis fuertes |
+| 03 | Limp Bizkit — Break Stuff | Identidad |
 | 04 | Slipknot — Duality | Motion y video |
 | 05 | QOTSA — No One Knows | UI y UX |
 | 06 | Korn — Freak on a Leash | El proceso |
 | 07 | System Of A Down — Aerials | Contacto |
 
-**Para editar el contenido:** busca `EDITA` en `index.html`. Cada ficha es un
-`<article class="ficha" data-ficha="NN">`. Para cambiar la canción de un vinilo basta
-con editar los `data-` del botón correspondiente en la sección `.caja`.
+**Música:** cada disco toca su video oficial de YouTube, visible en la tarjeta de abajo a la
+izquierda. Se eligió YouTube y no mp3 porque subir canciones con derechos a una web
+pública es redistribuirlas; el video embebido sí está licenciado. Si para algún disco
+quieres un mp3 propio, pon la ruta en `audio` dentro de `src/datos.js`. A 45 rpm un disco
+de 33 suena acelerado, como en un tocadiscos de verdad.
 
-**Tipografías (nu metal, no gamer):** Anton (titulares), Big Shoulders Stencil Display
-(estencil de los rótulos), Special Elite (máquina de escribir de los datos técnicos),
-Permanent Marker (lo escrito a mano encima) y Archivo para el texto corrido.
+**Editar contenido:** busca `EDITA` en `index.html` (fichas) y cambia canciones en
+`src/datos.js`.
 
-**Sonido:** el botón de la cabecera enciende un crujido de aguja sintetizado (no hay
-archivos de audio). Si algún día pones `audio/01.mp3` ... `audio/07.mp3`, cada disco toca
-el suyo; si el archivo no existe, no pasa nada y se queda el crujido.
+**Teclado:** ← → pasan de disco, Esc cierra la ficha (y si ya está cerrada, levanta la
+aguja). Clic en una zona vacía de la pieza vuelve a la vista general.
 
-**Movimiento:** la pantalla de carga y el plato girando funcionan siempre, también con el
-movimiento reducido de Windows; en ese modo el disco gira más lento y se apagan los
-nervios (vúmetros, onda, rebotes). `?motion=full` fuerza todo.
+**Movimiento reducido:** todo sigue funcionando; se calman la cámara y los parlantes.
 
-Versiones anteriores: `versiones/` y etiquetas de git (`v2-muro-negro`,
-`v3-cartel-clavado`, `v5-muro-negro-movimiento`).
+Versiones anteriores en etiquetas de git: `v6-tocadiscos-2d`, `v5-muro-negro-movimiento`,
+`v3-cartel-clavado`, `v2-muro-negro`.
 
 ---
 

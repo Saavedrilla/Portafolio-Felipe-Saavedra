@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" class="sin-js cargando">
+<html lang="es" class="cargando">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Felipe Saavedra — Portafolio en vinilo</title>
-<meta name="description" content="Portafolio de Felipe Saavedra, diseñador gráfico: branding, UI y UX. Siete vinilos, siete lados del trabajo. Ponlos en el tocadiscos.">
+<meta name="description" content="Portafolio de Felipe Saavedra, diseñador gráfico: branding, UI y UX. Entra a la pieza, saca un vinilo del mueble y ponlo en el tocadiscos.">
 <meta name="theme-color" content="#F4F2ED">
 
 <meta property="og:type" content="website">
@@ -17,13 +17,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Stencil+Display:wght@500;700;900&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./src/tocadiscos.css">
+<link rel="stylesheet" href="./src/pieza.css">
 </head>
 <body>
 
-<!-- ============================================================
-     PANTALLA DE CARGA — el plato arranca antes que la página
-     ============================================================ -->
+<!-- ============ PANTALLA DE CARGA ============ -->
 <div class="carga" id="carga" role="status" aria-live="polite">
   <div class="carga__plato" aria-hidden="true">
     <span class="carga__disco"></span>
@@ -35,23 +33,15 @@
       <span class="doble__mano" aria-hidden="true">Saavedra</span>
     </span>
   </p>
-  <p class="carga__pie">CALENTANDO LA BANDEJA &mdash; <b id="cargaPct">0</b>%</p>
+  <p class="carga__pie"><span id="cargaTexto">ARMANDO LA PIEZA</span> &mdash; <b id="cargaPct">0</b>%</p>
   <div class="carga__barra"><span id="cargaRelleno"></span></div>
 </div>
 
-<!-- Filtros de fotocopia: ruido y bordes rasgados -->
-<svg class="defs" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="xerox">
-      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="r"/>
-      <feColorMatrix in="r" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer>
-    </filter>
-  </defs>
-</svg>
+<!-- ============ LA PIEZA EN 3D ============ -->
+<canvas class="escena" id="escena" aria-label="Una pieza con un tocadiscos sobre una mesa y un mueble de vinilos contra la pared"></canvas>
 
 <header class="marca">
-  <a class="marca__nombre" href="#notas">
+  <a class="marca__nombre" href="#" data-abre="01">
     <span class="doble doble--chico">
       <span class="doble__impreso">FELIPE SAAVEDRA</span>
       <span class="doble__mano" aria-hidden="true">Felipe</span>
@@ -59,83 +49,52 @@
   </a>
   <p class="marca__rol">Diseño gráfico &mdash; identidad, UI &amp; UX</p>
   <div class="marca__acciones">
-    <button class="btn-son" id="btnSonido" type="button" aria-pressed="false">
-      Sonido: <b>off</b>
-    </button>
-    <a class="btn-son" href="mailto:fsarmijo21@gmail.com">Escríbeme</a>
+    <button class="btn" type="button" data-abre="01">Sobre mí</button>
+    <a class="btn" href="mailto:fsarmijo21@gmail.com">Escríbeme</a>
   </div>
 </header>
 
-<main class="consola">
+<p class="pista" id="pista"><span>&uarr;</span> Saca un vinilo del mueble y ponlo en el tocadiscos</p>
+<div class="globo" id="globo" aria-hidden="true"></div>
+<p class="sin3d" id="sin3d" hidden>Tu navegador no pudo abrir la vista en 3D. Elige un disco de la caja de abajo: la música y el portafolio funcionan igual.</p>
 
-  <!-- ========================= EL TOCADISCOS ========================= -->
-  <section class="plato-zona" aria-label="Tocadiscos">
-    <div class="plato" id="plato" data-estado="vacio">
-
-      <div class="plato__chasis">
-        <p class="plato__sello">MODELO <b>FS-33</b> &middot; PORTAFOLIO 2026</p>
-
-        <div class="plato__bandeja">
-          <div class="plato__eje" aria-hidden="true"></div>
-          <!-- El disco: se rellena al elegir un vinilo -->
-          <div class="disco" id="disco" aria-hidden="true">
-            <div class="disco__surcos"></div>
-            <div class="disco__etiqueta" id="discoEtiqueta"></div>
-          </div>
-          <p class="plato__vacio" id="platoVacio">BANDEJA VACÍA<br><span>elige un vinilo de la caja</span></p>
-        </div>
-
-        <!-- El brazo y la aguja -->
-        <div class="brazo" id="brazo" aria-hidden="true">
-          <span class="brazo__pivote"></span>
-          <span class="brazo__tubo"></span>
-          <span class="brazo__cabeza"></span>
-        </div>
-
-        <!-- Mandos -->
-        <div class="mandos">
-          <div class="rpm" role="group" aria-label="Velocidad">
-            <button type="button" class="rpm__btn is-on" data-rpm="33">33⅓</button>
-            <button type="button" class="rpm__btn" data-rpm="45">45</button>
-          </div>
-          <div class="vu" aria-hidden="true">
-            <span class="vu__aguja"></span><span class="vu__aguja"></span>
-          </div>
-          <button type="button" class="mando-stop" id="btnStop" disabled>Levantar aguja</button>
-        </div>
+<!-- ============ LADO IZQUIERDO: LO QUE SUENA + LA CAJA ============ -->
+<div class="izq">
+  <section class="suena" id="suena" aria-label="Lo que suena" hidden>
+    <div class="suena__cabeza">
+      <span class="suena__mini" id="suenaMini" aria-hidden="true"></span>
+      <div>
+        <p class="suena__lado">LADO <span id="suenaLado">A</span> &middot; PISTA <span id="suenaPista">01</span> &middot; <span id="suenaRpm">33</span> RPM</p>
+        <h2 class="suena__cancion" id="suenaCancion">—</h2>
+        <p class="suena__banda" id="suenaBanda">—</p>
       </div>
-
-      <!-- Lo que suena -->
-      <div class="suena" id="suena">
-        <p class="suena__lado">LADO <span id="suenaLado">—</span> &middot; PISTA <span id="suenaPista">—</span></p>
-        <h2 class="suena__cancion" id="suenaCancion">Nada en la bandeja</h2>
-        <p class="suena__banda"><span id="suenaBanda">—</span></p>
-        <p class="suena__tema">Este lado trata de: <b id="suenaTema">—</b></p>
-        <div class="onda" id="onda" aria-hidden="true"></div>
-      </div>
+    </div>
+    <div class="suena__tv">
+      <div id="yt"></div>
+      <p class="suena__fuente">Video oficial vía YouTube</p>
+    </div>
+    <div class="suena__barra" aria-hidden="true"><span id="suenaAvance"></span></div>
+    <div class="suena__mandos">
+      <button class="btn btn--chico" type="button" id="btnAguja">Levantar aguja</button>
+      <button class="btn btn--chico" type="button" id="btnRpm" aria-label="Cambiar velocidad">33&#8531; / 45</button>
+      <button class="btn btn--chico" type="button" id="btnSonido" aria-pressed="true">Sonido: <b>on</b></button>
+      <button class="btn btn--chico btn--tinta" type="button" id="btnFicha">Ver ficha</button>
     </div>
   </section>
 
-  <!-- ========================= LAS NOTAS ========================= -->
-  <section class="notas" id="notas" aria-label="Contenido del portafolio">
+  <nav class="caja" aria-label="La caja: los siete vinilos">
+    <p class="caja__titulo">LA CAJA <span>7 discos</span></p>
+    <div class="caja__rail" id="caja"></div>
+  </nav>
+</div>
 
-    <article class="ficha is-activa" data-ficha="00">
-      <p class="ficha__kicker">INSTRUCCIONES</p>
-      <h2 class="ficha__titulo">
-        <span class="doble">
-          <span class="doble__impreso">PON UN DISCO</span>
-          <span class="doble__mano" aria-hidden="true">pon un disco</span>
-        </span>
-      </h2>
-      <p class="ficha__entrada">Mi portafolio no es una página con secciones: es una caja de siete vinilos.
-      Cada disco es una canción que me gusta y, del otro lado, una parte de mi trabajo. Saca uno de la caja,
-      déjalo caer en la bandeja y la aguja hace el resto.</p>
-      <ul class="ficha__lista">
-        <li><b>Clic</b> en cualquier vinilo de la caja de abajo.</li>
-        <li><b>Flechas ← →</b> para pasar de disco, <b>Esc</b> para levantar la aguja.</li>
-        <li>Siete discos: quién soy, mis fuertes, identidad, motion, producto, proceso y contacto.</li>
-      </ul>
-    </article>
+<!-- ============ EL PANEL: TODO EL PORTAFOLIO ============ -->
+<aside class="panel" id="panel" aria-label="Ficha del disco" aria-hidden="true">
+  <div class="panel__barra">
+    <p class="panel__pista" id="panelPista">PISTA 01</p>
+    <button class="panel__cerrar" type="button" id="panelCerrar" aria-label="Cerrar ficha">&times;</button>
+  </div>
+  <div class="panel__cuerpo" id="panelCuerpo">
 
     <!-- EDITA: los proyectos de las fichas 03, 04 y 05 son de muestra -->
 
@@ -310,144 +269,15 @@
       </dl>
       <p class="ficha__firma"><span class="doble__mano">Felipe</span></p>
     </article>
-  </section>
-</main>
 
-<!-- ========================= LA CAJA DE DISCOS ========================= -->
-<section class="caja" aria-label="Librería de vinilos">
-  <h2 class="caja__titulo">LA CAJA <span>7 discos</span></h2>
-  <div class="caja__rail" id="cajaRail" role="list">
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="01" data-tema="Quién soy" data-cancion="Blind" data-banda="Korn"
-      data-anio="1994" data-lado="A" data-rpm="33">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#121110; --papel:#C8321E">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
-          <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" stroke-width="3"/>
-          <circle cx="50" cy="50" r="16" fill="currentColor"/>
-          <path d="M6 50h88" stroke="currentColor" stroke-width="7"/>
-        </svg>
-        <span class="vinilo__pista">01</span>
-        <span class="vinilo__nombre">BLIND</span>
-        <span class="vinilo__banda">KORN</span>
-      </span>
-      <span class="vinilo__tema">Quién soy</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="02" data-tema="Mis fuertes" data-cancion="Toxicity" data-banda="System Of A Down"
-      data-anio="2001" data-lado="A" data-rpm="33">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#121110; --papel:#B4961E">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M50 12 88 78H12z" fill="none" stroke="currentColor" stroke-width="5"/>
-          <path d="M50 40 70 74H30z" fill="currentColor"/>
-        </svg>
-        <span class="vinilo__pista">02</span>
-        <span class="vinilo__nombre">TOXICITY</span>
-        <span class="vinilo__banda">S.O.A.D.</span>
-      </span>
-      <span class="vinilo__tema">Mis fuertes</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="03" data-tema="Identidad" data-cancion="Break Stuff" data-banda="Limp Bizkit"
-      data-anio="2000" data-lado="A" data-rpm="45">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#F4F2ED; --papel:#121110">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M10 30h80v14H10zM10 56h80v14H10z" fill="currentColor"/>
-          <path d="M44 6 36 94" stroke="#C8321E" stroke-width="9"/>
-        </svg>
-        <span class="vinilo__pista">03</span>
-        <span class="vinilo__nombre">BREAK STUFF</span>
-        <span class="vinilo__banda">LIMP BIZKIT</span>
-      </span>
-      <span class="vinilo__tema">Identidad</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="04" data-tema="Motion y video" data-cancion="Duality" data-banda="Slipknot"
-      data-anio="2004" data-lado="A" data-rpm="45">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#F4F2ED; --papel:#2B2A27">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M50 10a40 40 0 010 80z" fill="currentColor"/>
-          <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="5"/>
-          <path d="M50 10v80" stroke="#C8321E" stroke-width="4"/>
-        </svg>
-        <span class="vinilo__pista">04</span>
-        <span class="vinilo__nombre">DUALITY</span>
-        <span class="vinilo__banda">SLIPKNOT</span>
-      </span>
-      <span class="vinilo__tema">Motion y video</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="05" data-tema="UI y UX" data-cancion="No One Knows" data-banda="Queens of the Stone Age"
-      data-anio="2002" data-lado="A" data-rpm="33">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#121110; --papel:#E6E3DA">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <g fill="currentColor">
-            <circle cx="28" cy="30" r="9"/><circle cx="52" cy="30" r="6"/><circle cx="74" cy="30" r="3"/>
-            <circle cx="28" cy="54" r="6"/><circle cx="52" cy="54" r="9"/><circle cx="74" cy="54" r="6"/>
-            <circle cx="28" cy="76" r="3"/><circle cx="52" cy="76" r="6"/><circle cx="74" cy="76" r="9"/>
-          </g>
-        </svg>
-        <span class="vinilo__pista">05</span>
-        <span class="vinilo__nombre">NO ONE KNOWS</span>
-        <span class="vinilo__banda">QOTSA</span>
-      </span>
-      <span class="vinilo__tema">UI y UX</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="06" data-tema="El proceso" data-cancion="Freak on a Leash" data-banda="Korn"
-      data-anio="1998" data-lado="B" data-rpm="33">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#F4F2ED; --papel:#3A3733">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <g fill="none" stroke="currentColor" stroke-width="6">
-            <rect x="18" y="18" width="30" height="30" rx="14"/>
-            <rect x="52" y="52" width="30" height="30" rx="14"/>
-            <path d="M40 40 60 60"/>
-          </g>
-        </svg>
-        <span class="vinilo__pista">06</span>
-        <span class="vinilo__nombre">FREAK ON A LEASH</span>
-        <span class="vinilo__banda">KORN</span>
-      </span>
-      <span class="vinilo__tema">El proceso</span>
-    </button>
-
-    <button class="vinilo" role="listitem" type="button"
-      data-id="07" data-tema="Contacto" data-cancion="Aerials" data-banda="System Of A Down"
-      data-anio="2001" data-lado="B" data-rpm="33">
-      <span class="vinilo__disco" aria-hidden="true"></span>
-      <span class="vinilo__funda" style="--tinta:#121110; --papel:#F4F2ED">
-        <svg class="arte" viewBox="0 0 100 100" aria-hidden="true">
-          <g stroke="currentColor" stroke-width="4">
-            <path d="M50 50 50 6M50 50 94 50M50 50 50 94M50 50 6 50M50 50 81 19M50 50 19 81M50 50 81 81M50 50 19 19"/>
-          </g>
-          <circle cx="50" cy="50" r="12" fill="#C8321E"/>
-        </svg>
-        <span class="vinilo__pista">07</span>
-        <span class="vinilo__nombre">AERIALS</span>
-        <span class="vinilo__banda">S.O.A.D.</span>
-      </span>
-      <span class="vinilo__tema">Contacto</span>
-    </button>
+    <nav class="panel__nav" aria-label="Pasar de disco">
+      <button class="btn" type="button" id="discoAnterior">&larr; Disco anterior</button>
+      <button class="btn btn--tinta" type="button" id="discoSiguiente">Siguiente disco &rarr;</button>
+    </nav>
+    <p class="panel__nota">Las canciones son de sus autores y suenan desde sus videos oficiales en YouTube; aquí solo dan nombre a cada lado del portafolio.</p>
   </div>
-</section>
+</aside>
 
-<footer class="pie">
-  <p>FELIPE SAAVEDRA &middot; DISEÑO GRÁFICO &middot; <a href="mailto:fsarmijo21@gmail.com">fsarmijo21@gmail.com</a></p>
-  <p class="pie__nota">Las canciones son de sus autores; aquí solo dan nombre a cada lado del portafolio.</p>
-</footer>
-
-<script type="module" src="./src/tocadiscos.js"></script>
+<script type="module" src="./src/pieza.js"></script>
 </body>
 </html>
