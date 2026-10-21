@@ -25,10 +25,20 @@ const root = document.documentElement;
    y cualquier sitio bien hecho se apaga solo. Por eso un sitio
    puede estar perfecto y verse muerto en tu máquina.
 
-   Reglas:
-   - Por defecto se respeta lo que pide el sistema.
-   - `?motion=full` en la URL fuerza el movimiento completo.
-   - Queda guardado, así que basta con entrar una vez así.
+   Apagarlo todo era pasarse de frenada. Lo que molesta a quien
+   pide menos movimiento es lo que desplaza cosas grandes y lo
+   que secuestra el scroll: parallax, scroll horizontal clavado,
+   inercia, marquesinas que aceleran. Un fundido no marea a
+   nadie, y la pantalla de carga tampoco.
+
+   Así que hay tres modos:
+     full   movimiento completo.
+     suave  sin inercia, sin parallax, sin scroll clavado;
+            quedan la pantalla de carga y los fundidos.
+     (el modo suave es el que se usa cuando el sistema pide
+      menos movimiento, en vez de dejar la página muerta)
+
+   - `?motion=full` fuerza el completo y queda guardado.
    - `?motion=auto` vuelve a respetar el sistema.
    --------------------------------------------------------- */
 const parametro = new URLSearchParams(location.search).get('motion');
@@ -37,10 +47,10 @@ if (parametro === 'auto') localStorage.removeItem('motion');
 
 const forzado = localStorage.getItem('motion') === 'full';
 const prefiereMenos = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const reduced = !forzado && prefiereMenos;
+const suave = !forzado && prefiereMenos;
 
 root.classList.add('js');
-if (forzado) root.classList.add('motion-full');
+root.classList.add(suave ? 'motion-suave' : 'motion-full');
 
 /* =========================================================
    0. LO QUE FUNCIONA SIEMPRE: menú y año
@@ -66,16 +76,7 @@ if (forzado) root.classList.add('motion-full');
   if (year) year.textContent = String(new Date().getFullYear());
 })();
 
-/* =========================================================
-   1. SIN MOVIMIENTO: se muestra todo y se acaba aquí
-   ========================================================= */
-if (reduced) {
-  root.classList.remove('is-loading');
-  document.getElementById('loader')?.remove();
-  document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
-} else {
-  arrancar();
-}
+arrancar();
 
 function arrancar() {
   /* =======================================================
@@ -84,14 +85,30 @@ function arrancar() {
      Lenis manda el scroll, GSAP lleva el reloj, y
      ScrollTrigger se actualiza con cada frame de Lenis.
      ======================================================= */
-  const lenis = new Lenis({
-    duration: 1.1,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-  });
+  /* En modo suave no hay inercia: manda el scroll del navegador.
+     Para no llenar el resto del archivo de condicionales, se
+     devuelve un sustituto con la misma forma que Lenis. */
+  const lenis = suave
+    ? {
+        on() {},
+        stop() {},
+        start() {},
+        raf() {},
+        scrollTo(destino, opciones = {}) {
+          const y = destino.getBoundingClientRect().top + window.scrollY + (opciones.offset || 0);
+          window.scrollTo({ top: y, behavior: 'auto' });
+        },
+      }
+    : new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+      });
 
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  if (!suave) {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+  }
   gsap.ticker.lagSmoothing(0);
 
   // Los enlaces del menú ahora los mueve Lenis
@@ -151,8 +168,8 @@ function arrancar() {
     );
 
     // La portada arranca escondida antes de levantar el telón
-    gsap.set(piezas, { yPercent: 110, opacity: 0 });
-    gsap.set('.cover__photo', { scale: 1.14, opacity: 0 });
+    gsap.set(piezas, { yPercent: suave ? 0 : 110, opacity: 0 });
+    gsap.set('.cover__photo', { scale: suave ? 1 : 1.14, opacity: 0 });
     gsap.set('.tape--a', { opacity: 0 });
 
     const tl = gsap.timeline({
@@ -204,7 +221,10 @@ function arrancar() {
     const lista = Array.from(elementos || []);
     if (!lista.length) return;
 
-    const { yPercent = 26, rotate = 0, stagger = 0.08, start = 'top 82%' } = opciones;
+    const { stagger = 0.08, start = 'top 82%' } = opciones;
+    // En suave no se desplaza nada: solo aparece.
+    const yPercent = suave ? 0 : (opciones.yPercent ?? 26);
+    const rotate = suave ? 0 : (opciones.rotate ?? 0);
 
     gsap.set(lista, { yPercent, rotate, opacity: 0 });
     gsap.to(lista, {
@@ -238,11 +258,13 @@ function arrancar() {
     const print = stack.querySelector('.stack__print');
     if (!hand || !print) return;
 
-    gsap
-      .timeline({
-        scrollTrigger: { trigger: stack, start: 'top 85%', end: 'bottom 25%', scrub: 1 },
-      })
-      .fromTo(hand, { x: -14, y: 8, rotate: -1.6 }, { x: 10, y: -6, rotate: 1.2, ease: 'none' });
+    if (!suave) {
+      gsap
+        .timeline({
+          scrollTrigger: { trigger: stack, start: 'top 85%', end: 'bottom 25%', scrub: 1 },
+        })
+        .fromTo(hand, { x: -14, y: 8, rotate: -1.6 }, { x: 10, y: -6, rotate: 1.2, ease: 'none' });
+    }
 
     // El contorno impreso se dibuja al entrar
     entra([print], stack, { yPercent: 60, start: 'top 86%' });
@@ -255,7 +277,7 @@ function arrancar() {
      ======================================================= */
   (function marquee() {
     const track = document.querySelector('.marquee__track');
-    if (!track) return;
+    if (!track || suave) return;   // en suave lo anima el CSS, a ritmo fijo
 
     const loop = gsap.to(track, {
       xPercent: -50,
@@ -280,7 +302,7 @@ function arrancar() {
      ======================================================= */
   document.querySelectorAll('.plate').forEach((plate) => {
     const img = plate.querySelector('.plate__img');
-    if (!img) return;
+    if (!img || suave) return;
 
     gsap.fromTo(
       img,
@@ -301,7 +323,7 @@ function arrancar() {
   (function proceso() {
     const track = document.querySelector('.steps-track');
     const steps = document.querySelector('.steps');
-    if (!track || !steps) return;
+    if (!track || !steps || suave) return;   // clavar la seccion secuestra el scroll
 
     const mm = gsap.matchMedia();
     mm.add('(min-width: 900px)', () => {
@@ -347,7 +369,7 @@ function arrancar() {
     const slam = document.querySelector('.slam');
     if (!slam) return;
 
-    gsap.fromTo(
+    if (!suave) gsap.fromTo(
       slam.querySelector('.slam__img'),
       { yPercent: -9 },
       {

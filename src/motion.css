@@ -119,9 +119,21 @@ html.is-loading, html.is-loading body{ overflow:hidden; }
    6. RESPETO AL USUARIO
    Si pide menos movimiento, no hay movimiento.
    ========================================================= */
-@media (prefers-reduced-motion:reduce){
-  html:not(.motion-full) .js .steps,
-  html:not(.motion-full).js .steps{ display:grid; width:auto; padding-right:0; }
-  html:not(.motion-full) .nav{ transition:none; }
-  html:not(.motion-full) .loader{ display:none; }
+/* En modo suave la sección de proceso no se clava: vuelve a ser
+   una fila normal. La pantalla de carga SE QUEDA —un contador y
+   un telón no marean a nadie— y la marquesina vuelve a su ritmo
+   fijo de CSS en vez de obedecer a la velocidad del scroll. */
+.motion-suave.js .steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  width:auto;
+  padding-right:0;
 }
+.motion-suave.js .steps-track{
+  min-height:0;
+  display:block;
+}
+.motion-suave.js .steps .step{ width:auto; }
+.motion-suave.js .marquee__track{ animation:slide 38s linear infinite; }
+.motion-suave .nav{ transition:opacity .3s ease; }
+.motion-suave .nav.is-hidden{ transform:none; }
