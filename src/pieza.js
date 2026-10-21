@@ -223,7 +223,11 @@ function elegir(id){
   $('pista').classList.add('fuera');
   abrePanel(id);
 
-  if (escena) escena.poner(id);
+  if (escena) {
+    escena.poner(id);
+    /* seguro: si en 4 s la aguja no bajó (equipo lento), la canción suena igual */
+    setTimeout(() => { if (actual === id && !escena.sonando) sonido.suena(d); }, 4000);
+  }
   else { sonido.suena(d); }       /* sin 3D: suena de inmediato */
 }
 

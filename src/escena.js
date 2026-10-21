@@ -13,6 +13,10 @@ import gsap from 'gsap';
 import * as T from './texturas.js';
 
 const PI = Math.PI;
+
+/* Si el equipo dibuja pocos cuadros, GSAP por defecto "estira" el tiempo y
+   el disco tardaría muchísimo en llegar al plato. Así avanza en tiempo real. */
+gsap.ticker.lagSmoothing(0);
 const PARED_Z = -1.75;
 const MESA_Y = 0.72;
 const MESA_Z = -0.45;
@@ -624,8 +628,27 @@ export async function crearEscena(canvas, discos, avisos = {}){
   const reloj = new THREE.Clock();
   let latido = 0;
 
+  /* Calidad adaptable: mide los primeros cuadros y, si la tarjeta gráfica
+     no da abasto (ej. una gráfica integrada), baja la resolución y luego
+     las sombras. */
+  const medida = { n: 0, suma: 0, nivel: 0 };
+  function adapta(bruto){
+    if (medida.nivel >= 2 || bruto > 0.5 || document.hidden) return;
+    medida.n++; medida.suma += bruto;
+    if (medida.n < 60) return;
+    const fps = medida.n / medida.suma;
+    medida.n = 0; medida.suma = 0;
+    if (fps >= 40) { medida.nivel = 2; return; }      /* va bien: no se mide más */
+    if (medida.nivel === 0 && renderer.getPixelRatio() > 1) { renderer.setPixelRatio(1); ajustaTam(); medida.nivel = 1; return; }
+    renderer.shadowMap.enabled = false;
+    escena.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { m.needsUpdate = true; }); });
+    medida.nivel = 2;
+  }
+
   function cuadro(){
-    const dt = Math.min(reloj.getDelta(), 0.05);
+    const bruto = reloj.getDelta();
+    adapta(bruto);
+    const dt = Math.min(bruto, 0.05);
     const t = reloj.elapsedTime;
 
     giro.vel += (giro.meta - giro.vel) * Math.min(1, dt * (giro.meta > giro.vel ? 2.2 : 1.1));
