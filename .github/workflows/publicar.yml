@@ -1,0 +1,67 @@
+# Publica el sitio en Vercel desde GitHub.
+#
+# Existe porque la integracion directa de Vercel con este repositorio
+# dejo de responder: desde el 18 de octubre de 2026 los pushes no
+# generan ningun deployment. Esta via no depende de esa integracion.
+#
+# Para encenderla hacen falta tres secretos en
+# Settings -> Secrets and variables -> Actions:
+#
+#   VERCEL_TOKEN       vercel.com/account/tokens -> Create Token
+#   VERCEL_ORG_ID      Vercel -> Settings de la cuenta -> ID
+#   VERCEL_PROJECT_ID  Vercel -> el proyecto -> Settings -> Project ID
+#
+# Mientras no esten, el flujo se salta solo y no ensucia el repo
+# con errores rojos.
+
+name: Publicar en Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    outputs:
+      listo: ${{ steps.credenciales.outputs.listo }}
+    steps:
+      - id: credenciales
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ORG: ${{ secrets.VERCEL_ORG_ID }}
+          PROYECTO: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ORG" ] && [ -n "$PROYECTO" ]; then
+            echo "listo=si" >> "$GITHUB_OUTPUT"
+            echo "Credenciales presentes: se publica."
+          else
+            echo "listo=no" >> "$GITHUB_OUTPUT"
+            echo "Faltan secretos de Vercel. No se publica nada todavia."
+            echo "Hacen falta VERCEL_TOKEN, VERCEL_ORG_ID y VERCEL_PROJECT_ID."
+          fi
+
+  publicar:
+    needs: comprobar
+    if: needs.comprobar.outputs.listo == 'si'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Traer la configuracion del proyecto
+        run: npx --yes vercel@47 pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Compilar
+        run: npx --yes vercel@47 build --prod --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Publicar en produccion
+        run: npx --yes vercel@47 deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}"
