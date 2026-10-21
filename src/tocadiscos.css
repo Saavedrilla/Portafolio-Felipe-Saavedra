@@ -270,16 +270,15 @@ html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
   overflow:hidden;
 }
 .disco__etiqueta .arte{
-  position:absolute; inset:8%; width:84%; height:84%;
-  opacity:.9;
+  position:absolute; inset:6% 6% 22%; width:88%; height:72%;
+  opacity:.72;
 }
 .disco__etiqueta .et-texto{
-  position:relative; z-index:2;
+  position:absolute; z-index:2;
+  left:6%; right:6%; bottom:12%;
   font-family:var(--t-stencil); font-weight:900;
-  font-size:clamp(9px,.95vw,13px); letter-spacing:.06em;
-  line-height:1.05; text-transform:uppercase;
-  max-width:78%;
-  text-shadow:0 0 6px var(--et-papel,#C8321E);
+  font-size:clamp(11px,1.7vw,22px); letter-spacing:.04em;
+  line-height:.95; text-transform:uppercase;
 }
 .disco__etiqueta::after{
   content:""; position:absolute; left:50%; top:50%;
