@@ -588,21 +588,25 @@ export async function crearEscena(canvas, discos, avisos = {}){
     disco.position.set(0, DISCO_Y, 0);
     disco.rotation.set(0, disco.rotation.y, 0);
 
-    ocupado = false;
+    /* sigue ocupado hasta que la aguja esté abajo: si llega otro clic
+       mientras baja, se atiende después y no se cruzan los dos discos */
     await tocar();
+    ocupado = false;
     if (pendiente && pendiente !== actual) { const p = pendiente; pendiente = null; poner(p); }
     else pendiente = null;
   }
 
   async function tocar(){
     if (!actual) return;
+    const id = actual;
     giro.meta = radPorSeg(rpm);
     gsap.to(luzMat, { emissiveIntensity: 3, duration: 0.3 });
     gsap.to(boton.position, { y: TOPE + 0.002, duration: 0.1, yoyo: true, repeat: 1 });
     progreso = 0;
     await aguja(true);
+    if (actual !== id) return;
     estado = 'sonando';
-    avisos.alSonar && avisos.alSonar(fundas[actual].d);
+    avisos.alSonar && avisos.alSonar(fundas[id].d);
   }
 
   async function levantar(rapido = false){
