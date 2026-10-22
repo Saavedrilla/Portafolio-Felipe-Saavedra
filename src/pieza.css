@@ -139,12 +139,17 @@ html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
 }
 .marca__acciones{ display:flex; gap:8px; }
 
+/* sobre la pared oscura, la cabecera va en tinta clara */
+.marca .doble__impreso{ -webkit-text-stroke-color:var(--papel); }
+.marca__rol{ color:rgba(244,242,237,.72); }
+
 /* ============ PISTA Y GLOBO ============ */
 .pista{
   position:fixed; z-index:15; left:50%; top:calc(var(--margen) + 64px);
   transform:translateX(-50%);
   margin:0; padding:8px 14px;
   background:var(--tinta); color:var(--papel);
+  border:2px solid var(--papel);
   font-family:var(--t-maquina); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
   white-space:nowrap;
   transition:opacity .4s ease;

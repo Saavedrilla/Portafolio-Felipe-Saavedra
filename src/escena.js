@@ -21,6 +21,11 @@ const PARED_Z = -1.75;
 const MESA_Y = 0.72;
 const MESA_Z = -0.45;
 
+/* EL COLOR DE LA PARED: cambia solo esta línea para probar otro tono.
+   Oscuro pero no negro, para que el mueble negro no se pierda contra ella. */
+const PARED = '#25302B';
+const FONDO = new THREE.Color(PARED).multiplyScalar(0.55);
+
 /* el mueble: 5 columnas x 3 filas, como un Kallax */
 const CEL = 0.335, INT = 0.016, EXT = 0.04, PROF = 0.39, COLS = 5, FILAS = 3, PATA = 0.07;
 const ANCHO = COLS * CEL + (COLS - 1) * INT + 2 * EXT;
@@ -62,8 +67,8 @@ export async function crearEscena(canvas, discos, avisos = {}){
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
-  escena.background = new THREE.Color('#E9E5DC');
-  escena.fog = new THREE.Fog('#E9E5DC', 5, 11);
+  escena.background = FONDO;
+  escena.fog = new THREE.Fog(FONDO, 5, 11);
 
   const camara = new THREE.PerspectiveCamera(36, 1, 0.05, 30);
 
@@ -75,12 +80,12 @@ export async function crearEscena(canvas, discos, avisos = {}){
   suelo.receiveShadow = true;
   escena.add(suelo);
 
-  const pared = new THREE.Mesh(new THREE.PlaneGeometry(12, 6), mat('#F4F2ED', 0.95));
+  const pared = new THREE.Mesh(new THREE.PlaneGeometry(12, 6), mat(PARED, 0.95));
   pared.position.set(0, 3, PARED_Z);
   pared.receiveShadow = true;
   escena.add(pared);
 
-  const zocalo = new THREE.Mesh(new THREE.BoxGeometry(12, 0.09, 0.02), mat('#DCD7CB', 0.8));
+  const zocalo = new THREE.Mesh(new THREE.BoxGeometry(12, 0.09, 0.02), mat('#141A17', 0.8));
   zocalo.position.set(0, 0.045, PARED_Z + 0.01);
   escena.add(zocalo);
 
