@@ -3,11 +3,9 @@
    Une la escena 3D con la interfaz: pantalla de carga, la caja
    de discos, el panel con la ficha y la música.
 
-   Música: cada disco toca su video oficial de YouTube (ver
-   datos.js). Se eligió YouTube y no mp3 porque subir canciones de
-   Korn o Slipknot a una web pública es redistribuir música con
-   derechos; el video embebido sí está licenciado. Si quieres un
-   mp3 propio para algún disco, pon su ruta en `audio`.
+   Música: cada disco toca su mp3 de public/audio/ (01.mp3 ... 07.mp3).
+   Si falta el archivo de un disco, ese disco suena desde su video
+   oficial de YouTube (ver datos.js).
    ============================================================ */
 import { DISCOS, svgArte } from './datos.js';
 import { crearEscena } from './escena.js';
@@ -69,6 +67,7 @@ DISCOS.forEach(d => {
   b.title = `${d.cancion} — ${d.tema}`;
   b.innerHTML = svgArte(d) + `<span class="mini__num" style="color:${d.tinta}">${d.id}</span>`;
   b.addEventListener('click', () => elegir(d.id));
+  b.addEventListener('pointerenter', () => sonido.precarga(d));
   caja.appendChild(b);
 });
 
@@ -122,22 +121,58 @@ const sonido = {
     o.start(t); o.stop(t + 0.22);
   },
 
-  /* prepara el video al elegir (dentro del clic) y lo suelta al bajar la aguja */
+  /* ---- mp3 propios: public/audio/01.mp3 ... 07.mp3 ----
+     Se cargan al pasar el mouse por un disco y al elegirlo, así cuando
+     baja la aguja la canción ya está en memoria y arranca al tiro.
+     Si el archivo no existe, ese disco suena desde YouTube. */
+  cache: {}, sinMp3: new Set(), quiere: null,
+
+  rutaMp3(d){ return d.audio || `audio/${d.id}.mp3`; },
+
+  precarga(d){
+    if (!d || this.sinMp3.has(d.id) || this.cache[d.id]) return;
+    const a = new Audio();
+    a.preload = 'auto';
+    a.addEventListener('error', () => {
+      this.sinMp3.add(d.id);
+      delete this.cache[d.id];
+      if (this.mp3 === a) {            /* era el elegido: pasa a YouTube */
+        this.mp3 = null;
+        modoTarjeta(false);
+        if (this.ytListo) this.yt.cueVideoById(d.yt); else this.pendiente = d;
+        if (this.quiere === d) this.suena(d);
+      }
+    });
+    a.addEventListener('ended', () => { if (this.mp3 === a) levantarAguja(); });
+    a.src = this.rutaMp3(d);
+    this.cache[d.id] = a;
+  },
+
+  /* al elegir (dentro del clic): deja lista la canción */
   prepara(d){
     this.para();
-    if (d.audio) {
-      this.mp3 = new Audio(d.audio);
-      this.mp3.preload = 'auto';
+    this.quiere = null;
+    if (!this.sinMp3.has(d.id)) {
+      this.precarga(d);
+      this.mp3 = this.cache[d.id] || null;
+    }
+    if (this.mp3) {
+      this.mp3.currentTime = 0;
+      modoTarjeta(true);
       return;
     }
+    modoTarjeta(false);
     if (this.ytListo) this.yt.cueVideoById(d.yt);
     else this.pendiente = d;
   },
 
+  /* al bajar la aguja */
   suena(d){
+    this.quiere = d;
     this.crujido(0.045);
-    if (d.audio && this.mp3) {
+    if (this.mp3) {
       this.mp3.muted = !this.on;
+      this.mp3.volume = 0.9;
       this.mp3.play().catch(() => {});
       return;
     }
@@ -155,6 +190,7 @@ const sonido = {
 
   para(){
     this.crujido(0);
+    this.quiere = null;
     if (this.mp3) { this.mp3.pause(); this.mp3 = null; }
     if (this.ytListo) { try { this.yt.pauseVideo(); } catch {} }
   },
@@ -229,6 +265,10 @@ function elegir(id){
     setTimeout(() => { if (actual === id && !escena.sonando) sonido.suena(d); }, 4000);
   }
   else { sonido.suena(d); }       /* sin 3D: suena de inmediato */
+}
+
+function modoTarjeta(conMp3){
+  $('suena').classList.toggle('con-mp3', conMp3);
 }
 
 function muestraTarjeta(d){
@@ -360,6 +400,7 @@ addEventListener('keydown', e => {
 const globo = $('globo');
 function pasa(d, x, y){
   if (!d) { globo.classList.remove('si'); return; }
+  sonido.precarga(d);
   globo.innerHTML = `<b>${d.cancion}</b><span>${d.corta || d.banda} · <i>${d.tema}</i></span>`;
   globo.style.left = x + 'px';
   globo.style.top = y + 'px';

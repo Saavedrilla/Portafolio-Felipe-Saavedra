@@ -208,6 +208,8 @@ html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
 .suena__tv{ margin-top:10px; background:var(--chasis); border:2px solid var(--tinta); padding:6px 6px 4px; }
 .suena__tv iframe, .suena__tv #yt{ display:block; width:100%; aspect-ratio:16/9; height:auto; border:0; background:#000; }
 .suena__tv{ position:relative; }
+/* con mp3 el video no hace falta: la tarjeta queda compacta */
+.con-mp3 .suena__tv{ display:none; }
 .pide-play .suena__tv::after{
   content:"Tu navegador pausó el audio: dale ▶ al video";
   position:absolute; left:6px; right:6px; top:6px;
