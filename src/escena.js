@@ -41,8 +41,31 @@ const BRAZO_REPOSO = 0;
 const BRAZO_INICIO = -0.54;   /* aguja en el primer surco */
 const BRAZO_FINAL  = -0.75;   /* aguja cerca de la etiqueta */
 
+/* ---------------- MODO PS2 ----------------
+   Los vértices se pegan a la grilla de píxeles de la imagen chica, como
+   en la PlayStation 1: los objetos "tiemblan" un poco al moverse. */
+const SNAP = { uSnap: { value: 1 }, uSnapRes: { value: new THREE.Vector2(240, 168) } };
+function ps(m){
+  if (m.userData.ps) return m;
+  m.userData.ps = true;
+  m.onBeforeCompile = sh => {
+    sh.uniforms.uSnap = SNAP.uSnap;
+    sh.uniforms.uSnapRes = SNAP.uSnapRes;
+    sh.vertexShader = 'uniform float uSnap;\nuniform vec2 uSnapRes;\n' + sh.vertexShader.replace(
+      '#include <project_vertex>',
+      `#include <project_vertex>
+      if (uSnap > 0.5) {
+        vec4 p = gl_Position;
+        p.xy = floor(p.xy / p.w * uSnapRes + 0.5) / uSnapRes * p.w;
+        gl_Position = p;
+      }`);
+  };
+  m.customProgramCacheKey = () => 'ps1-snap';
+  return m;
+}
+
 const mat = (color, rough = 0.7, metal = 0, extra = {}) =>
-  new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra });
+  ps(new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra }));
 
 function sombra(obj, emite = true, recibe = true){
   obj.traverse(o => { if (o.isMesh) { o.castShadow = emite; o.receiveShadow = recibe; } });
@@ -63,7 +86,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.82;   /* la pieza, en penumbra */
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
@@ -186,7 +209,8 @@ export async function crearEscena(canvas, discos, avisos = {}){
     }
 
     const [tapa, caraTex] = impresos[i];
-    const frente = mat('#ffffff', 0.55, 0, { map: tapa });
+    /* emissive en 0: al pasar el mouse sube un poco, un brillo leve */
+    const frente = mat('#ffffff', 0.55, 0, { map: tapa, emissive: '#ffffff', emissiveMap: tapa, emissiveIntensity: 0 });
     const atras = mat(d.papel, 0.7);
     const funda = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.31, 0.006), [canto, canto, canto, canto, frente, atras]);
     funda.position.set(x, y - CEL / 2 + 0.162, FRENTE_Z - 0.075);
@@ -204,7 +228,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
     escena.add(disco);
 
     fundas[d.id] = {
-      d, funda, disco,
+      d, funda, disco, frente,
       base: { pos: funda.position.clone(), rx: funda.rotation.x },
     };
   }
@@ -264,16 +288,21 @@ export async function crearEscena(canvas, discos, avisos = {}){
     escena.add(g);
     return g;
   }
-  afiche(T.aficheGira(discos), 0.5, 0.7, -1.36, 1.24, 0.025);
 
   const cargador = new THREE.TextureLoader();
-  const foto = (url, alto, x, y, rz) => cargador.load(url, tex => {
+  const foto = (url, alto, x, y, rz, dz = 0) => cargador.load(url, tex => {
     tex.colorSpace = THREE.SRGBColorSpace;
     const r = tex.image.width / tex.image.height;
-    afiche(tex, alto * r, alto, x, y, rz);
+    afiche(tex, alto * r, alto, x, y, rz).position.z += dz;
   });
   foto(new URL('../img/jefe.png', import.meta.url).href, 0.6, 1.36, 1.68, -0.03);
   foto(new URL('../img/casco-ruta.png', import.meta.url).href, 0.34, 1.02, 1.62, 0.04);
+  foto(new URL('../img/retrato-casco.png', import.meta.url).href, 0.38, -1.02, 1.44, -0.06, 0.006);
+  /* a la izquierda: un trabajo (cartel xerox) y un retrato tuyo, en collage */
+  cargador.load(new URL('../img/mtb-318.png', import.meta.url).href, tex => {
+    const cartel = T.aficheTrabajo(tex.image, { titulo: '318', mano: 'Descenso', pie: 'TRABAJO · SERIE XEROX · DONFELIPES DESIGNER' });
+    afiche(cartel, 0.44, 0.62, -1.3, 1.08, 0.025);
+  });
 
   /* ---------------- el grafiti de la pared ----------------
      La frase del aviso de arriba, pintada con spray. Aparece cuando
@@ -285,7 +314,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
     emissive: '#ffffff', emissiveMap: spray.textura, emissiveIntensity: 0.12,
   });
   const muro = new THREE.Mesh(new THREE.PlaneGeometry(grafitiAncho, grafitiAncho / spray.proporcion), grafitiMat);
-  muro.position.set(-0.02, 1.45, PARED_Z + 0.004);
+  muro.position.set(-0.02, 1.43, PARED_Z + 0.004);
   muro.rotation.z = 0.01;
   muro.receiveShadow = true;
   escena.add(muro);
@@ -480,9 +509,9 @@ export async function crearEscena(canvas, discos, avisos = {}){
   });
 
   /* ---------------- luces ---------------- */
-  escena.add(new THREE.HemisphereLight('#FFF6E8', '#6B5A48', 1.0));
+  escena.add(new THREE.HemisphereLight('#FFF6E8', '#6B5A48', 0.55));
 
-  const clave = new THREE.SpotLight('#FFE9CC', 38, 0, 0.62, 0.75, 2);
+  const clave = new THREE.SpotLight('#FFE9CC', 30, 0, 0.62, 0.75, 2);
   clave.position.set(-1.1, 3.1, 1.3);
   clave.target.position.set(0, 0.6, -0.8);
   clave.castShadow = true;
@@ -584,6 +613,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
   function asoma(f, si){
     gsap.to(f.funda.position, { z: f.base.pos.z + (si ? 0.07 : 0), y: f.base.pos.y + (si ? 0.015 : 0), duration: 0.35, ease: 'power2.out' });
     gsap.to(f.funda.rotation, { x: si ? -0.02 : f.base.rx, duration: 0.35, ease: 'power2.out' });
+    gsap.to(f.frente, { emissiveIntensity: si ? 0.22 : 0, duration: 0.45, ease: 'power2.out' });
   }
 
   /* ---------------- poner y sacar discos ---------------- */
@@ -766,8 +796,62 @@ export async function crearEscena(canvas, discos, avisos = {}){
       camara.clearViewOffset();
     }
 
-    renderer.render(escena, camara);
+    if (PS.on) {
+      renderer.setRenderTarget(lienzoChico);
+      renderer.render(escena, camara);
+      renderer.setRenderTarget(null);
+      renderer.render(postEscena, postCam);
+    } else {
+      renderer.render(escena, camara);
+    }
   }
+  /* los materiales hechos a mano (no con mat()) también tiemblan */
+  escena.traverse(o => { if (o.material) [].concat(o.material).forEach(ps); });
+
+  /* la imagen se dibuja chica y se agranda sin suavizar; encima, trama
+     de puntos (Bayer 4x4) y pocos colores, como la consola */
+  const PS = { on: true, alto: 336 };
+  const lienzoChico = new THREE.WebGLRenderTarget(2, 2, {
+    type: THREE.HalfFloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+  });
+  const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const postMat = new THREE.ShaderMaterial({
+    uniforms: { tDiffuse: { value: lienzoChico.texture }, uRes: { value: new THREE.Vector2(2, 2) } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+    fragmentShader: `
+      uniform sampler2D tDiffuse; uniform vec2 uRes; varying vec2 vUv;
+      float bayer2(vec2 a){ a = floor(a); return fract(dot(a, vec2(0.5, a.y * 0.75))); }
+      float bayer4(vec2 a){ return bayer2(0.5 * a) * 0.25 + bayer2(a); }
+      void main(){
+        gl_FragColor = vec4(texture2D(tDiffuse, vUv).rgb, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        float d = bayer4(floor(vUv * uRes)) - 0.5;
+        float n = 26.0;
+        gl_FragColor.rgb = floor(gl_FragColor.rgb * n + d + 0.5) / n;
+      }`,
+    depthTest: false, depthWrite: false,
+  });
+  const postEscena = new THREE.Scene();
+  postEscena.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), postMat));
+
+  function tamChico(){
+    const h = PS.alto, w = Math.round(h * camara.aspect);
+    lienzoChico.setSize(w, h);
+    postMat.uniforms.uRes.value.set(w, h);
+    SNAP.uSnapRes.value.set(w / 2, h / 2);
+  }
+  tamChico();
+  addEventListener('resize', tamChico);
+
+  function modoPS(on){
+    PS.on = on;
+    SNAP.uSnap.value = on ? 1 : 0;
+    escena.fog.near = on ? 3.4 : 5;
+    escena.fog.far = on ? 9.5 : 11;
+  }
+  modoPS(avisos.ps !== false);
+
   /* compila los shaders mientras sigue la pantalla de carga,
      para que el primer cuadro no dé un tirón */
   try { await Promise.race([renderer.compileAsync(escena, camara), new Promise(r => setTimeout(r, 2500))]); } catch {}
@@ -782,6 +866,8 @@ export async function crearEscena(canvas, discos, avisos = {}){
     desplaza,
     progreso: f => { progreso = Math.max(0, Math.min(1, f)); },
     grafiti,
+    modoPS,
+    get ps(){ return PS.on; },
     get actual(){ return actual; },
     get sonando(){ return estado === 'sonando'; },
   };

@@ -1,0 +1,258 @@
+/* =========================================================
+   ESCALA — fotografía, jerarquía y contraste de valor.
+
+   Lo que estaba plano no era la identidad, era que todo pesaba
+   lo mismo y no había una sola foto. Esta hoja arregla eso y
+   NO toca styles.css: solo lo pisa donde hace falta.
+
+   Tres movimientos:
+     1. Fotos reales donde van fotos.
+     2. Una escala que salta: lo que grita grita, lo que
+        susurra susurra.
+     3. Un bloque en blanco a pantalla completa, para que el
+        negro vuelva a pesar cuando regresa.
+   ========================================================= */
+
+/* =========================================================
+   1. PORTADA — el retrato manda
+   ========================================================= */
+.cover{
+  min-height:100svh;
+}
+
+/* La foto deja de ser una textura CSS y pasa a ser tu cara */
+.cover__photo{
+  width:clamp(260px, 56%, 820px);
+  /* Ya viene tramada del xerox: no hace falta volver a filtrarla */
+  filter:none;
+  background-color:var(--void);
+  background-image:url("../img/retrato-casco.png");
+  background-size:cover;
+  background-position:52% 18%;
+  background-repeat:no-repeat;
+  /* La foto es blanco sobre blanco: en negativo se invierte para
+     que la silueta quede de luz contra el muro */
+  mix-blend-mode:screen;
+  opacity:.92;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 18%, #000 46%);
+  mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.55) 18%, #000 46%);
+}
+/* La trama de puntos encima sobraba: la foto ya la trae */
+.cover__photo::after{ opacity:.18; }
+
+/* En móvil no caben dos columnas. En vez de superponer el texto
+   sobre la foto —que depende de dónde caiga el recorte y se
+   vuelve ilegible— se apilan: retrato arriba, tipografía debajo
+   sobre el muro limpio. Es predecible y se lee siempre. */
+@media (max-width:720px){
+  .cover{
+    display:block;
+    min-height:0;
+    padding-top:var(--navh);
+  }
+  .cover__photo{
+    position:relative;
+    width:100%;
+    height:50vh;
+    /* Sin `screen`: en vertical el recorte cae sobre el casco, que
+       es negro, y mezclado se perdía entero. Aquí va tal cual. */
+    mix-blend-mode:normal;
+    opacity:1;
+    background-position:50% 12%;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 64%, transparent 100%);
+    mask-image:linear-gradient(180deg, #000 0%, #000 64%, transparent 100%);
+  }
+  .cover__type{
+    padding-top:clamp(10px, 3vw, 22px);
+    padding-bottom:clamp(44px, 9vw, 78px);
+  }
+}
+
+/* El nombre deja de ser un pie de foto y pasa a ser el titular.
+   Antes medía lo mismo que el texto de al lado; ahora domina. */
+.cover__name{
+  font-family:var(--font-display);
+  font-size:clamp(2.6rem, 7.6vw, 6.2rem);
+  line-height:.86;
+  letter-spacing:-.018em;
+  text-transform:uppercase;
+  color:var(--chalk);
+  margin:clamp(14px,2.4vw,30px) 0 clamp(10px,1.6vw,18px);
+  text-shadow:0 0 26px rgba(8,8,10,.95);
+}
+.cover__sub{
+  font-size:clamp(.68rem,1.05vw,.84rem);
+  letter-spacing:.3em;
+  color:var(--chalk-3);
+}
+
+/* =========================================================
+   2. EL GOLPE DE BLANCO
+   Una sección entera en blanco, a pantalla completa, entre dos
+   negros. Esto es lo que da profundidad: no el parallax, el
+   salto de valor. Cuando vuelve el negro, pesa.
+   ========================================================= */
+.slam{
+  position:relative;
+  min-height:100svh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:stretch;
+  background:var(--chalk);
+  color:var(--void);
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.slam__photo{
+  position:relative;
+  overflow:hidden;
+  background:var(--void);
+}
+.slam__img{
+  position:absolute;
+  inset:-14% 0;              /* sobra arriba y abajo para el parallax */
+  background-image:url("../img/mtb-318.png");
+  background-size:cover;
+  background-position:50% 42%;
+}
+
+.slam__type{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:clamp(18px,2.4vw,34px);
+  padding:clamp(56px,7vw,110px) clamp(26px,4.6vw,78px);
+}
+.slam__kicker{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(8,8,10,.52);
+}
+.slam__kicker::before{
+  content:"";
+  display:inline-block;
+  width:26px;
+  height:2px;
+  margin-right:.9em;
+  vertical-align:.26em;
+  background:var(--blood);
+}
+
+/* El titular más grande de toda la página. A propósito:
+   si todo grita, nada grita. */
+.slam__title{
+  margin:0;
+  font-family:var(--font-display);
+  font-size:clamp(3.1rem, 8.4vw, 8.8rem);
+  line-height:.82;
+  letter-spacing:-.022em;
+  text-transform:uppercase;
+  color:var(--void);
+}
+.slam__title em{
+  font-style:normal;
+  color:var(--blood);
+}
+/* La palabra escrita a mano, otra vez fuera de registro, pero
+   ahora en negro sobre blanco: el mismo gesto, invertido */
+.slam__title i{
+  display:block;
+  font-family:var(--font-hand);
+  font-style:normal;
+  font-size:.52em;
+  line-height:1;
+  margin-top:.08em;
+  transform:rotate(-1.8deg) translateX(-.02em);
+}
+
+.slam__text{
+  max-width:46ch;
+  margin:0;
+  font-size:clamp(.95rem,1.25vw,1.12rem);
+  line-height:1.62;
+  color:rgba(8,8,10,.78);
+}
+.slam__meta{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(8,8,10,.46);
+}
+
+@media (max-width:860px){
+  .slam{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+  .slam__photo{ min-height:62vh; order:-1; }
+}
+
+/* =========================================================
+   3. UNA FOTO REAL EN LA PLACA DE CICLISMO
+   Es el único proyecto que ya tiene material propio.
+   ========================================================= */
+.plate__img--foto{
+  filter:none;
+  background-color:var(--void);
+  background-image:url("../img/casco-ruta.png");
+  background-size:cover;
+  background-position:50% 30%;
+}
+.plate__img--foto::before,
+.plate__img--foto::after{ display:none; }
+
+/* =========================================================
+   4. LA FICHA LLEVA TU CARA
+   ========================================================= */
+.sheet__retrato{
+  position:relative;
+  float:right;
+  width:clamp(160px, 46%, 260px);
+  aspect-ratio:3/4;
+  margin:.2rem 0 1rem 1.6rem;
+  background-image:url("../img/jefe.png");
+  background-size:cover;
+  /* Él está a la derecha del cartel: el encuadre va ahí */
+  background-position:74% 32%;
+  border:1px solid var(--line-2);
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+  transform:rotate(1.6deg);
+}
+.sheet__retrato::after{
+  content:"";
+  position:absolute;
+  top:-12px; left:50%;
+  width:84px; height:26px;
+  translate:-50% 0;
+  rotate:-3deg;
+  background:rgba(244,242,237,.14);
+  border-left:1px solid rgba(244,242,237,.16);
+  border-right:1px solid rgba(244,242,237,.16);
+}
+@media (max-width:620px){
+  .sheet__retrato{ float:none; width:min(230px,62%); margin:0 0 1.2rem; }
+}
+
+/* =========================================================
+   5. BAJAR EL VOLUMEN DONDE TOCA
+   Servicios y proceso eran igual de ruidosos que el trabajo.
+   Si todo pesa lo mismo, nada destaca.
+   ========================================================= */
+.listing__cols .col h3{
+  font-size:clamp(1rem,1.5vw,1.18rem);
+}
+.listing__cols .col p{
+  color:var(--mute);
+}
+.listing__intro p{
+  font-size:clamp(1.15rem,2.3vw,1.85rem);
+  line-height:1.4;
+  color:var(--chalk-2);
+  max-width:24ch;
+}

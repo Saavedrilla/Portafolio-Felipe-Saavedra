@@ -1,0 +1,11 @@
+VERSIÓN 8 — LA PIEZA LIMPIA (antes del estilo PlayStation)
+
+Guardada el 22-10-2026. También existe como etiqueta de git: v8-pieza-limpia
+
+Para volver a esta versión en el sitio publicado, pídeselo a Claude
+("vuelve a la v8-pieza-limpia"), o en git:
+  git checkout v8-pieza-limpia -- index.html src
+
+sitio-compilado/ es la página ya construida. No se abre con doble clic
+(los navegadores lo bloquean): hay que servirla, por ejemplo con
+  npx vite preview --outDir versiones/v8-pieza-limpia/sitio-compilado

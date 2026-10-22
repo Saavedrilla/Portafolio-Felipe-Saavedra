@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es" class="cargando">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Felipe Saavedra — Portafolio en vinilo</title>
+<meta name="description" content="Portafolio de Felipe Saavedra, diseñador gráfico: branding, UI y UX. Entra a la pieza, saca un vinilo del mueble y ponlo en el tocadiscos.">
+<meta name="theme-color" content="#F4F2ED">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Felipe Saavedra — Portafolio en vinilo">
+<meta property="og:description" content="Siete vinilos, siete lados del trabajo. Branding, UI y UX.">
+<meta property="og:image" content="og.jpg">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F4F2ED'/%3E%3Ccircle cx='16' cy='16' r='13' fill='%23121110'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23C8321E'/%3E%3Ccircle cx='16' cy='16' r='1.3' fill='%23F4F2ED'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Stencil+Display:wght@500;700;900&family=Permanent+Marker&family=Rock+Salt&family=Special+Elite&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-CRhpVDNp.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-3Ga4XXtu.css">
+</head>
+<body>
+
+<noscript><style>.carga{display:none}</style><p class="rescate">Esta página necesita JavaScript activado.</p></noscript>
+<script>
+/* Rescate: no depende del módulo. Si la página no arranca, quita la
+   pantalla de carga y explica qué pasó en vez de quedarse pegada. */
+(function(){
+  var web = 'https://portafolio-felipe-saavedra.vercel.app';
+  function rescata(html){
+    if (window.__piezaViva) return;
+    document.documentElement.classList.remove('cargando');
+    var c = document.getElementById('carga'); if (c) c.parentNode.removeChild(c);
+    var p = document.createElement('div');
+    p.className = 'rescate'; p.innerHTML = html;
+    document.body.appendChild(p);
+  }
+  if (location.protocol === 'file:') {
+    document.addEventListener('DOMContentLoaded', function(){
+      rescata('<b>Abriste el archivo directo desde la carpeta.</b> Los navegadores no dejan correr la pieza 3D así. <a href="' + web + '">Abrir la versión publicada</a>');
+    });
+  } else {
+    setTimeout(function(){
+      rescata('<b>La página no terminó de arrancar en este navegador.</b> Recarga con Ctrl+F5 o actualiza el navegador. Si sigue igual, <a href="' + web + '">abre la versión publicada</a>.');
+    }, 12000);
+  }
+})();
+</script>
+
+<!-- ============ PANTALLA DE CARGA ============ -->
+<div class="carga" id="carga" role="status" aria-live="polite">
+  <div class="carga__plato" aria-hidden="true">
+    <span class="carga__disco"></span>
+    <span class="carga__aguja"></span>
+  </div>
+  <p class="carga__titulo">
+    <span class="doble">
+      <span class="doble__impreso">DONFELIPES</span>
+      <span class="doble__mano doble__mano--abajo">Designer</span>
+    </span>
+  </p>
+  <p class="carga__pie"><span id="cargaTexto">ARMANDO LA PIEZA</span> &mdash; <b id="cargaPct">0</b>%</p>
+  <div class="carga__barra"><span id="cargaRelleno"></span></div>
+</div>
+
+<!-- ============ LA PIEZA EN 3D ============ -->
+<canvas class="escena" id="escena" aria-label="Una pieza con un tocadiscos sobre una mesa y un mueble de vinilos contra la pared"></canvas>
+
+<header class="marca">
+  <a class="marca__nombre" href="#" data-abre="01">
+    <span class="doble doble--chico">
+      <span class="doble__impreso">FELIPE SAAVEDRA</span>
+      <span class="doble__mano" aria-hidden="true">Felipe</span>
+    </span>
+  </a>
+  <p class="marca__rol">Diseño gráfico &mdash; identidad, UI &amp; UX</p>
+  <div class="marca__acciones">
+    <button class="btn" type="button" data-abre="01">Sobre mí</button>
+    <a class="btn" href="mailto:fsarmijo21@gmail.com">Escríbeme</a>
+  </div>
+</header>
+
+<p class="pista" id="pista"><span>&uarr;</span> Saca un vinilo del mueble y ponlo en el tocadiscos</p>
+<div class="globo" id="globo" aria-hidden="true"></div>
+<p class="sin3d" id="sin3d" hidden>Tu navegador no pudo abrir la vista en 3D. Elige un disco de la caja de abajo: la música y el portafolio funcionan igual.</p>
+
+<!-- ============ LADO IZQUIERDO: LO QUE SUENA + LA CAJA ============ -->
+<div class="izq">
+  <section class="suena" id="suena" aria-label="Lo que suena" hidden>
+    <div class="suena__cabeza">
+      <span class="suena__mini" id="suenaMini" aria-hidden="true"></span>
+      <div class="suena__datos">
+        <p class="suena__lado">LADO <span id="suenaLado">A</span> &middot; PISTA <span id="suenaPista">01</span> &middot; <span id="suenaRpm">33</span> RPM</p>
+        <h2 class="suena__cancion" id="suenaCancion">—</h2>
+        <p class="suena__banda" id="suenaBanda">—</p>
+      </div>
+      <button class="suena__plegar" type="button" id="btnPlegar" aria-expanded="true" aria-controls="suenaCuerpo" title="Minimizar">
+        <span aria-hidden="true">&minus;</span><span class="oculto">Minimizar el reproductor</span>
+      </button>
+    </div>
+    <div class="suena__cuerpo" id="suenaCuerpo">
+    <div class="suena__tv">
+      <div id="yt"></div>
+      <p class="suena__fuente">Video oficial vía YouTube</p>
+    </div>
+    <div class="suena__barra" aria-hidden="true"><span id="suenaAvance"></span></div>
+    <div class="suena__mandos">
+      <button class="btn btn--chico" type="button" id="btnAguja">Levantar aguja</button>
+      <button class="btn btn--chico" type="button" id="btnRpm" aria-label="Cambiar velocidad">33&#8531; / 45</button>
+      <button class="btn btn--chico" type="button" id="btnSonido" aria-pressed="true">Sonido: <b>on</b></button>
+      <button class="btn btn--chico btn--tinta" type="button" id="btnFicha">Ver ficha</button>
+    </div>
+    </div>
+    <p class="suena__talon" aria-hidden="true">ADMIT ONE &middot; DONFELIPES &middot; N&ordm; <span id="suenaTalon">0001</span></p>
+  </section>
+
+  <nav class="caja" aria-label="La caja: los siete vinilos">
+    <p class="caja__titulo">LA CAJA <span>7 discos</span></p>
+    <div class="caja__rail" id="caja"></div>
+  </nav>
+</div>
+
+<!-- ============ EL PANEL: TODO EL PORTAFOLIO ============ -->
+<aside class="panel" id="panel" aria-label="Ficha del disco" aria-hidden="true">
+  <div class="panel__barra">
+    <p class="panel__pista"><span class="panel__setlist">SETLIST</span> <span id="panelPista">PISTA 01</span></p>
+    <button class="panel__cerrar" type="button" id="panelCerrar" aria-label="Cerrar ficha">&times;</button>
+  </div>
+  <div class="panel__cuerpo" id="panelCuerpo">
+
+    <!-- EDITA: los proyectos de las fichas 03, 04 y 05 son de muestra -->
+
+    <article class="ficha" data-ficha="01">
+      <p class="ficha__kicker">PISTA 01 &middot; KORN &mdash; HERE TO STAY</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">QUIÉN SOY</span>
+          <span class="doble__mano" aria-hidden="true">quién soy</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Soy <b>Felipe Saavedra</b>, diseñador gráfico. Hago identidad de marca, interfaz
+      y experiencia de uso. Me interesa el diseño que se imprime mal a propósito: fotocopia, trama gruesa,
+      tipografía condensada muy grande y algo escrito a mano encima, fuera de registro.</p>
+      <p class="ficha__entrada">Trabajo sobre todo con equipos y productos que necesitan carácter sin perder
+      claridad. Y ando en bici &mdash; ruta y MTB &mdash; lo que se cuela en casi todo lo que diseño.</p>
+      <dl class="datos">
+        <div><dt>Base</dt><dd>Chile &mdash; trabajo remoto</dd></div>
+        <div><dt>Hago</dt><dd>Identidad, dirección de arte, UI, UX</dd></div>
+        <div><dt>Herramientas</dt><dd>Illustrator, Photoshop, Figma, After Effects</dd></div>
+        <div><dt>Correo</dt><dd><a href="mailto:fsarmijo21@gmail.com">fsarmijo21@gmail.com</a></dd></div>
+      </dl>
+    </article>
+
+    <article class="ficha" data-ficha="02">
+      <p class="ficha__kicker">PISTA 02 &middot; SYSTEM OF A DOWN &mdash; DARTS</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">MIS FUERTES</span>
+          <span class="doble__mano" aria-hidden="true">mis fuertes</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Los estilos que trabajo mejor, en orden de cuánto los disfruto:</p>
+      <ol class="fuertes">
+        <li>
+          <h3>Grunge &amp; xerox</h3>
+          <p>Material escaneado, fotocopia al límite, trama de semitono gruesa, registro corrido.
+          Es mi terreno: ruido con intención, nunca sucio por accidente.</p>
+          <span class="barra" style="--n:95%"><i></i></span>
+        </li>
+        <li>
+          <h3>Editorial condensado</h3>
+          <p>Titulares enormes, retícula dura, barras negras que encuadran. Jerarquía por tamaño
+          y peso antes que por color.</p>
+          <span class="barra" style="--n:88%"><i></i></span>
+        </li>
+        <li>
+          <h3>Identidad de marca</h3>
+          <p>Marca, sistema tipográfico, paleta y reglas de uso. Lo que aguanta cuando el diseñador
+          ya no está en la sala.</p>
+          <span class="barra" style="--n:85%"><i></i></span>
+        </li>
+        <li>
+          <h3>Interfaz (UI)</h3>
+          <p>Componentes, estados, espaciado, contraste. Carácter en la portada, claridad en el botón.</p>
+          <span class="barra" style="--n:78%"><i></i></span>
+        </li>
+        <li>
+          <h3>Vintage &amp; cartel</h3>
+          <p>Impresión antigua, tinta plana, dos colores, cinta y clips. El cartel pegado en el muro.</p>
+          <span class="barra" style="--n:75%"><i></i></span>
+        </li>
+      </ol>
+    </article>
+
+    <article class="ficha" data-ficha="03">
+      <p class="ficha__kicker">PISTA 03 &middot; LIMP BIZKIT &mdash; BREAK STUFF</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">IDENTIDAD</span>
+          <span class="doble__mano" aria-hidden="true">identidad</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Marcas y sistemas gráficos. Romper lo que no sirve y volver a armarlo.</p>
+      <div class="rejilla">
+        <figure class="pieza">
+          <div class="pieza__img"><img src="./assets/jefe-dTDrhgUk.png" alt="Retrato tramado en blanco y negro" loading="lazy"></div>
+          <figcaption><b>AGENTES IA</b> <span>Identidad para producto de IA &mdash; marca, tipografía y sistema de color.</span></figcaption>
+        </figure>
+        <figure class="pieza">
+          <div class="pieza__img"><img src="./assets/casco-ruta-BdbwMd6H.png" alt="Casco de ciclismo de ruta tramado" loading="lazy"></div>
+          <figcaption><b>RUTA &amp; MTB</b> <span>Marca para tienda de ciclismo &mdash; aplicación en maillot, cajas y redes.</span></figcaption>
+        </figure>
+        <figure class="pieza">
+          <div class="pieza__img"><img src="./assets/mtb-318-CEAWcpoa.png" alt="Ciclista de montaña tramado" loading="lazy"></div>
+          <figcaption><b>XEROX</b> <span>Serie de carteles de fotocopia &mdash; experimento tipográfico propio.</span></figcaption>
+        </figure>
+      </div>
+      <p class="aviso">EDITA: reemplaza estas tres piezas por proyectos reales (imagen, nombre y una línea de qué resolviste).</p>
+    </article>
+
+    <article class="ficha" data-ficha="04">
+      <p class="ficha__kicker">PISTA 04 &middot; QUEENS OF THE STONE AGE &mdash; GO WITH THE FLOW</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">MOTION</span>
+          <span class="doble__mano" aria-hidden="true">y video</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Video y animación hechos por mí: intros, reels, piezas para redes y
+      animación de identidad. Edición en Premiere, animación en After Effects.</p>
+      <div class="rejilla rejilla--video">
+        <article class="clip">
+          <div class="clip__marco"><span class="clip__play" aria-hidden="true">&#9654;</span></div>
+          <h3>Reel 2026</h3>
+          <p>Montaje de lo último &mdash; 1 min.</p>
+        </article>
+        <article class="clip">
+          <div class="clip__marco"><span class="clip__play" aria-hidden="true">&#9654;</span></div>
+          <h3>Animación de marca</h3>
+          <p>Logo en movimiento para producto digital.</p>
+        </article>
+        <article class="clip">
+          <div class="clip__marco"><span class="clip__play" aria-hidden="true">&#9654;</span></div>
+          <h3>Pieza de ciclismo</h3>
+          <p>Edición con material propio de ruta.</p>
+        </article>
+      </div>
+      <p class="aviso">EDITA: cambia cada marco por un video propio o un embed de YouTube/Vimeo.</p>
+    </article>
+
+    <article class="ficha" data-ficha="05">
+      <p class="ficha__kicker">PISTA 05 &middot; QUEENS OF THE STONE AGE &mdash; NO ONE KNOWS</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">PRODUCTO</span>
+          <span class="doble__mano" aria-hidden="true">UI &amp; UX</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Interfaz y experiencia: flujos, pantallas y sistemas de componentes.
+      Aquí el ruido baja y manda la claridad.</p>
+      <ul class="ficha__lista">
+        <li><b>Sistemas de diseño</b> &mdash; tokens, componentes y documentación para que el equipo no improvise.</li>
+        <li><b>Flujos</b> &mdash; mapa de la tarea antes de la pantalla: qué decide el usuario y con qué información.</li>
+        <li><b>Prototipos en Figma</b> &mdash; navegables, para probar antes de construir.</li>
+        <li><b>Entrega a desarrollo</b> &mdash; medidas, estados y casos límite escritos, no adivinados.</li>
+      </ul>
+      <p class="aviso">EDITA: agrega 1 o 2 casos de UX con el problema, lo que hiciste y el resultado.</p>
+    </article>
+
+    <article class="ficha" data-ficha="06">
+      <p class="ficha__kicker">PISTA 06 &middot; PAPA ROACH &mdash; LAST RESORT</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">EL PROCESO</span>
+          <span class="doble__mano" aria-hidden="true">el proceso</span>
+        </span>
+      </h2>
+      <ol class="pasos">
+        <li><span>01</span><h3>Escuchar</h3><p>Qué vendes, a quién y qué te estorba hoy. Sin brief no hay diseño, hay decoración.</p></li>
+        <li><span>02</span><h3>Dirección</h3><p>Dos o tres caminos visuales con razones. Eliges uno antes de que yo me enamore del mío.</p></li>
+        <li><span>03</span><h3>Construir</h3><p>Marca, tipografía, color y piezas reales aplicadas, no maquetas bonitas en el aire.</p></li>
+        <li><span>04</span><h3>Entregar</h3><p>Archivos ordenados, reglas de uso y una sesión para que sepas usarlo sin mí.</p></li>
+      </ol>
+    </article>
+
+    <article class="ficha" data-ficha="07">
+      <p class="ficha__kicker">PISTA 07 &middot; LADO B &middot; SLIPKNOT &mdash; VERMILION</p>
+      <h2 class="ficha__titulo">
+        <span class="doble">
+          <span class="doble__impreso">CONTACTO</span>
+          <span class="doble__mano" aria-hidden="true">hablemos</span>
+        </span>
+      </h2>
+      <p class="ficha__entrada">Si te sirve algo de lo que escuchaste, escríbeme. Respondo con una propuesta
+      concreta: qué haría, en cuánto tiempo y cuánto cuesta.</p>
+      <dl class="datos">
+        <div><dt>Correo</dt><dd><a href="mailto:fsarmijo21@gmail.com">fsarmijo21@gmail.com</a></dd></div>
+        <div><dt>Instagram</dt><dd><a href="#">@usuario</a> <!-- EDITA --></dd></div>
+        <div><dt>Behance</dt><dd><a href="#">behance.net/usuario</a> <!-- EDITA --></dd></div>
+        <div><dt>CV</dt><dd><a href="#">Descargar PDF</a> <!-- EDITA --></dd></div>
+      </dl>
+      <p class="ficha__firma"><span class="doble__mano">Felipe</span></p>
+    </article>
+
+    <nav class="panel__nav" aria-label="Pasar de disco">
+      <button class="btn" type="button" id="discoAnterior">&larr; Disco anterior</button>
+      <button class="btn btn--tinta" type="button" id="discoSiguiente">Siguiente disco &rarr;</button>
+    </nav>
+    <p class="panel__nota">Las canciones son de sus autores; aquí solo dan nombre a cada lado del portafolio.</p>
+  </div>
+</aside>
+
+</body>
+</html>

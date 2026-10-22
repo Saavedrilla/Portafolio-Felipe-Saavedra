@@ -63,7 +63,7 @@ DISCOS.forEach(d => {
   b.style.background = d.papel;
   b.setAttribute('aria-pressed', 'false');
   b.setAttribute('aria-label', `${d.cancion} de ${d.banda} — ${d.tema}`);
-  b.title = `${d.cancion} — ${d.tema}`;
+  b.title = `${d.tema} — ${d.cancion}`;
   b.innerHTML = svgArte(d) + `<span class="mini__num" style="color:${d.tinta}">${d.id}</span>`;
   b.addEventListener('click', () => elegir(d.id));
   b.addEventListener('pointerenter', () => sonido.precarga(d));
@@ -352,6 +352,26 @@ function quitaPista(){
   if (escena && escena.grafiti) escena.grafiti();
 }
 
+/* vista PS2 / HD: se recuerda en este navegador; ?vista=hd la fuerza */
+function vistaPS(){
+  const q = params.get('vista');
+  if (q) return q !== 'hd';
+  try { return localStorage.getItem('vista') !== 'hd'; } catch { return true; }
+}
+function marcaVista(on){
+  const b = $('btnVista');
+  b.setAttribute('aria-pressed', String(on));
+  b.querySelector('b').textContent = on ? 'PS2' : 'HD';
+}
+marcaVista(vistaPS());
+$('btnVista').addEventListener('click', () => {
+  if (!escena) return;
+  const on = !escena.ps;
+  escena.modoPS(on);
+  marcaVista(on);
+  try { localStorage.setItem('vista', on ? 'ps2' : 'hd'); } catch {}
+});
+
 /* minimizar la ventana del video */
 $('btnPlegar').addEventListener('click', e => {
   const b = e.currentTarget;
@@ -422,7 +442,7 @@ const globo = $('globo');
 function pasa(d, x, y){
   if (!d) { globo.classList.remove('si'); return; }
   sonido.precarga(d);
-  globo.innerHTML = `<b>${d.cancion}</b><span>${d.corta || d.banda} · <i>${d.tema}</i></span>`;
+  globo.innerHTML = `<b>${d.tema}</b><span>Pista ${d.id} · <i>${d.cancion} — ${d.corta || d.banda}</i></span>`;
   globo.style.left = x + 'px';
   globo.style.top = y + 'px';
   globo.classList.add('si');
@@ -437,6 +457,7 @@ function pasa(d, x, y){
     const limite = new Promise((_, no) => setTimeout(() => no(new Error('el 3D tardó demasiado')), 10000));
     escena = await Promise.race([limite, crearEscena($('escena'), DISCOS, {
       suave,
+      ps: vistaPS(),
       alElegir: elegir,
       alPasar: pasa,
       alTocarPlato: () => actual && abrePanel(actual),

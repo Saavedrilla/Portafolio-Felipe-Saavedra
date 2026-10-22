@@ -83,9 +83,9 @@ export async function portada(d){
   x.fillStyle = d.tinta;
   x.textBaseline = 'alphabetic';
   x.font = `900 ${S * 0.12}px ${F.stencil}`;
-  ajusta(x, d.cancion.toUpperCase(), S * 0.06, S * 0.86, S * 0.88);
+  ajusta(x, d.tema.toUpperCase(), S * 0.06, S * 0.86, S * 0.88);
   x.font = `${S * 0.042}px ${F.maquina}`;
-  x.fillText((d.corta || d.banda).toUpperCase(), S * 0.06, S * 0.94);
+  x.fillText(`PISTA ${d.id} · LADO ${d.lado}`, S * 0.06, S * 0.94);
   x.textAlign = 'right';
   x.fillText(d.id, S * 0.94, S * 0.07);
   x.textAlign = 'left';
@@ -148,9 +148,9 @@ export async function caraDisco(d){
   x.fillStyle = d.tinta;
   x.textAlign = 'center';
   x.font = `900 ${re * 0.24}px ${F.stencil}`;
-  x.fillText(d.cancion.toUpperCase(), m, m + re * 0.62);
+  x.fillText(d.tema.toUpperCase(), m, m + re * 0.62);
   x.font = `${re * 0.11}px ${F.maquina}`;
-  x.fillText(`${(d.corta || d.banda).toUpperCase()} · LADO ${d.lado} · ${d.rpm} RPM`, m, m + re * 0.8);
+  x.fillText(`PISTA ${d.id} · LADO ${d.lado} · ${d.rpm} RPM`, m, m + re * 0.8);
   x.restore();
 
   /* agujero */
@@ -200,42 +200,33 @@ export function alfombra(){
   return t;
 }
 
-/* ---------- AFICHE: la gira del portafolio ---------- */
-export function aficheGira(discos){
-  const W = 600, H = 840;
+/* ---------- AFICHE DE UN TRABAJO ----------
+   Una foto tramada convertida en cartel, con el gesto de siempre:
+   título impreso en hueco y el mismo título escrito a mano encima. */
+export function aficheTrabajo(img, { titulo, mano, pie }){
+  const W = 720, H = 1020;
   const [c, x] = lienzo(W, H);
   x.fillStyle = '#EDE9DF'; x.fillRect(0, 0, W, H);
-
-  x.fillStyle = '#121110';
-  x.fillRect(0, 0, W, 120);
-  x.fillStyle = '#EDE9DF';
-  x.font = `900 64px ${F.stencil}`;
-  x.fillText('PORTAFOLIO', 34, 86);
-
-  /* lo impreso en hueco */
-  x.font = `190px ${F.titulo}`;
-  x.lineWidth = 4; x.strokeStyle = '#121110';
-  x.strokeText('TOUR', 30, 330);
-  x.font = `118px ${F.titulo}`;
-  x.strokeText('2026', 34, 450);
-  /* lo escrito a mano encima */
+  /* la foto, recortada para llenar */
+  const r = Math.max((W - 60) / img.width, (H - 250) / img.height);
+  const iw = img.width * r, ih = img.height * r;
   x.save();
-  x.translate(70, 300); x.rotate(-0.08);
-  x.fillStyle = '#C8321E';
-  x.font = `86px ${F.mano}`;
-  x.fillText('Saavedra', 0, 0);
+  x.beginPath(); x.rect(30, 30, W - 60, H - 250); x.clip();
+  x.drawImage(img, 30 + (W - 60 - iw) / 2, 30 + (H - 250 - ih) / 2, iw, ih);
   x.restore();
-
-  x.fillStyle = '#121110';
-  x.font = `21px ${F.maquina}`;
-  discos.forEach((d, i) => {
-    x.fillText(`${d.id}  ${d.cancion.toUpperCase()}`, 36, 520 + i * 36);
-    x.textAlign = 'right';
-    x.fillText(d.tema.toUpperCase(), W - 36, 520 + i * 36);
-    x.textAlign = 'left';
-  });
-  x.fillRect(36, 790, W - 72, 4);
-  grano(x, W, H, 0.1);
+  /* barra negra con el título en hueco */
+  x.fillStyle = '#121110'; x.fillRect(0, H - 220, W, 220);
+  x.font = `150px ${F.titulo}`;
+  x.lineWidth = 3; x.strokeStyle = '#EDE9DF';
+  x.strokeText(titulo, 30, H - 70);
+  x.save();
+  x.translate(60, H - 70); x.rotate(-0.06);
+  x.fillStyle = '#C8321E'; x.font = `74px ${F.mano}`;
+  x.fillText(mano, 0, 0);
+  x.restore();
+  x.fillStyle = '#EDE9DF'; x.font = `20px ${F.maquina}`;
+  x.fillText(pie, 32, H - 22);
+  grano(x, W, H, 0.08);
   return textura(c);
 }
 
@@ -257,8 +248,8 @@ export function bordePlato(){
    (trazo de crayón infantil). Dos capas fuera de registro: roja
    detrás, crema encima, con chorreones y salpicaduras.
    Devuelve una textura que se "pinta" de izquierda a derecha. */
-export function grafiti(lineas = ['saca un vinilo del mueble', 'y ponlo en el tocadiscos']){
-  const W = 2048, H = 560;
+export function grafiti(lineas = ['saca un vinilo y colócalo', 'para conocer más sobre mí', 'y mis proyectos']){
+  const W = 2048, H = 780;
   const [lleno, x] = lienzo(W, H);
   const alto = H / lineas.length;
 
