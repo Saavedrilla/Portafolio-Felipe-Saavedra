@@ -248,7 +248,7 @@ export function bordePlato(){
    (trazo de crayón infantil). Dos capas fuera de registro: roja
    detrás, crema encima, con chorreones y salpicaduras.
    Devuelve una textura que se "pinta" de izquierda a derecha. */
-export function grafiti(lineas = ['saca un vinilo y colócalo', 'para conocer más sobre mí', 'y mis proyectos']){
+export function grafiti(lineas = ['elige un vinilo', 'y descubre quién soy', 'y qué hago']){
   const W = 2048, H = 780;
   const [lleno, x] = lienzo(W, H);
   const alto = H / lineas.length;

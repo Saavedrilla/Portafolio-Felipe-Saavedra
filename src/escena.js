@@ -610,11 +610,37 @@ export async function crearEscena(canvas, discos, avisos = {}){
     else if (actual) avisos.alTocarPlato && avisos.alTocarPlato();
   });
 
+  /* Una luz cálida que sigue al disco señalado: lo enciende a él y
+     derrama un poco de luz sobre el mueble, para que se note dónde mirar. */
+  const luzDisco = new THREE.PointLight('#FFE2B0', 0, 0.9, 2);
+  escena.add(luzDisco);
+
   function asoma(f, si){
     gsap.to(f.funda.position, { z: f.base.pos.z + (si ? 0.07 : 0), y: f.base.pos.y + (si ? 0.015 : 0), duration: 0.35, ease: 'power2.out' });
     gsap.to(f.funda.rotation, { x: si ? -0.02 : f.base.rx, duration: 0.35, ease: 'power2.out' });
-    gsap.to(f.frente, { emissiveIntensity: si ? 0.22 : 0, duration: 0.45, ease: 'power2.out' });
+    if (si) pausaOla();
+    gsap.to(f.frente, { emissiveIntensity: si ? 0.45 : 0, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+    if (si) {
+      luzDisco.position.set(f.base.pos.x, f.base.pos.y + 0.05, f.base.pos.z + 0.32);
+      gsap.to(luzDisco, { intensity: 1.3, duration: 0.3, ease: 'power2.out', overwrite: true });
+    } else {
+      gsap.to(luzDisco, { intensity: 0, duration: 0.4, ease: 'power2.out', overwrite: true });
+      if (invitando) ola.restart(true);
+    }
   }
+
+  /* Invitación: mientras nadie haya elegido un disco, se encienden
+     suavemente uno tras otro, como una ola, cada pocos segundos. */
+  const ola = gsap.timeline({ repeat: -1, repeatDelay: 2.2, delay: 5 });
+  Object.values(fundas).forEach((f, i) => {
+    ola.to(f.frente, { emissiveIntensity: 0.35, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 1 }, i * 0.16);
+  });
+  let invitando = true;
+  function pausaOla(){
+    ola.pause();
+    Object.values(fundas).forEach(f => { if (f !== encima) gsap.to(f.frente, { emissiveIntensity: 0, duration: 0.3, overwrite: 'auto' }); });
+  }
+  function paraOla(){ invitando = false; pausaOla(); }
 
   /* ---------------- poner y sacar discos ---------------- */
   let actual = null;      /* id del disco en el plato */
@@ -666,6 +692,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
 
     const f = fundas[id];
     actual = id;
+    paraOla();
     avisos.alCambiar && avisos.alCambiar(f.d);
     const disco = f.disco;
     const fp = f.funda.position;

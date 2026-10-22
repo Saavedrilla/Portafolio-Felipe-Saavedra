@@ -352,25 +352,8 @@ function quitaPista(){
   if (escena && escena.grafiti) escena.grafiti();
 }
 
-/* vista PS2 / HD: se recuerda en este navegador; ?vista=hd la fuerza */
-function vistaPS(){
-  const q = params.get('vista');
-  if (q) return q !== 'hd';
-  try { return localStorage.getItem('vista') !== 'hd'; } catch { return true; }
-}
-function marcaVista(on){
-  const b = $('btnVista');
-  b.setAttribute('aria-pressed', String(on));
-  b.querySelector('b').textContent = on ? 'PS2' : 'HD';
-}
-marcaVista(vistaPS());
-$('btnVista').addEventListener('click', () => {
-  if (!escena) return;
-  const on = !escena.ps;
-  escena.modoPS(on);
-  marcaVista(on);
-  try { localStorage.setItem('vista', on ? 'ps2' : 'hd'); } catch {}
-});
+/* La vista es HD. La versión PS2 sigue escondida: ?vista=ps2 en la dirección */
+const vistaPS = () => params.get('vista') === 'ps2';
 
 /* minimizar la ventana del video */
 $('btnPlegar').addEventListener('click', e => {
