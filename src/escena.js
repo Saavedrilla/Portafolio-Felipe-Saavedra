@@ -272,8 +272,103 @@ export async function crearEscena(canvas, discos, avisos = {}){
     const r = tex.image.width / tex.image.height;
     afiche(tex, alto * r, alto, x, y, rz);
   });
-  foto(new URL('../img/jefe.png', import.meta.url).href, 0.6, 1.36, 1.52, -0.03);
+  foto(new URL('../img/jefe.png', import.meta.url).href, 0.6, 1.36, 1.68, -0.03);
   foto(new URL('../img/casco-ruta.png', import.meta.url).href, 0.34, 1.02, 1.62, 0.04);
+
+  /* ---------------- el grafiti de la pared ----------------
+     La frase del aviso de arriba, pintada con spray. Aparece cuando
+     el aviso se va (grafiti() desde pieza.js). */
+  const spray = T.grafiti();
+  const grafitiAncho = 1.3;
+  const grafitiMat = mat('#ffffff', 0.92, 0, {
+    map: spray.textura, transparent: true, depthWrite: false,
+    emissive: '#ffffff', emissiveMap: spray.textura, emissiveIntensity: 0.12,
+  });
+  const muro = new THREE.Mesh(new THREE.PlaneGeometry(grafitiAncho, grafitiAncho / spray.proporcion), grafitiMat);
+  muro.position.set(-0.02, 1.45, PARED_Z + 0.004);
+  muro.rotation.z = 0.01;
+  muro.receiveShadow = true;
+  escena.add(muro);
+  let pintado = false;
+  function grafiti(){
+    if (pintado) return;
+    pintado = true;
+    const pinta = { f: 0 };
+    gsap.to(pinta, { f: 1, duration: suave ? 1.2 : 2.2, ease: 'none', onUpdate: () => spray.avance(pinta.f) });
+  }
+
+  /* ---------------- la repisaCasco con el casco Troy Lee D3 ---------------- */
+  const fierroRepisa = mat('#121110', 0.4, 0.5);
+  const repisaCasco = new THREE.Group();
+  const tablon = new THREE.Mesh(new RoundedBoxGeometry(0.48, 0.026, 0.22, 3, 0.005), mat('#5A3E2A', 0.55));
+  repisaCasco.add(tablon);
+  [-1, 1].forEach(lado => {
+    const escuadra = new THREE.Group();
+    const vertical = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.13, 0.018), fierroRepisa);
+    vertical.position.set(0, -0.075, -0.095);
+    const diagonal = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.2, 0.014), fierroRepisa);
+    diagonal.position.set(0, -0.07, -0.035);
+    diagonal.rotation.x = 0.8;
+    escuadra.add(vertical, diagonal);
+    escuadra.position.x = lado * 0.17;
+    repisaCasco.add(escuadra);
+  });
+
+  const casco = new THREE.Group();
+  const negro = new THREE.MeshPhysicalMaterial({ color: '#0C0C0C', roughness: 0.28, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.12 });
+  const negroMate = mat('#141414', 0.75);
+  /* la carcasa: un huevo alargado hacia adelante */
+  const forma = new THREE.Group();
+  forma.scale.set(0.94, 1.1, 1.14);
+  forma.position.y = 0.14;
+  const carcasa = new THREE.Mesh(new THREE.SphereGeometry(0.12, 48, 32), negro);
+  /* la abertura de las antiparras, al frente */
+  const abertura = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1215, 32, 12, PI / 2 - 0.58, 1.16, 1.12, 0.46),
+    mat('#ffffff', 0.85, 0, { map: T.aberturaCasco() })
+  );
+  forma.add(carcasa, abertura);
+  /* calcomanías a los lados */
+  const calco = mat('#ffffff', 0.4, 0, { map: T.calcomaniaCasco(), transparent: true, polygonOffset: true, polygonOffsetFactor: -2 });
+  [-1, 1].forEach(lado => {
+    const c = new THREE.Mesh(new THREE.PlaneGeometry(0.11, 0.055), calco);
+    c.position.set(lado * 0.1225, 0.01, -0.01);
+    c.rotation.y = lado * PI / 2;
+    forma.add(c);
+  });
+  casco.add(forma);
+  /* la mentonera: una barra redondeada que sobresale adelante y abajo */
+  const menton = new THREE.Mesh(new THREE.CapsuleGeometry(0.055, 0.1, 8, 24), negro);
+  menton.rotation.z = PI / 2;
+  menton.scale.set(1, 1, 1.35);
+  menton.position.set(0, 0.07, 0.105);
+  const mentonBajo = new THREE.Mesh(new THREE.SphereGeometry(0.075, 32, 16), negro);
+  mentonBajo.scale.set(1.25, 0.8, 1.2);
+  mentonBajo.position.set(0, 0.06, 0.05);
+  casco.add(menton, mentonBajo);
+  /* rejillas de la mentonera */
+  for (let k = -1; k <= 1; k++) {
+    const rejilla = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.026, 0.01), negroMate);
+    rejilla.position.set(k * 0.03, 0.07, 0.178);
+    casco.add(rejilla);
+  }
+  /* la visera, inclinada hacia arriba */
+  const visera = new THREE.Mesh(new RoundedBoxGeometry(0.2, 0.007, 0.12, 2, 0.003), negro);
+  visera.position.set(0, 0.255, 0.115);
+  visera.rotation.x = -0.32;
+  casco.add(visera);
+  /* un filo gris en la visera, como el D3 */
+  const filo = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.004, 0.008), mat('#7C7C78', 0.4, 0.4));
+  filo.position.set(0, 0.275, 0.172);
+  filo.rotation.x = -0.32;
+  casco.add(filo);
+
+  casco.position.set(0.0, 0.013, 0.0);
+  casco.rotation.y = -0.95;
+  casco.scale.setScalar(1.12);
+  repisaCasco.add(casco);
+  repisaCasco.position.set(1.14, 0.98, PARED_Z + 0.115);
+  escena.add(sombra(repisaCasco));
 
   /* ---------------- la mesa ---------------- */
   const mesa = new THREE.Group();
@@ -705,6 +800,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
     mueveVista,
     desplaza,
     progreso: f => { progreso = Math.max(0, Math.min(1, f)); },
+    grafiti,
     get actual(){ return actual; },
     get sonando(){ return estado === 'sonando'; },
   };

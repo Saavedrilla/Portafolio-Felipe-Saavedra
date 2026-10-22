@@ -16,7 +16,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Stencil+Display:wght@500;700;900&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Stencil+Display:wght@500;700;900&family=Permanent+Marker&family=Rock+Salt&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./src/pieza.css">
 </head>
 <body>
@@ -55,8 +55,8 @@
   </div>
   <p class="carga__titulo">
     <span class="doble">
-      <span class="doble__impreso">SAAVEDRA</span>
-      <span class="doble__mano" aria-hidden="true">Saavedra</span>
+      <span class="doble__impreso">DONFELIPES</span>
+      <span class="doble__mano doble__mano--abajo">Designer</span>
     </span>
   </p>
   <p class="carga__pie"><span id="cargaTexto">ARMANDO LA PIEZA</span> &mdash; <b id="cargaPct">0</b>%</p>
@@ -89,12 +89,16 @@
   <section class="suena" id="suena" aria-label="Lo que suena" hidden>
     <div class="suena__cabeza">
       <span class="suena__mini" id="suenaMini" aria-hidden="true"></span>
-      <div>
+      <div class="suena__datos">
         <p class="suena__lado">LADO <span id="suenaLado">A</span> &middot; PISTA <span id="suenaPista">01</span> &middot; <span id="suenaRpm">33</span> RPM</p>
         <h2 class="suena__cancion" id="suenaCancion">—</h2>
         <p class="suena__banda" id="suenaBanda">—</p>
       </div>
+      <button class="suena__plegar" type="button" id="btnPlegar" aria-expanded="true" aria-controls="suenaCuerpo" title="Minimizar">
+        <span aria-hidden="true">&minus;</span><span class="oculto">Minimizar el reproductor</span>
+      </button>
     </div>
+    <div class="suena__cuerpo" id="suenaCuerpo">
     <div class="suena__tv">
       <div id="yt"></div>
       <p class="suena__fuente">Video oficial vía YouTube</p>
@@ -106,6 +110,8 @@
       <button class="btn btn--chico" type="button" id="btnSonido" aria-pressed="true">Sonido: <b>on</b></button>
       <button class="btn btn--chico btn--tinta" type="button" id="btnFicha">Ver ficha</button>
     </div>
+    </div>
+    <p class="suena__talon" aria-hidden="true">ADMIT ONE &middot; DONFELIPES &middot; N&ordm; <span id="suenaTalon">0001</span></p>
   </section>
 
   <nav class="caja" aria-label="La caja: los siete vinilos">
@@ -117,7 +123,7 @@
 <!-- ============ EL PANEL: TODO EL PORTAFOLIO ============ -->
 <aside class="panel" id="panel" aria-label="Ficha del disco" aria-hidden="true">
   <div class="panel__barra">
-    <p class="panel__pista" id="panelPista">PISTA 01</p>
+    <p class="panel__pista"><span class="panel__setlist">SETLIST</span> <span id="panelPista">PISTA 01</span></p>
     <button class="panel__cerrar" type="button" id="panelCerrar" aria-label="Cerrar ficha">&times;</button>
   </div>
   <div class="panel__cuerpo" id="panelCuerpo">
@@ -125,7 +131,7 @@
     <!-- EDITA: los proyectos de las fichas 03, 04 y 05 son de muestra -->
 
     <article class="ficha" data-ficha="01">
-      <p class="ficha__kicker">PISTA 01 &middot; KORN &mdash; BLIND</p>
+      <p class="ficha__kicker">PISTA 01 &middot; KORN &mdash; HERE TO STAY</p>
       <h2 class="ficha__titulo">
         <span class="doble">
           <span class="doble__impreso">QUIÉN SOY</span>
@@ -146,7 +152,7 @@
     </article>
 
     <article class="ficha" data-ficha="02">
-      <p class="ficha__kicker">PISTA 02 &middot; SYSTEM OF A DOWN &mdash; TOXICITY</p>
+      <p class="ficha__kicker">PISTA 02 &middot; SYSTEM OF A DOWN &mdash; DARTS</p>
       <h2 class="ficha__titulo">
         <span class="doble">
           <span class="doble__impreso">MIS FUERTES</span>
@@ -213,7 +219,7 @@
     </article>
 
     <article class="ficha" data-ficha="04">
-      <p class="ficha__kicker">PISTA 04 &middot; SLIPKNOT &mdash; DUALITY</p>
+      <p class="ficha__kicker">PISTA 04 &middot; QUEENS OF THE STONE AGE &mdash; GO WITH THE FLOW</p>
       <h2 class="ficha__titulo">
         <span class="doble">
           <span class="doble__impreso">MOTION</span>
@@ -262,7 +268,7 @@
     </article>
 
     <article class="ficha" data-ficha="06">
-      <p class="ficha__kicker">PISTA 06 &middot; KORN &mdash; FREAK ON A LEASH</p>
+      <p class="ficha__kicker">PISTA 06 &middot; PAPA ROACH &mdash; LAST RESORT</p>
       <h2 class="ficha__titulo">
         <span class="doble">
           <span class="doble__impreso">EL PROCESO</span>
@@ -278,7 +284,7 @@
     </article>
 
     <article class="ficha" data-ficha="07">
-      <p class="ficha__kicker">PISTA 07 &middot; LADO B &middot; SYSTEM OF A DOWN &mdash; AERIALS</p>
+      <p class="ficha__kicker">PISTA 07 &middot; LADO B &middot; SLIPKNOT &mdash; VERMILION</p>
       <h2 class="ficha__titulo">
         <span class="doble">
           <span class="doble__impreso">CONTACTO</span>

@@ -17,19 +17,25 @@ src/pieza.css       -> todo lo que flota encima del 3D
 
 | Disco | Canción | Sección |
 |---|---|---|
-| 01 | Korn — Blind | Quién soy |
-| 02 | System Of A Down — Toxicity | Mis fuertes |
+| 01 | Korn — Here to Stay | Quién soy |
+| 02 | System Of A Down — Darts | Mis fuertes |
 | 03 | Limp Bizkit — Break Stuff | Identidad |
-| 04 | Slipknot — Duality | Motion y video |
+| 04 | Queens of the Stone Age — Go With the Flow | Motion y video |
 | 05 | QOTSA — No One Knows | UI y UX |
-| 06 | Korn — Freak on a Leash | El proceso |
-| 07 | System Of A Down — Aerials | Contacto |
+| 06 | Papa Roach — Last Resort | El proceso |
+| 07 | Slipknot — Vermilion | Contacto |
 
 **Música:** cada disco toca su video oficial de YouTube, visible en la tarjeta de abajo a la
 izquierda. Se eligió YouTube y no mp3 porque subir canciones con derechos a una web
 pública es redistribuirlas; el video embebido sí está licenciado. Si para algún disco
 quieres un mp3 propio, pon la ruta en `audio` dentro de `src/datos.js`. A 45 rpm un disco
 de 33 suena acelerado, como en un tocadiscos de verdad.
+
+**En la pieza también hay:** el aviso de arriba que, a los 4,5 s, se pinta como grafiti
+en la pared (fuente Rock Salt, estilo crayón del logo de Korn); una repiza con un casco
+Troy Lee D3 negro; y la información con forma de papeles de gira: el panel es un setlist,
+los datos son entradas de concierto, las fotos polaroids y el reproductor un ticket que se
+puede minimizar (el video sigue sonando).
 
 **Editar contenido:** busca `EDITA` en `index.html` (fichas) y cambia canciones en
 `src/datos.js`.

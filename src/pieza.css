@@ -388,3 +388,226 @@ html:not(.cargando) .carga{ opacity:0; visibility:hidden; }
 }
 .rescate b{ display:block; margin-bottom:6px; font-family:var(--t-stencil); font-size:20px; letter-spacing:.04em; }
 .rescate a{ color:var(--rojo); font-weight:700; }
+
+/* ============================================================
+   v8 — PAPELES DE GIRA
+   La información deja de ser cajas rectas: el panel es un setlist
+   pegado con cinta, los datos son entradas de concierto, las fotos
+   polaroids y el reproductor un ticket con talón.
+   ============================================================ */
+:root{
+  --hoja: #EFEADD;
+  --hoja-clara: #F7F3E8;
+  --marcador: 'Permanent Marker', cursive;
+}
+
+.oculto{
+  position:absolute !important; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); white-space:nowrap;
+}
+
+/* ---------- pantalla de carga: DONFELIPES / Designer ---------- */
+.doble__mano--abajo{
+  top:auto; bottom:-.38em; left:auto; right:-.25em;
+  font-size:.5em; transform:rotate(-6deg);
+}
+.carga__titulo{ margin-bottom:.35em; }
+
+/* ---------- el panel: un setlist pegado con cinta ---------- */
+.panel{
+  top:22px; right:22px; bottom:22px;
+  width:min(46vw, 620px);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(60,80,140,.09) 31px 32px),
+    var(--hoja);
+  border:0;
+  box-shadow:0 22px 50px rgba(0,0,0,.5), 7px 7px 0 rgba(18,17,16,.85);
+  transform:translateX(calc(100% + 60px)) rotate(2deg);
+}
+.panel.abierto{ transform:rotate(-.7deg); }
+
+/* bordes rasgados arriba y abajo */
+.panel::before, .panel::after{
+  content:""; position:absolute; left:0; right:0; height:12px; pointer-events:none;
+  background:
+    linear-gradient(135deg, var(--hoja) 50%, transparent 50%) 0 0 / 14px 12px repeat-x,
+    linear-gradient(225deg, var(--hoja) 50%, transparent 50%) 0 0 / 14px 12px repeat-x;
+}
+.panel::before{ top:-11px; transform:scaleY(-1); }
+.panel::after{ bottom:-11px; }
+
+.panel__barra{
+  position:relative;
+  background:transparent; color:var(--tinta);
+  border-bottom:2px dashed rgba(18,17,16,.55);
+  padding:20px 22px 14px;
+}
+/* dos trozos de cinta adhesiva */
+.panel__barra::before, .panel__barra::after{
+  content:""; position:absolute; top:-26px; width:110px; height:30px;
+  background:rgba(226,211,174,.82);
+  box-shadow:0 1px 2px rgba(0,0,0,.18);
+}
+.panel__barra::before{ left:26px; transform:rotate(-6deg); }
+.panel__barra::after{ right:70px; transform:rotate(5deg); }
+
+.panel__pista{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; color:var(--tinta); }
+.panel__setlist{
+  font-family:var(--marcador); font-size:30px; letter-spacing:.02em;
+  color:var(--rojo); transform:rotate(-3deg); display:inline-block; line-height:1;
+}
+.panel__cerrar{
+  width:40px; height:40px; border-radius:50%;
+  background:var(--rojo); color:var(--papel); border:0;
+  font-size:24px; transform:rotate(8deg);
+  box-shadow:2px 2px 0 var(--tinta);
+}
+.panel__cerrar:hover{ background:var(--tinta); }
+
+/* el sello de la pista */
+.ficha__kicker{
+  background:transparent; color:var(--rojo);
+  border:2px solid var(--rojo); border-radius:3px;
+  padding:4px 10px; transform:rotate(-2.5deg);
+  box-shadow:inset 0 0 0 2px rgba(200,50,30,.15);
+  opacity:.9;
+}
+
+.ficha__lista li{ border-top:1px dashed rgba(18,17,16,.3); }
+.ficha__lista li::before{
+  content:"\2715"; width:auto; height:auto; background:none;
+  top:9px; color:var(--rojo); font-family:var(--marcador); font-size:15px;
+}
+
+/* ---------- datos: entradas de concierto ---------- */
+.datos{ border-top:0; gap:14px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); }
+.datos > div{
+  position:relative;
+  padding:12px 16px 12px 46px;
+  border:0;
+  background:
+    radial-gradient(circle at 0 50%, transparent 9px, var(--hoja-clara) 10px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 9px, var(--hoja-clara) 10px) right / 51% 100% no-repeat;
+  filter:drop-shadow(2px 2px 0 rgba(18,17,16,.85));
+}
+.datos > div:nth-child(odd){ transform:rotate(-.8deg); }
+.datos > div:nth-child(even){ transform:rotate(.7deg); }
+.datos > div::before{
+  content:"ADMIT ONE"; position:absolute; left:-17px; top:50%; width:66px;
+  transform:translateY(-50%) rotate(-90deg);
+  font-family:var(--t-stencil); font-weight:900; font-size:8px; letter-spacing:.08em;
+  color:var(--rojo); white-space:nowrap; text-align:center;
+}
+.datos > div::after{
+  content:""; position:absolute; left:30px; top:8px; bottom:8px;
+  border-left:2px dashed rgba(18,17,16,.35);
+}
+
+/* ---------- mis fuertes: líneas de setlist con medidor ---------- */
+.fuertes li{ border-top:1px dashed rgba(18,17,16,.3); }
+.fuertes li::before{ font-family:var(--marcador); font-size:32px; transform:rotate(-6deg); }
+.barra{
+  height:12px; border:0;
+  background:repeating-linear-gradient(90deg, rgba(18,17,16,.12) 0 8px, transparent 8px 11px);
+}
+.barra i{
+  background:repeating-linear-gradient(90deg, var(--tinta) 0 8px, transparent 8px 11px);
+}
+
+/* ---------- el proceso: renglones del setlist ---------- */
+.pasos li{
+  background:none; border:0; box-shadow:none;
+  border-bottom:1px dashed rgba(18,17,16,.35);
+  padding:10px 0 14px 58px; position:relative;
+}
+.pasos li:nth-child(odd){ transform:rotate(-.4deg); }
+.pasos span{
+  position:absolute; left:0; top:6px;
+  font-family:var(--marcador); font-size:36px; transform:rotate(-8deg);
+}
+
+/* ---------- proyectos y videos: polaroids con cinta ---------- */
+.pieza, .clip{
+  position:relative;
+  background:#FBF9F3; padding:9px 9px 14px;
+  box-shadow:0 6px 14px rgba(0,0,0,.25), 2px 2px 0 rgba(18,17,16,.75);
+  transition:transform .3s ease;
+}
+.pieza:nth-child(odd), .clip:nth-child(odd){ transform:rotate(-2deg); }
+.pieza:nth-child(even), .clip:nth-child(even){ transform:rotate(1.6deg); }
+.pieza:hover, .clip:hover{ transform:rotate(0) scale(1.03); }
+.pieza::before, .clip::before{
+  content:""; position:absolute; top:-11px; left:50%; width:70px; height:22px;
+  transform:translateX(-50%) rotate(-4deg);
+  background:rgba(226,211,174,.85); z-index:1;
+}
+.pieza__img, .clip__marco{ border:0; }
+.pieza figcaption b, .clip h3{ font-family:var(--marcador); font-weight:400; letter-spacing:.02em; }
+
+/* ---------- avisos: notas adhesivas ---------- */
+.aviso{
+  border:0; background:#F2D86B; color:#3A2E05;
+  transform:rotate(1.2deg);
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+}
+
+/* ---------- pasar de disco: talones ---------- */
+.panel__nav{ border-top:2px dashed rgba(18,17,16,.45); }
+.panel__nav .btn{
+  border:0; padding:10px 22px;
+  background:
+    radial-gradient(circle at 0 50%, transparent 7px, var(--hoja-clara) 8px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 7px, var(--hoja-clara) 8px) right / 51% 100% no-repeat;
+  filter:drop-shadow(2px 2px 0 var(--tinta));
+}
+.panel__nav .btn--tinta{
+  background:
+    radial-gradient(circle at 0 50%, transparent 7px, var(--tinta) 8px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 7px, var(--tinta) 8px) right / 51% 100% no-repeat;
+}
+.panel__nav .btn:hover{ transform:rotate(-2deg); box-shadow:none; }
+
+/* ---------- el reproductor: un ticket con talón ---------- */
+.izq{ filter:drop-shadow(6px 6px 0 rgba(18,17,16,.9)); }
+.suena, .caja{ box-shadow:none; }
+.suena{
+  position:relative;
+  background:var(--hoja); border:0;
+  padding:12px 14px 0;
+  -webkit-mask:
+    radial-gradient(circle 10px at 0 calc(100% - 30px), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% calc(100% - 30px), #0000 98%, #000) right / 51% 100% no-repeat;
+          mask:
+    radial-gradient(circle 10px at 0 calc(100% - 30px), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% calc(100% - 30px), #0000 98%, #000) right / 51% 100% no-repeat;
+  transform:rotate(-.6deg);
+}
+.suena__cabeza{ align-items:flex-start; }
+.suena__datos{ flex:1; min-width:0; }
+.suena__plegar{
+  flex:0 0 30px; height:30px; cursor:pointer;
+  background:var(--tinta); color:var(--papel); border:0;
+  font-family:var(--t-stencil); font-size:22px; line-height:1;
+  transform:rotate(4deg);
+}
+.suena__plegar:hover{ background:var(--rojo); }
+.suena__cuerpo{ overflow:hidden; }
+/* minimizado: el video sigue sonando, solo se esconde */
+.suena.plegada .suena__cuerpo{ height:0; margin:0; }
+.suena.plegada .suena__mini{ flex-basis:40px; height:40px; }
+.suena.plegada .suena__cancion{ font-size:22px; }
+.suena__talon{
+  margin:10px -14px 0; padding:8px 14px;
+  border-top:2px dashed rgba(18,17,16,.45);
+  font-family:var(--t-maquina); font-size:10px; letter-spacing:.16em;
+  color:var(--tinta-suave);
+}
+
+.caja{ background:var(--hoja); border:0; transform:rotate(.5deg); }
+
+@media (max-width:760px){
+  .panel{ top:auto; right:0; left:0; bottom:0; width:100%; transform:translateY(calc(100% + 40px)); }
+  .panel.abierto{ transform:none; }
+  .panel::after{ display:none; }
+  .suena{ transform:none; }
+}

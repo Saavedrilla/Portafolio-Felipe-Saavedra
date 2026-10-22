@@ -3,9 +3,8 @@
    Une la escena 3D con la interfaz: pantalla de carga, la caja
    de discos, el panel con la ficha y la música.
 
-   Música: cada disco toca su mp3 de public/audio/ (01.mp3 ... 07.mp3).
-   Si falta el archivo de un disco, ese disco suena desde su video
-   oficial de YouTube (ver datos.js).
+   Música: cada disco toca su video de YouTube (ver datos.js). Un disco
+   puede usar un mp3 propio si se le pone `audio`.
    ============================================================ */
 import { DISCOS, svgArte } from './datos.js';
 import { crearEscena } from './escena.js';
@@ -121,16 +120,15 @@ const sonido = {
     o.start(t); o.stop(t + 0.22);
   },
 
-  /* ---- mp3 propios: public/audio/01.mp3 ... 07.mp3 ----
-     Se cargan al pasar el mouse por un disco y al elegirlo, así cuando
-     baja la aguja la canción ya está en memoria y arranca al tiro.
+  /* ---- mp3 opcional: solo si el disco trae `audio` en datos.js ----
+     Se carga al pasar el mouse y al elegirlo, para que arranque al tiro.
      Si el archivo no existe, ese disco suena desde YouTube. */
   cache: {}, sinMp3: new Set(), quiere: null,
 
-  rutaMp3(d){ return d.audio || `audio/${d.id}.mp3`; },
+  rutaMp3(d){ return d.audio; },
 
   precarga(d){
-    if (!d || this.sinMp3.has(d.id) || this.cache[d.id]) return;
+    if (!d || !d.audio || this.sinMp3.has(d.id) || this.cache[d.id]) return;
     const a = new Audio();
     a.preload = 'auto';
     a.addEventListener('error', () => {
@@ -256,7 +254,7 @@ function elegir(id){
   sonido.prepara(d);
   muestraTarjeta(d);
   marcaCaja(id);
-  $('pista').classList.add('fuera');
+  quitaPista();
   abrePanel(id);
 
   if (escena) {
@@ -275,6 +273,7 @@ function muestraTarjeta(d){
   $('suena').hidden = false;
   $('suenaMini').innerHTML = svgArte(d);
   $('suenaMini').style.background = d.papel;
+  $('suenaTalon').textContent = String(Number(d.id) * 1994 % 9973).padStart(4, '0');
   $('suenaLado').textContent = d.lado;
   $('suenaPista').textContent = d.id;
   $('suenaRpm').textContent = d.rpm === 45 ? '45' : '33⅓';
@@ -340,6 +339,28 @@ setInterval(() => {
   $('suenaAvance').style.width = (f * 100).toFixed(1) + '%';
   if (escena) escena.progreso(f);
 }, 500);
+
+/* ------------------------------------------------------------
+   AVISO -> GRAFITI: cuando se va la píldora de arriba, la misma
+   frase aparece pintada en la pared, detrás de donde estaba
+   ------------------------------------------------------------ */
+let pistaFuera = false;
+function quitaPista(){
+  if (pistaFuera) return;
+  pistaFuera = true;
+  $('pista').classList.add('fuera');
+  if (escena && escena.grafiti) escena.grafiti();
+}
+
+/* minimizar la ventana del video */
+$('btnPlegar').addEventListener('click', e => {
+  const b = e.currentTarget;
+  const plegada = $('suena').classList.toggle('plegada');
+  b.setAttribute('aria-expanded', String(!plegada));
+  b.title = plegada ? 'Agrandar' : 'Minimizar';
+  b.querySelector('[aria-hidden]').textContent = plegada ? '+' : '−';
+  b.querySelector('.oculto').textContent = plegada ? 'Agrandar el reproductor' : 'Minimizar el reproductor';
+});
 
 /* ------------------------------------------------------------
    5. EL PANEL
@@ -435,4 +456,6 @@ function pasa(d, x, y){
     $('escena').hidden = true;
   }
   carga.listo();
+  /* el aviso se queda unos segundos y después se pinta en la pared */
+  setTimeout(quitaPista, 4500);
 })();

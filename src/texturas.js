@@ -12,6 +12,7 @@ const F = {
   stencil: '"Big Shoulders Stencil Display", "Anton", sans-serif',
   maquina: '"Special Elite", "Courier New", monospace',
   mano:    '"Permanent Marker", cursive',
+  grafiti: '"Rock Salt", "Permanent Marker", cursive',
 };
 
 /* Espera a que las fuentes existan antes de dibujarlas en canvas */
@@ -19,7 +20,7 @@ export async function fuentesListas(){
   if (!document.fonts) return;
   const pedidas = [
     '40px "Anton"', '900 40px "Big Shoulders Stencil Display"',
-    '700 40px "Big Shoulders Stencil Display"', '40px "Special Elite"', '40px "Permanent Marker"',
+    '700 40px "Big Shoulders Stencil Display"', '40px "Special Elite"', '40px "Permanent Marker"', '40px "Rock Salt"',
   ].map(f => document.fonts.load(f).catch(() => {}));
   await Promise.race([Promise.all(pedidas), new Promise(r => setTimeout(r, 1500))]);
 }
@@ -248,5 +249,109 @@ export function bordePlato(){
   for (let i = 0; i < 1024; i += 8) x.fillRect(i, 10, 4, 10);
   for (let i = 0; i < 1024; i += 9) x.fillRect(i, 26, 4, 10);
   for (let i = 0; i < 1024; i += 10) x.fillRect(i, 42, 5, 10);
+  return textura(c);
+}
+
+/* ---------- GRAFITI EN LA PARED ----------
+   La frase del aviso, pintada con spray al estilo del logo de Korn
+   (trazo de crayón infantil). Dos capas fuera de registro: roja
+   detrás, crema encima, con chorreones y salpicaduras.
+   Devuelve una textura que se "pinta" de izquierda a derecha. */
+export function grafiti(lineas = ['saca un vinilo del mueble', 'y ponlo en el tocadiscos']){
+  const W = 2048, H = 560;
+  const [lleno, x] = lienzo(W, H);
+  const alto = H / lineas.length;
+
+  /* ajusta el tamaño para que la línea más larga quepa */
+  let tam = 132;
+  x.font = `${tam}px ${F.grafiti}`;
+  const ancho = Math.max(...lineas.map(l => x.measureText(l).width));
+  tam = Math.min(tam, tam * (W * 0.9) / ancho);
+  x.font = `${tam}px ${F.grafiti}`;
+  x.textBaseline = 'middle';
+
+  const capa = (color, dx, dy, sombra) => {
+    x.save();
+    x.fillStyle = color;
+    x.shadowColor = sombra; x.shadowBlur = 22;
+    lineas.forEach((l, i) => {
+      const w = x.measureText(l).width;
+      const px = (W - w) / 2 + (i ? 60 : -40);
+      const py = alto * i + alto / 2;
+      x.save();
+      x.translate(px + dx, py + dy);
+      x.rotate(i ? 0.025 : -0.035);
+      x.fillText(l, 0, 0);
+      x.restore();
+    });
+    x.restore();
+  };
+  capa('rgba(200,50,30,.9)', 12, 10, 'rgba(200,50,30,.5)');
+  capa('#EDE6D6', 0, 0, 'rgba(237,230,214,.45)');
+
+  /* chorreones: bajan desde abajo de las letras */
+  x.save();
+  for (let k = 0; k < 26; k++) {
+    const i = k % lineas.length;
+    const px = W * 0.12 + Math.random() * W * 0.76;
+    const py = alto * i + alto / 2 + tam * 0.28;
+    const largo = 20 + Math.random() * (i ? 110 : 70);
+    x.strokeStyle = Math.random() < 0.3 ? 'rgba(200,50,30,.85)' : 'rgba(237,230,214,.9)';
+    x.lineWidth = 2 + Math.random() * 4;
+    x.lineCap = 'round';
+    x.beginPath(); x.moveTo(px, py); x.lineTo(px + (Math.random() - 0.5) * 3, py + largo); x.stroke();
+    x.beginPath(); x.arc(px, py + largo, x.lineWidth * 0.9, 0, Math.PI * 2);
+    x.fillStyle = x.strokeStyle; x.fill();
+  }
+  x.restore();
+
+  /* salpicaduras del spray */
+  for (let k = 0; k < 900; k++) {
+    x.fillStyle = `rgba(237,230,214,${Math.random() * 0.35})`;
+    x.beginPath();
+    x.arc(Math.random() * W, H * 0.08 + Math.random() * H * 0.84, Math.random() * 2.2, 0, Math.PI * 2);
+    x.fill();
+  }
+
+  /* la textura visible arranca vacía y se pinta con avance(0..1) */
+  const [vista, v] = lienzo(W, H);
+  const tex = textura(vista);
+  function avance(f){
+    v.clearRect(0, 0, W, H);
+    lineas.forEach((_, i) => {
+      const tramo = Math.max(0, Math.min(1, f * lineas.length - i));
+      if (!tramo) return;
+      v.drawImage(lleno, 0, alto * i, W * tramo, alto, 0, alto * i, W * tramo, alto);
+    });
+    tex.needsUpdate = true;
+  }
+  avance(0);
+  return { textura: tex, avance, proporcion: W / H };
+}
+
+/* ---------- CASCO: la abertura de las antiparras ---------- */
+export function aberturaCasco(){
+  const [c, x] = lienzo(256, 128);
+  x.fillStyle = '#3A3A38'; x.fillRect(0, 0, 256, 128);         /* ribete gris oscuro */
+  x.fillStyle = '#050505'; x.fillRect(6, 6, 244, 116);          /* hueco oscuro */
+  const g = x.createLinearGradient(0, 10, 0, 118);
+  g.addColorStop(0, 'rgba(60,60,60,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(10, 10, 236, 60);                 /* forro interior */
+  return textura(c);
+}
+
+/* ---------- CASCO: calcomanía lateral ---------- */
+export function calcomaniaCasco(){
+  const [c, x] = lienzo(512, 256);
+  x.clearRect(0, 0, 512, 256);
+  x.fillStyle = '#E9E5DA';
+  x.font = `900 150px ${F.stencil}`;
+  x.textBaseline = 'middle';
+  x.fillText('TLD', 20, 112);
+  x.fillStyle = '#C8321E';
+  x.font = `900 92px ${F.stencil}`;
+  x.fillText('D3', 330, 120);
+  x.fillStyle = 'rgba(233,229,218,.8)';
+  x.fillRect(20, 196, 470, 10);
   return textura(c);
 }
