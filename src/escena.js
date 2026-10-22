@@ -297,11 +297,10 @@ export async function crearEscena(canvas, discos, avisos = {}){
   });
   foto(new URL('../img/jefe.png', import.meta.url).href, 0.6, 1.36, 1.68, -0.03);
   foto(new URL('../img/casco-ruta.png', import.meta.url).href, 0.34, 1.02, 1.62, 0.04);
-  foto(new URL('../img/retrato-casco.png', import.meta.url).href, 0.38, -1.02, 1.44, -0.06, 0.006);
-  /* a la izquierda: un trabajo (cartel xerox) y un retrato tuyo, en collage */
-  cargador.load(new URL('../img/mtb-318.png', import.meta.url).href, tex => {
-    const cartel = T.aficheTrabajo(tex.image, { titulo: '318', mano: 'Descenso', pie: 'TRABAJO · SERIE XEROX · DONFELIPES DESIGNER' });
-    afiche(cartel, 0.44, 0.62, -1.3, 1.08, 0.025);
+  foto(new URL('../img/retrato-casco.png', import.meta.url).href, 0.34, -0.9, 1.5, -0.06, 0.006);
+  /* a la izquierda: un trabajo tuyo (la lámina del esqueleto MTB) y tu retrato */
+  cargador.load(new URL('../img/esqueleto-mtb.webp', import.meta.url).href, tex => {
+    afiche(T.lamina(tex.image, 'ILUSTRACIÓN · DONFELIPES DESIGNER'), 0.44, 0.69, -1.2, 1.1, 0.02);
   });
 
   /* ---------------- el grafiti de la pared ----------------
@@ -487,25 +486,29 @@ export async function crearEscena(canvas, discos, avisos = {}){
   sombra(toca);
 
   /* ---------------- parlantes ---------------- */
-  const conos = [];
+  const parlantes = [];
   [-1, 1].forEach(lado => {
     const p = new THREE.Group();
     const caja = new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.27, 0.19, 3, 0.008), mat('#1E1D1B', 0.6));
     caja.position.y = 0.135;
-    const cono = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.014, 40), mat('#121110', 0.9));
+    const cono = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.014, 40), mat('#34322E', 0.75));
     cono.rotation.x = PI / 2;
     cono.position.set(0, 0.1, 0.096);
-    const tapita = new THREE.Mesh(new THREE.SphereGeometry(0.02, 20, 10, 0, PI * 2, 0, PI / 2), mat('#2B2A27', 0.5));
+    const tapita = new THREE.Mesh(new THREE.SphereGeometry(0.02, 20, 10, 0, PI * 2, 0, PI / 2), mat('#5A5650', 0.45));
     tapita.rotation.x = PI / 2;
     tapita.position.set(0, 0.1, 0.1);
     const tw = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.01, 24), mat('#3A3733', 0.4, 0.4));
     tw.rotation.x = PI / 2;
     tw.position.set(0, 0.215, 0.095);
-    p.add(caja, cono, tapita, tw);
+    /* una lucecita que late con el bajo: se nota que está encendido */
+    const ledMat = new THREE.MeshStandardMaterial({ color: '#3A0E08', emissive: '#FF6A3D', emissiveIntensity: 0 });
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.0045, 12, 12), ledMat);
+    led.position.set(0.062, 0.025, 0.096);
+    p.add(caja, cono, tapita, tw, led);
     p.position.set(lado * 0.56, MESA_Y, MESA_Z + 0.02);
     p.rotation.y = -lado * 0.28;
     escena.add(sombra(p));
-    conos.push(cono, tapita);
+    parlantes.push({ caja, cono, tapita, ledMat });
   });
 
   /* ---------------- luces ---------------- */
@@ -579,13 +582,70 @@ export async function crearEscena(canvas, discos, avisos = {}){
     const r = canvas.getBoundingClientRect();
     ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
     rayo.setFromCamera(ndc, camara);
-    const toque = rayo.intersectObjects([...objetivos, plinto, platoMalla], false)[0];
+    const extra = actual ? [fundas[actual].disco, goma] : [goma];
+    const toque = rayo.intersectObjects([...objetivos, plinto, platoMalla, ...extra], false)[0];
     return toque ? toque.object : null;
   }
+
+  /* ---------------- SCRATCH ----------------
+     Con un disco puesto, se agarra el disco y se gira con la mano. La
+     velocidad del gesto se le pasa a pieza.js, que hace el sonido. */
+  let rayando = false, arrastrado = false;
+  let anguloPrev = 0, velRayado = 0, tPrev = 0, recorrido = 0;
+  const centroPantalla = new THREE.Vector3();
+
+  function anguloEnPantalla(ev){
+    plato.getWorldPosition(centroPantalla).project(camara);
+    const r = canvas.getBoundingClientRect();
+    const cx = r.left + (centroPantalla.x + 1) / 2 * r.width;
+    const cy = r.top + (1 - centroPantalla.y) / 2 * r.height;
+    return Math.atan2(ev.clientY - cy, ev.clientX - cx);
+  }
+  function tocaDisco(o){
+    return !!(actual && !ocupado && o && (o === platoMalla || o === goma || o === fundas[actual].disco));
+  }
+
+  canvas.addEventListener('pointerdown', ev => {
+    const o = apunta(ev);
+    if (!tocaDisco(o)) return;
+    rayando = true; arrastrado = false; recorrido = 0;
+    anguloPrev = anguloEnPantalla(ev);
+    tPrev = performance.now();
+    velRayado = 0;
+    giro.vel = 0;                       /* la mano frena el disco */
+    canvas.setPointerCapture(ev.pointerId);
+    canvas.style.cursor = 'grabbing';
+    avisos.alRayar && avisos.alRayar(true);
+  });
+
+  function sueltaDisco(ev){
+    if (!rayando) return;
+    rayando = false;
+    try { canvas.releasePointerCapture(ev.pointerId); } catch (e) {}
+    canvas.style.cursor = '';
+    avisos.alRayar && avisos.alRayar(false);
+  }
+  canvas.addEventListener('pointerup', sueltaDisco);
+  canvas.addEventListener('pointercancel', sueltaDisco);
 
   canvas.addEventListener('pointermove', ev => {
     raton.x = (ev.clientX / innerWidth) * 2 - 1;
     raton.y = (ev.clientY / innerHeight) * 2 - 1;
+    if (rayando) {
+      const a = anguloEnPantalla(ev);
+      let d = a - anguloPrev;
+      if (d > PI) d -= 2 * PI;
+      if (d < -PI) d += 2 * PI;
+      anguloPrev = a;
+      const ahora = performance.now();
+      const paso = Math.max(0.008, (ahora - tPrev) / 1000);
+      tPrev = ahora;
+      plato.rotation.y -= d;            /* horario en pantalla = sentido normal del disco */
+      velRayado = velRayado * 0.4 + (d / paso) * 0.6;
+      recorrido += Math.abs(d);
+      if (recorrido > 0.08) arrastrado = true;
+      return;
+    }
     if (ev.pointerType === 'touch') return;
     const o = apunta(ev);
     const id = o && o.userData.id;
@@ -595,8 +655,10 @@ export async function crearEscena(canvas, discos, avisos = {}){
       encima = nuevo;
       if (encima && encima.d.id !== actual) asoma(encima, true);
     }
-    canvas.style.cursor = (nuevo || o === plinto || o === platoMalla) ? 'pointer' : '';
+    const sobreDisco = tocaDisco(o);
+    canvas.style.cursor = sobreDisco ? 'grab' : (nuevo || o === plinto || o === platoMalla) ? 'pointer' : '';
     avisos.alPasar && avisos.alPasar(nuevo ? nuevo.d : null, ev.clientX, ev.clientY);
+    avisos.alPasarDisco && avisos.alPasarDisco(sobreDisco, ev.clientX, ev.clientY);
   });
   canvas.addEventListener('pointerleave', () => {
     if (encima && encima.d.id !== actual) asoma(encima, false);
@@ -604,6 +666,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
     avisos.alPasar && avisos.alPasar(null);
   });
   canvas.addEventListener('click', ev => {
+    if (arrastrado) { arrastrado = false; return; }   /* fue scratch, no clic */
     const o = apunta(ev);
     if (!o) { avisos.alFondo && avisos.alFondo(); return; }
     if (o.userData.id) avisos.alElegir && avisos.alElegir(o.userData.id);
@@ -792,8 +855,13 @@ export async function crearEscena(canvas, discos, avisos = {}){
     const dt = Math.min(bruto, 0.05);
     const t = reloj.elapsedTime;
 
-    giro.vel += (giro.meta - giro.vel) * Math.min(1, dt * (giro.meta > giro.vel ? 2.2 : 1.1));
-    plato.rotation.y -= giro.vel * dt;
+    if (rayando) {
+      velRayado *= Math.exp(-dt * 10);
+      avisos.alRayado && avisos.alRayado(velRayado);
+    } else {
+      giro.vel += (giro.meta - giro.vel) * Math.min(1, dt * (giro.meta > giro.vel ? 2.2 : 1.1));
+      plato.rotation.y -= giro.vel * dt;
+    }
     chispa.rotation.y = Math.sin(t * 0.4) * 0.35;
 
     if (estado === 'sonando' && !ocupado) {
@@ -803,11 +871,21 @@ export async function crearEscena(canvas, discos, avisos = {}){
       inclina.rotation.x = 0.012 + Math.sin(t * giro.vel) * 0.0012;
     }
 
-    /* parlantes: bombean mientras suena */
-    const meta = estado === 'sonando' && !suave ? 1 : 0;
+    /* parlantes: un bombeo leve al ritmo de un bombo (~100 bpm) mientras
+       suena; con el scratch bajan, como la música */
+    const meta = estado === 'sonando' ? (rayando ? 0.35 : 1) : 0;
     latido += (meta - latido) * Math.min(1, dt * 3);
-    const golpe = Math.pow(Math.max(0, Math.sin(t * PI * 3.4)), 6) * latido;
-    conos.forEach((c, i) => { c.position.z = (i % 2 ? 0.1 : 0.096) + golpe * 0.006; });
+    const pulso = t * (100 / 60);
+    const bombo = Math.exp(-(pulso % 1) * 7);
+    const contra = Math.exp(-((pulso + 0.5) % 1) * 9) * 0.35;
+    const golpe = (bombo + contra) * latido * (suave ? 0.7 : 1);
+    parlantes.forEach(pl => {
+      pl.cono.position.z = 0.096 + golpe * 0.011;
+      pl.cono.scale.set(1 + golpe * 0.05, 1, 1 + golpe * 0.05);
+      pl.tapita.position.z = 0.1 + golpe * 0.013;
+      pl.caja.scale.setScalar(1 + golpe * 0.006);
+      pl.ledMat.emissiveIntensity = latido * (0.6 + golpe * 2.2);
+    });
 
     /* cámara con un poco de vida según el ratón */
     raton.sx += (raton.x - raton.sx) * Math.min(1, dt * 2.5);

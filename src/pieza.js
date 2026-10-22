@@ -200,6 +200,67 @@ const sonido = {
     this.crujido(on && escena?.sonando ? 0.045 : 0);
   },
 
+  /* ---- SCRATCH ----
+     YouTube no deja rayar la canción de verdad, así que mientras la mano
+     agarra el disco la música baja y suena un scratch sintetizado: una
+     onda de sierra + ruido por un filtro, que sigue la velocidad del gesto. */
+  rayo: null,
+  rayar(on){
+    this.despierta();
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    if (on) {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = 90;
+      const largo = this.ctx.sampleRate;
+      const buf = this.ctx.createBuffer(1, largo, this.ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < largo; i++) d[i] = Math.random() * 2 - 1;
+      const ruido = this.ctx.createBufferSource();
+      ruido.buffer = buf; ruido.loop = true;
+      const ruidoGan = this.ctx.createGain();
+      ruidoGan.gain.value = 0.35;
+      const filtro = this.ctx.createBiquadFilter();
+      filtro.type = 'bandpass'; filtro.Q.value = 2.2; filtro.frequency.value = 500;
+      const gan = this.ctx.createGain();
+      gan.gain.value = 0;
+      osc.connect(filtro);
+      ruido.connect(ruidoGan).connect(filtro);
+      filtro.connect(gan).connect(this.ctx.destination);
+      osc.start(); ruido.start();
+      this.rayo = { osc, ruido, filtro, gan, signo: 0 };
+      /* la canción se agacha mientras raya */
+      if (this.ytListo) try { this.yt.setVolume(12); } catch (e) {}
+      if (this.mp3) this.mp3.volume = 0.12;
+      this.crujido(0.12);
+    } else if (this.rayo) {
+      const r = this.rayo;
+      this.rayo = null;
+      r.gan.gain.cancelScheduledValues(t);
+      r.gan.gain.setTargetAtTime(0, t, 0.03);
+      setTimeout(() => { try { r.osc.stop(); r.ruido.stop(); } catch (e) {} }, 250);
+      if (this.ytListo) try { this.yt.setVolume(85); } catch (e) {}
+      if (this.mp3) this.mp3.volume = 0.9;
+      this.crujido(escena && escena.sonando ? 0.045 : 0);
+    }
+  },
+  rayado(vel){
+    const r = this.rayo;
+    if (!r || !this.on) { if (r) r.gan.gain.setTargetAtTime(0, this.ctx.currentTime, 0.02); return; }
+    const t = this.ctx.currentTime;
+    const a = Math.min(Math.abs(vel), 40);
+    r.osc.frequency.setTargetAtTime(70 + a * 48, t, 0.012);
+    r.filtro.frequency.setTargetAtTime(380 + a * 210, t, 0.015);
+    r.gan.gain.setTargetAtTime(a < 0.4 ? 0 : Math.min(0.3, a * 0.028), t, 0.01);
+    /* al cambiar de sentido, un golpecito como el borde de la muestra */
+    const signo = Math.sign(vel);
+    if (a > 2 && signo && signo !== r.signo) {
+      r.filtro.frequency.setValueAtTime(1600, t);
+      r.signo = signo;
+    }
+  },
+
   avance(){
     if (this.mp3 && this.mp3.duration) return this.mp3.currentTime / this.mp3.duration;
     if (!this.ytListo) return 0;
@@ -446,6 +507,16 @@ function pasa(d, x, y){
       alTocarPlato: () => actual && abrePanel(actual),
       /* clic en una zona vacía: cierra la ficha y se aleja para ver la pieza entera */
       alFondo: () => { if (panelAbierto) cierraPanel(); escena.mueveVista(false); },
+      alRayar: on => { sonido.rayar(on); if (on) globo.classList.remove('si'); },
+      alRayado: v => sonido.rayado(v),
+      alPasarDisco: (si, x, y) => {
+        if (!si) { if (globo.dataset.disco) { globo.classList.remove('si'); delete globo.dataset.disco; } return; }
+        globo.dataset.disco = '1';
+        globo.innerHTML = '<b>Haz scratch</b><span>Agarra el disco y <i>muévelo</i> adelante y atrás</span>';
+        globo.style.left = x + 'px';
+        globo.style.top = y + 'px';
+        globo.classList.add('si');
+      },
       alSonar: d => {
         sonido.golpe();
         if (d.id === actual) sonido.suena(d);

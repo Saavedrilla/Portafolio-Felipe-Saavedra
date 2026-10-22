@@ -200,33 +200,21 @@ export function alfombra(){
   return t;
 }
 
-/* ---------- AFICHE DE UN TRABAJO ----------
-   Una foto tramada convertida en cartel, con el gesto de siempre:
-   título impreso en hueco y el mismo título escrito a mano encima. */
-export function aficheTrabajo(img, { titulo, mano, pie }){
-  const W = 720, H = 1020;
+/* ---------- LÁMINA: un trabajo tuyo con margen crema y pie de imprenta ---------- */
+export function lamina(img, pie){
+  const W = 720, H = Math.round(W * (img.height / img.width)) + 120;
   const [c, x] = lienzo(W, H);
   x.fillStyle = '#EDE9DF'; x.fillRect(0, 0, W, H);
-  /* la foto, recortada para llenar */
-  const r = Math.max((W - 60) / img.width, (H - 250) / img.height);
-  const iw = img.width * r, ih = img.height * r;
-  x.save();
-  x.beginPath(); x.rect(30, 30, W - 60, H - 250); x.clip();
-  x.drawImage(img, 30 + (W - 60 - iw) / 2, 30 + (H - 250 - ih) / 2, iw, ih);
-  x.restore();
-  /* barra negra con el título en hueco */
-  x.fillStyle = '#121110'; x.fillRect(0, H - 220, W, 220);
-  x.font = `150px ${F.titulo}`;
-  x.lineWidth = 3; x.strokeStyle = '#EDE9DF';
-  x.strokeText(titulo, 30, H - 70);
-  x.save();
-  x.translate(60, H - 70); x.rotate(-0.06);
-  x.fillStyle = '#C8321E'; x.font = `74px ${F.mano}`;
-  x.fillText(mano, 0, 0);
-  x.restore();
-  x.fillStyle = '#EDE9DF'; x.font = `20px ${F.maquina}`;
-  x.fillText(pie, 32, H - 22);
-  grano(x, W, H, 0.08);
+  const m = 34;
+  const ih = H - 120 - m;
+  x.drawImage(img, m, m, W - m * 2, ih);
+  x.fillStyle = '#121110';
+  x.font = `20px ${F.maquina}`;
+  x.fillText(pie, m, H - 46);
+  x.fillStyle = '#C8321E';
+  x.font = `34px ${F.mano}`;
+  x.fillText('DonFelipes', W - m - 190, H - 40);
+  grano(x, W, H, 0.06);
   return textura(c);
 }
 
