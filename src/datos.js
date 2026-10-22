@@ -29,7 +29,7 @@ export const DISCOS = [
   {
     id: '04', cancion: 'Go With the Flow', banda: 'Queens of the Stone Age', corta: 'QOTSA', anio: 2002, lado: 'A', rpm: 45,
     tema: 'Motion y video', papel: '#2B2A27', tinta: '#F4F2ED',
-    yt: 'SZQEuFStf3U', audio: '',
+    yt: 'DcHKOC64KnE', audio: '',
     arte: '<path d="M50 10a40 40 0 010 80z" fill="currentColor"/><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="5"/><path d="M50 10v80" stroke="#C8321E" stroke-width="4"/>',
   },
   {

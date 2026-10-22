@@ -329,29 +329,18 @@ export function grafiti(lineas = ['saca un vinilo del mueble', 'y ponlo en el to
   return { textura: tex, avance, proporcion: W / H };
 }
 
-/* ---------- CASCO: la abertura de las antiparras ---------- */
-export function aberturaCasco(){
-  const [c, x] = lienzo(256, 128);
-  x.fillStyle = '#3A3A38'; x.fillRect(0, 0, 256, 128);         /* ribete gris oscuro */
-  x.fillStyle = '#050505'; x.fillRect(6, 6, 244, 116);          /* hueco oscuro */
-  const g = x.createLinearGradient(0, 10, 0, 118);
-  g.addColorStop(0, 'rgba(60,60,60,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-  x.fillStyle = g; x.fillRect(10, 10, 236, 60);                 /* forro interior */
-  return textura(c);
-}
-
-/* ---------- CASCO: calcomanía lateral ---------- */
-export function calcomaniaCasco(){
-  const [c, x] = lienzo(512, 256);
-  x.clearRect(0, 0, 512, 256);
-  x.fillStyle = '#E9E5DA';
-  x.font = `900 150px ${F.stencil}`;
-  x.textBaseline = 'middle';
-  x.fillText('TLD', 20, 112);
-  x.fillStyle = '#C8321E';
-  x.font = `900 92px ${F.stencil}`;
-  x.fillText('D3', 330, 120);
-  x.fillStyle = 'rgba(233,229,218,.8)';
-  x.fillRect(20, 196, 470, 10);
+/* ---------- ESTATUILLA: la placa de bronce del pedestal ---------- */
+export function placaEstatua(){
+  const [c, x] = lienzo(512, 154);
+  const g = x.createLinearGradient(0, 0, 512, 154);
+  g.addColorStop(0, '#8C6A32'); g.addColorStop(0.5, '#C9A35A'); g.addColorStop(1, '#7A5A28');
+  x.fillStyle = g; x.fillRect(0, 0, 512, 154);
+  x.strokeStyle = 'rgba(40,25,5,.6)'; x.lineWidth = 6; x.strokeRect(8, 8, 496, 138);
+  x.fillStyle = '#2A1A06';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = `900 70px ${F.stencil}`;
+  x.fillText('CLAUDE', 256, 66);
+  x.font = `24px ${F.maquina}`;
+  x.fillText('COPILOTO DE ESTA PIEZA', 256, 118);
   return textura(c);
 }

@@ -297,11 +297,11 @@ export async function crearEscena(canvas, discos, avisos = {}){
     gsap.to(pinta, { f: 1, duration: suave ? 1.2 : 2.2, ease: 'none', onUpdate: () => spray.avance(pinta.f) });
   }
 
-  /* ---------------- la repisaCasco con el casco Troy Lee D3 ---------------- */
+  /* ---------------- la repisa con la estatuilla de Claude ---------------- */
   const fierroRepisa = mat('#121110', 0.4, 0.5);
-  const repisaCasco = new THREE.Group();
+  const repisaEstatua = new THREE.Group();
   const tablon = new THREE.Mesh(new RoundedBoxGeometry(0.48, 0.026, 0.22, 3, 0.005), mat('#5A3E2A', 0.55));
-  repisaCasco.add(tablon);
+  repisaEstatua.add(tablon);
   [-1, 1].forEach(lado => {
     const escuadra = new THREE.Group();
     const vertical = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.13, 0.018), fierroRepisa);
@@ -311,64 +311,44 @@ export async function crearEscena(canvas, discos, avisos = {}){
     diagonal.rotation.x = 0.8;
     escuadra.add(vertical, diagonal);
     escuadra.position.x = lado * 0.17;
-    repisaCasco.add(escuadra);
+    repisaEstatua.add(escuadra);
   });
 
-  const casco = new THREE.Group();
-  const negro = new THREE.MeshPhysicalMaterial({ color: '#0C0C0C', roughness: 0.28, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.12 });
-  const negroMate = mat('#141414', 0.75);
-  /* la carcasa: un huevo alargado hacia adelante */
-  const forma = new THREE.Group();
-  forma.scale.set(0.94, 1.1, 1.14);
-  forma.position.y = 0.14;
-  const carcasa = new THREE.Mesh(new THREE.SphereGeometry(0.12, 48, 32), negro);
-  /* la abertura de las antiparras, al frente */
-  const abertura = new THREE.Mesh(
-    new THREE.SphereGeometry(0.1215, 32, 12, PI / 2 - 0.58, 1.16, 1.12, 0.46),
-    mat('#ffffff', 0.85, 0, { map: T.aberturaCasco() })
-  );
-  forma.add(carcasa, abertura);
-  /* calcomanías a los lados */
-  const calco = mat('#ffffff', 0.4, 0, { map: T.calcomaniaCasco(), transparent: true, polygonOffset: true, polygonOffsetFactor: -2 });
-  [-1, 1].forEach(lado => {
-    const c = new THREE.Mesh(new THREE.PlaneGeometry(0.11, 0.055), calco);
-    c.position.set(lado * 0.1225, 0.01, -0.01);
-    c.rotation.y = lado * PI / 2;
-    forma.add(c);
-  });
-  casco.add(forma);
-  /* la mentonera: una barra redondeada que sobresale adelante y abajo */
-  const menton = new THREE.Mesh(new THREE.CapsuleGeometry(0.055, 0.1, 8, 24), negro);
-  menton.rotation.z = PI / 2;
-  menton.scale.set(1, 1, 1.35);
-  menton.position.set(0, 0.07, 0.105);
-  const mentonBajo = new THREE.Mesh(new THREE.SphereGeometry(0.075, 32, 16), negro);
-  mentonBajo.scale.set(1.25, 0.8, 1.2);
-  mentonBajo.position.set(0, 0.06, 0.05);
-  casco.add(menton, mentonBajo);
-  /* rejillas de la mentonera */
-  for (let k = -1; k <= 1; k++) {
-    const rejilla = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.026, 0.01), negroMate);
-    rejilla.position.set(k * 0.03, 0.07, 0.178);
-    casco.add(rejilla);
-  }
-  /* la visera, inclinada hacia arriba */
-  const visera = new THREE.Mesh(new RoundedBoxGeometry(0.2, 0.007, 0.12, 2, 0.003), negro);
-  visera.position.set(0, 0.255, 0.115);
-  visera.rotation.x = -0.32;
-  casco.add(visera);
-  /* un filo gris en la visera, como el D3 */
-  const filo = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.004, 0.008), mat('#7C7C78', 0.4, 0.4));
-  filo.position.set(0, 0.275, 0.172);
-  filo.rotation.x = -0.32;
-  casco.add(filo);
+  /* la estatuilla de Claude: la chispa naranja sobre un pedestal de mármol */
+  const estatua = new THREE.Group();
+  const marmol = mat('#E4E0D6', 0.35, 0.05);
+  const pedestal = new THREE.Mesh(new RoundedBoxGeometry(0.13, 0.09, 0.13, 3, 0.006), marmol);
+  pedestal.position.y = 0.045;
+  const tapa = new THREE.Mesh(new RoundedBoxGeometry(0.15, 0.016, 0.15, 3, 0.004), marmol);
+  tapa.position.y = 0.098;
+  const placaBronce = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.03), mat('#ffffff', 0.35, 0.6, { map: T.placaEstatua() }));
+  placaBronce.position.set(0, 0.046, 0.0655);
+  estatua.add(pedestal, tapa, placaBronce);
 
-  casco.position.set(0.0, 0.013, 0.0);
-  casco.rotation.y = -0.95;
-  casco.scale.setScalar(1.12);
-  repisaCasco.add(casco);
-  repisaCasco.position.set(1.14, 0.98, PARED_Z + 0.115);
-  escena.add(sombra(repisaCasco));
+  /* la chispa: rayos redondeados de largos distintos que salen del centro */
+  const chispa = new THREE.Group();
+  const arcilla = new THREE.MeshPhysicalMaterial({ color: '#D97757', roughness: 0.45, clearcoat: 0.4, clearcoatRoughness: 0.4 });
+  const largos = [0.085, 0.07, 0.09, 0.065, 0.08, 0.072, 0.088, 0.066, 0.082, 0.07, 0.086, 0.068];
+  largos.forEach((largo, i) => {
+    const angulo = (i / largos.length) * PI * 2 + (i % 2 ? 0.08 : -0.05);
+    const rayo = new THREE.Mesh(new THREE.CapsuleGeometry(0.011, largo, 6, 12), arcilla);
+    rayo.position.set(Math.cos(angulo) * (largo / 2 + 0.008), Math.sin(angulo) * (largo / 2 + 0.008), 0);
+    rayo.rotation.z = angulo - PI / 2;
+    rayo.scale.z = 0.8;
+    chispa.add(rayo);
+  });
+  const centro = new THREE.Mesh(new THREE.SphereGeometry(0.022, 24, 16), arcilla);
+  centro.scale.z = 0.8;
+  chispa.add(centro);
+  chispa.position.y = 0.106 + 0.1;
+  /* la chispa gira lento sobre su pedestal */
+  chispa.userData.gira = true;
+  estatua.add(chispa);
+
+  estatua.rotation.y = -0.35;
+  repisaEstatua.add(estatua);
+  repisaEstatua.position.set(1.14, 0.98, PARED_Z + 0.115);
+  escena.add(sombra(repisaEstatua));
 
   /* ---------------- la mesa ---------------- */
   const mesa = new THREE.Group();
@@ -757,6 +737,7 @@ export async function crearEscena(canvas, discos, avisos = {}){
 
     giro.vel += (giro.meta - giro.vel) * Math.min(1, dt * (giro.meta > giro.vel ? 2.2 : 1.1));
     plato.rotation.y -= giro.vel * dt;
+    chispa.rotation.y = Math.sin(t * 0.4) * 0.35;
 
     if (estado === 'sonando' && !ocupado) {
       const meta = BRAZO_INICIO + (BRAZO_FINAL - BRAZO_INICIO) * progreso;
